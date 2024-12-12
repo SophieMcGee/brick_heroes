@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net',
+    'https://*.gitpod.io',
+]
+
 
 # Application definition
 
@@ -37,6 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
 ]
 
 MIDDLEWARE = [
@@ -45,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -54,18 +68,40 @@ ROOT_URLCONF = 'brickheroes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
+                'django.template.context_processors.request', #requires by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+# Log emails to the console for development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Allauth settings for user authentication and email verification
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Allow login with username or email
+ACCOUNT_EMAIL_REQUIRED = True  # Email is mandatory for registration
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Require email verification
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True  # Require email confirmation to avoid typos
+ACCOUNT_USERNAME_MIN_LENGTH = 4  # Minimum username length
+LOGIN_REDIRECT_URL = '/'  # Redirect after login
+LOGIN_URL = '/accounts/login/'  # Default login page
 
 WSGI_APPLICATION = 'brickheroes.wsgi.application'
 
