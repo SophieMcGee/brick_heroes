@@ -1,131 +1,205 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# **_Brick Heroes - Project Portfolio 5_**
 
-Welcome Sophie Mcgee,
+INSERT INTRO AND LINK TO LIVE SITE HERE
 
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. It's perfectly ok to use this template as the basis for your project submissions.
+# Contents
 
-You can safely delete this README.md file or change it for your own project. Please do read it at least once, though! It contains some important information about Gitpod and the extensions we use. Some of this information has been updated since the video content was created. The last update to this file was: **June 18, 2024**
+* [**Website Objectives**](#website-objectives)
+* [**Agile Methodology**](#agile-methodology)
+  * [**Key Agile Practices Utilised**](#key-agile-practices-utilised)
+* [**User Experience (UX)**](#user-experience-ux)
+  * [**Client Background and Goals**](#client-background-and-goals)
+  * [**Target Audience**](#target-audience)
+  * [**User Stories**](#user-stories-1)
+* [**Market Research**](#market-research)
+* [**Design**](#design)
+  * [**Planning and Development**](#planning-and-development)
+  * [**Colour Scheme and Typography**](#colour-scheme-and-typography)
+* [**Data Model**](#data-model)
+* [**General Features**](#general-features)
+* [**Page-Specific Features**](#page-specific-features)
+  * [**Home Page Features**](#home-page-features)
+  * [**Event Management Features**](#event-management-features)
+  * [**User Account Features**](#user-account-features)
+  * [**404 Page**](#404-page)
+  * [**Authentication**](#authentication)
+  * [**Future Features**](#future-features)
+* [**Technologies Used**](#technologies-used)
+* [**Deployment**](#deployment)
+* [**Testing**](#testing)
+* [**Bugs**](#bugs)
+* [**Credits**](#credits)
+* [**Acknowledgements**](#acknowledgements)
 
-## Gitpod Reminders
+# Website Objectives
 
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
+The Brick Heroes website is designed to provide a comprehensive platform for users to explore, borrow, and purchase Lego sets through a subscription-based model. The primary goal is to create an engaging, user-friendly space that empowers builders of all ages to access a wide variety of Lego sets affordably, while also promoting sustainability through the reuse of sets. The site integrates borrowing functionality, e-commerce options, and subscription management, ensuring a seamless experience for users.
 
-`python3 -m http.server`
+Additionally, Brick Heroes aims to foster a creative community of Lego enthusiasts by offering features like a blog with building tips, user galleries for sharing creations, and the ability to leave reviews and feedback on borrowed sets. The website's design reflects a vibrant, comic-book-inspired theme to make the browsing and interaction experience fun and memorable.
 
-A blue button should appear to click: _Make Public_,
 
-Another blue button should appear to click: _Open Browser_.
+**Key objectives:**
+1. **Subscription Management**
+  - Enable users to view, select, and manage subscription plans, including monthly and annual options, with clear pricing and benefits.
+  - Provide flexible management tools for upgrading, downgrading, or cancelling subscriptions.
 
-To run a backend Python file, type `python3 app.py` if your Python file is named `app.py`, of course.
+2. **Borrowing and Returning Sets**
+  - Offer a seamless borrowing system where users can browse and filter sets by theme, difficulty, and availability.
+  - Allow users to track borrowed sets, return them easily, and join waitlists for unavailable items.
 
-A blue button should appear to click: _Make Public_,
+3. **E-Commerce Functionality**
+  - Include the option for users to purchase Lego sets outright, along with other products like gift cards.
+  - Provide a secure checkout process for transactions and gift card redemption.
 
-Another blue button should appear to click: _Open Browser_.
+4. **Creative Engagement**
+  - Foster community interaction through features like user reviews, ratings, and a gallery for sharing builds.
+  - Maintain an inspiring blog with tips, set reviews, and Lego news.
 
-By Default, Gitpod gives you superuser security privileges. Therefore, you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
+5. **Accessibility and Usability**
+  - Ensure the site is fully responsive and accessible, providing a smooth experience across devices, including mobile, tablet, and desktop.
+  - Use an intuitive design and navigation structure to simplify browsing and borrowing for all users.
 
-To log into the Heroku toolbelt CLI:
+6. **Sustainability Focus**
+  - Promote eco-friendly practices by encouraging the reuse of Lego sets, reducing waste, and minimising the environmental impact of toy consumption.
 
-1. Log in to your Heroku account and go to *Account Settings* in the menu under your avatar.
-2. Scroll down to the *API Key* and click *Reveal*
-3. Copy the key
-4. In Gitpod, from the terminal, run `heroku_config`
-5. Paste in your API key when asked
+7. **Administrator Tools**
+  - Provide a robust admin interface for managing Lego sets, monitoring user activity, and moderating reviews and gallery submissions.
+  - Include analytics tools to track subscriptions, borrowing trends, and overall site engagement.
 
-You can now use the `heroku` CLI program - try running `heroku apps` to confirm it works. This API key is unique and private to you, so do not share it. If you accidentally make it public, you can create a new one with _Regenerate API Key_.
+8. **Notifications and Feedback**
+  - Keep users informed with timely notifications for due dates, waitlist availability, and subscription renewals.
+  - Encourage user feedback to continuously improve the service and offerings.
 
-### Connecting your Mongo database
+By focusing on these objectives, Brick Heroes aims to become the go-to platform for affordable and creative Lego set access while building a supportive and enthusiastic community of builders.
 
-- **Connect to Mongo CLI on a IDE**
-- navigate to your MongoDB Clusters Sandbox
-- click **"Connect"** button
-- select **"Connect with the MongoDB shell"**
-- select **"I have the mongo shell installed"**
-- choose **mongosh (2.0 or later)** for : **"Select your mongo shell version"**
-- choose option: **"Run your connection string in your command line"**
-- in the terminal, paste the copied code `mongo "mongodb+srv://<CLUSTER-NAME>.mongodb.net/<DBname>" --apiVersion 1 --username <USERNAME>`
-  - replace all `<angle-bracket>` keys with your own data
-- enter password _(will not echo **\*\*\*\*** on screen)_
+[Back to top](<#contents>)
 
-------
+# Agile Methodology
 
-## Release History
+## Agile Methodology
 
-We continually tweak and adjust this template to help give you the best experience. Here is the version history:
+Throughout the development of the Brick Heroes platform, Agile methodology was implemented to ensure the project was completed efficiently while remaining flexible to evolving requirements. This iterative approach emphasized incremental delivery, continuous improvement, and alignment with user needs, allowing the project to adapt as feedback was incorporated. Agile principles helped manage the project's scope, prioritise key features, and maintain a high standard of quality.
 
-**June 18, 2024,** Add Mongo back into template
+### Key Agile Practices Utilised:
 
-**June 14, 2024,** Temporarily remove Mongo until the key issue is resolved
+1. **Sprint Planning and Milestones**
 
-**May 28 2024:** Fix Mongo and Links installs
+The development process was broken into multiple milestones, each representing a major feature or section of the site (e.g., User Authentication, Subscription Management, Borrowing and Returning Lego Sets).
 
-**April 26 2024:** Update node version to 16
+  - Each milestone was treated as a sprint, with specific goals and a clear timeline for delivery.
+  - Deadlines were set for each sprint but remained flexible, allowing adjustments to address high-priority features first or respond to feedback.
+  - Examples of milestones included:
+      - Setting up the user authentication system.
+      - Developing the borrowing and returning workflows.
+      - Implementing e-commerce functionality for gift cards and set purchases.
 
-**September 20 2023:** Update Python version to 3.9.17.
+This iterative structure ensured steady progress while maintaining the flexibility to pivot when necessary.
 
-**September 1 2021:** Remove `PGHOSTADDR` environment variable.
+2. **User Stories**
 
-**July 19 2021:** Remove `font_fix` script now that the terminal font issue is fixed.
+User stories were at the heart of the development process, capturing features and functionality from the perspective of different user types (e.g., subscribers, admins, and visitors).
 
-**July 2 2021:** Remove extensions that are not available in Open VSX.
+  - Each user story was written to reflect specific user goals, helping to focus on delivering value.
+  - Prioritisation followed the MoSCoW framework:
+      - Must Have: Core functionality like account registration, borrowing Lego sets, and subscription management.
+      - Should Have: Features enhancing usability, such as filtering Lego sets by theme or difficulty.
+      - Could Have: Community features like sharing Lego creations or commenting on blog posts.
+  - User stories provided clear acceptance criteria to guide development and testing, ensuring that each feature met user expectations.
 
-**June 30 2021:** Combined the P4 and P5 templates into one file, added the uptime script. See the FAQ at the end of this file.
+3. **GitHub Project Board**
 
-**June 10 2021:** Added: `font_fix` script and alias to fix the Terminal font issue
+A dedicated GitHub Projects board was created to organise and track tasks, user stories, and features.
 
-**May 10 2021:** Added `heroku_config` script to allow Heroku API key to be stored as an environment variable.
+  - The board was divided into columns, such as:
+      - Backlog: Features or tasks awaiting prioritisation.
+      - In Progress: Current tasks under development.
+      - Testing: Completed tasks undergoing testing and validation.
+      - Done: Completed and deployed features.
+  - Each user story was assigned to its relevant sprint and tracked on the board to ensure visibility into the development process.
+  - For example, once the "Implement Monthly Subscription Workflow" user story was completed, it was moved from In Progress to Done.
 
-**April 7 2021:** Upgraded the template for VS Code instead of Theia.
+This structure provided transparency, allowed blockers to be identified early, and ensured smooth progress through each sprint.
 
-**October 21 2020:** Versions of the HTMLHint, Prettier, Bootstrap4 CDN and Auto Close extensions updated. The Python extension needs to stay the same version for now.
+   [GitHub Project Board - Brick Heroes](https://github.com/users/SophieMcGee/projects/3)
 
-**October 08 2020:** Additional large Gitpod files (`core.mongo*` and `core.python*`) are now hidden in the Explorer, and have been added to the `.gitignore` by default.
+4. **Regular Retrospectives**
 
-**September 22 2020:** Gitpod occasionally creates large `core.Microsoft` files. These are now hidden in the Explorer. A `.gitignore` file has been created to make sure these files will not be committed, along with other common files.
+At the end of each sprint, retrospectives were conducted to reflect on the process and identify areas for improvement.
 
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
+  - Key questions included:
+      - What went well?
+      - What challenges were encountered?
+      - What can be improved in the next sprint?
+  - Retrospectives allowed for:
+      - Addressing technical debt.
+      - Streamlining processes to improve delivery times.
+      - Enhancing collaboration and decision-making for future tasks.
 
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
+These reflective sessions ensured the development process remained agile and adaptable.
 
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
+5. **Continuous Integration and Testing**
 
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
+To maintain a robust and reliable codebase, continuous integration principles were applied.
 
-------
+  - Each feature was developed and tested in isolation, ensuring it met the acceptance criteria before being integrated into the main project.
+  - Testing focused on:
+      - Functional testing for core features (e.g., borrowing Lego sets, subscription management).
+      - Validation of edge cases (e.g., handling expired subscriptions or unavailable sets).
+   - Automated tests were created for critical features to ensure they worked as intended across updates.
+   - Any issues identified during testing were documented in GitHub Issues and addressed promptly, preventing regressions and maintaining site stability.
 
-## FAQ about the uptime script
+6. **Prioritisation Using MoSCoW**
 
-**Why have you added this script?**
+The MoSCoW method was used to prioritize user stories and features systematically:
 
-It will help us to calculate how many running workspaces there are at any one time, which greatly helps us with cost and capacity planning. It will help us decide on the future direction of our cloud-based IDE strategy.
+  - Must Have: User registration, borrowing and returning Lego sets, subscription payments.
+  - Should Have: User reviews and ratings for Lego sets, waitlist notifications for unavailable sets.
+  -	Could Have: A gallery for users to share their builds, gamified rewards for frequent borrowers.
+  - Won’t Have: Features planned for future phases, like multi-language support or advanced analytics for users.
 
-**How will this affect me?**
+This approach ensured that critical functionality was delivered first while leaving room for enhancements later in the project lifecycle.
 
-For everyday usage of Gitpod, it doesn’t have any effect at all. The script only captures the following data:
 
-- An ID that is randomly generated each time the workspace is started.
-- The current date and time
-- The workspace status of “started” or “running”, which is sent every 5 minutes.
+# User Experience (UX)
 
-It is not possible for us or anyone else to trace the random ID back to an individual, and no personal data is being captured. It will not slow down the workspace or affect your work.
+## Client Background and Goals
 
-**So….?**
+The Brick Heroes platform is designed to provide a seamless and engaging space for Lego enthusiasts to access a subscription-based service for borrowing and purchasing Lego sets. As the developer and someone passionate about creativity and sustainability, I recognised the need for a platform that simplifies access to high-quality Lego sets while promoting reuse and reducing waste. The goals for this website include:
 
-We want to tell you this so that we are being completely transparent about the data we collect and what we do with it.
+* **Catering to a wide user base:** – The platform is designed for a diverse audience, from casual hobbyists to avid builders and parents looking for fun, cost-effective activities for their children.
+* **Ease of use and accessiblity** – A clean, intuitive interface ensures users can browse Lego sets, manage subscriptions, and complete transactions effortlessly on any device.
+* **Fostering creativity and community** – The platform promotes user engagement by providing tools to review and rate sets, share builds, and interact with other users through a blog and gallery.
+* **Clear pathways for action** – Strategically placed calls-to-action (CTAs) guide users to subscribe, borrow, purchase, or participate in community activities, ensuring a smooth user journey.
+* **Sustainability and value** – By encouraging borrowing and reuse, the site offers a cost-effective and environmentally friendly way to enjoy Lego sets.
 
-**Can I opt out?**
+[Back to top](#contents)
 
-Yes, you can. Since no personally identifiable information is being captured, we'd appreciate it if you let the script run; however if you are unhappy with the idea, simply run the following commands from the terminal window after creating the workspace, and this will remove the uptime script:
 
-```
-pkill uptime.sh
-rm .vscode/uptime.sh
-```
+## Target Audience
 
-**Anything more?**
+Based on research into the Lego community and subscription services, Brick Heroes is designed to serve the following target audiences:
 
-Yes! We'd strongly encourage you to look at the source code of the `uptime.sh` file so that you know what it's doing. As future software developers, it will be great practice to see how these shell scripts work.
+* **1.	Families and parents:**
+    - Parents looking for affordable, fun, and educational activities for their children.
+    - Families interested in borrowing rather than purchasing expensive Lego sets.
 
----
+* **2.	Avid Lego enthusiasts:**
+    - Builders seeking access to a variety of sets to fuel their creativity without the commitment of ownership.
+    - Hobbyists looking for exclusive or themed sets that might not be available for purchase elsewhere.
 
-Happy coding!
+* **3.	Gift Shoppers:**
+    - Individuals searching for creative gift options, such as gift cards or annual subscriptions.
+
+* **4.	Sustainability-conscious users::**
+    - Individuals who value eco-friendly alternatives to toy consumption and appreciate the platform's focus on reuse and sharing.
+
+* **5.	Community-oriented Lego fans:**
+    - Builders who enjoy sharing their creations, leaving reviews, and engaging with blog content about Lego themes and techniques.
+
+[Back to top](#contents)
+
+## User Stories
+
+**User Stories Summary**
+
+Below is a table summarising the milestones/epics for the Brick Heroes platform. Each milestone represents a key area of focus during the development process and includes user stories designed to achieve specific goals.
