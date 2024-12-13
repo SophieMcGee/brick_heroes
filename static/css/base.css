@@ -1,0 +1,84 @@
+/* Global Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Shantell Sans', Arial, sans-serif;
+    background-color: #FFD400; /* Yellow background */
+    color: #101010; /* Black for primary text */
+}
+
+/* Header */
+.header-container {
+    background-color: white;
+    padding: 1rem 0;
+    border-bottom: 3px solid #00A3EB; /* Blue divider */
+}
+
+/* Logo Font */
+.logo-font {
+    font-family: 'Luckiest Guy', cursive;
+    color: #FE0000; /* Red for hero elements */
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Buttons */
+.shop-now-button {
+    background-color: #FE0000; /* Red */
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.shop-now-button:hover {
+    background-color: #00A3EB; /* Hover to Blue */
+    color: white;
+}
+
+/* Icons */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1.5rem;
+    color: #101010;
+}
+
+/* Text and Highlights */
+.text-black {
+    color: #101010 !important; /* Black text */
+}
+
+.border-black {
+    border: 2px solid #101010 !important; /* Black borders */
+}
+
+/* Footer */
+.footer {
+    background-color: #101010; /* Black */
+    color: #FFD400; /* Yellow text */
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Buttons for Images */
+.image-button {
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    border: 2px solid #FE0000; /* Red border for image buttons */
+    transition: transform 0.2s ease-in-out;
+}
+
+.image-button:hover {
+    transform: scale(1.05);
+    border-color: #00A3EB; /* Change border to Blue on hover */
+}
