@@ -1,5 +1,22 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Welcome to Brick Heroes!</h1>
+<div class="container h-100">
+    <div class="row h-100">
+        <div class="col-12 col-md-7 my-auto">
+            <h1 class="display-4 logo-font text-black">
+                Unleash Your Creativity with LEGO!
+            </h1>
+            <div class="my-5">
+                <a href="{% url 'collections' %}" class="btn btn-lg btn-primary rounded-0 text-uppercase py-3 shop-now-button">
+                    Explore Sets
+                </a>
+            </div>
+        </div>
+        <div class="col-12 col-md-5">
+            <img src="{% static 'images/home_hero_image.jpg' %}" alt="Hero image" class="img-fluid">
+        </div>
+    </div>
+</div>
 {% endblock %}
