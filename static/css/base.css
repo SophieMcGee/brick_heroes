@@ -4,15 +4,42 @@ html, body {
     padding: 0;
     height: 100%;
     font-family: 'Shantell Sans', Arial, sans-serif;
-    background-color: #FFD400; /* Yellow background */
-    color: #101010; /* Black for primary text */
+    background-color: #000; 
+    color: #fff; 
 }
 
 /* Header */
 .header-container {
-    background-color: white;
-    padding: 1rem 0;
-    border-bottom: 3px solid #00A3EB; /* Blue divider */
+    background-color: #000; /* Black background */
+    color: #FFF; /* White text */
+    padding: 0;
+    border-bottom: 3px solid #FFD400; /* Yellow divider */
+}
+
+header a, header a:hover, header a:focus {
+    color: #FFF; /* White text for links */
+}
+
+/* Hero Section */
+.hero-section {
+    margin-top: 70px; /* Align to header */
+    background: url('/media/homepage_bg.jpg') no-repeat center center;
+    background-size: cover;
+    height: 60vh; /* Reduced height for the hero section */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero Image as Button */
+.hero-section img {
+    width: auto;
+    height: 100%; /* Fit the hero section */
+    max-width: 100%; /* Ensure it doesn't overflow */
+    cursor: pointer;
 }
 
 /* Logo Font */
@@ -41,6 +68,16 @@ html, body {
     color: white;
 }
 
+.btn-black {
+    background-color: #000; /* Black */
+    color: #FFF; /* White */
+}
+
+.btn-black:hover {
+    background-color: #222; /* Darker black */
+    color: #FFF; /* White */
+}
+
 /* Icons */
 .icon {
     display: inline-flex;
@@ -49,7 +86,7 @@ html, body {
     width: 1.5rem;
     height: 1.5rem;
     font-size: 1.5rem;
-    color: #101010;
+    color: #FFF; /* White for header icons */
 }
 
 /* Text and Highlights */
@@ -81,4 +118,28 @@ html, body {
 .image-button:hover {
     transform: scale(1.05);
     border-color: #00A3EB; /* Change border to Blue on hover */
+}
+
+/* Media Queries */
+
+/* Slightly larger container on xl screens */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 80%;
+  }
+}
+
+/* fixed top navbar only on medium and up */
+@media (min-width: 992px) {
+    .fixed-top-desktop-only {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .header-container {
+        padding-top: 0; /* Remove extra padding for desktop */
+    }
 }

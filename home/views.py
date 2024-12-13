@@ -8,3 +8,6 @@ def index(request):
 @login_required
 def profile(request):
     return render(request, 'home/profile.html')
+
+def collections(request):
+    return render(request, 'home/collections.html')
