@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% endblock %}
 
-    {% block meta %}
+    {% block extra_meta %}
     {% endblock %}
 
     <!-- Core CSS -->
@@ -35,6 +35,10 @@
         <h1>Brick Heroes</h1>
     </header>
 
+    <!-- Page Header Block -->
+    {% block pageheader %}
+    {% endblock %}
+
     <!-- Messages -->
     <div class="message-container">
         {% if messages %}
@@ -48,6 +52,12 @@
 
     <!-- Main Content -->
     {% block content %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% block postloadjs %}
     {% endblock %}
   </body>
 </html>
