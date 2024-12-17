@@ -4,15 +4,82 @@ html, body {
     padding: 0;
     height: 100%;
     font-family: 'Shantell Sans', Arial, sans-serif;
-    background-color: #FFD400; /* Yellow background */
-    color: #101010; /* Black for primary text */
+    background-color: #000; 
+    color: #fff; 
 }
 
 /* Header */
-.header-container {
-    background-color: white;
-    padding: 1rem 0;
-    border-bottom: 3px solid #00A3EB; /* Blue divider */
+header {
+    background-color: #000; /* Black background */
+    color: #FFF; /* White text */
+    padding: 10px 0;
+    border-bottom: 3px solid #FFD400; /* Yellow divider */
+    z-index: 1000;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    display: flex; 
+    align-items: center;
+    justify-content: space-between; 
+    flex-wrap: nowrap;
+}
+
+header a, header a:hover, header a:focus {
+    color: #FFF; /* White text for links */
+}
+
+header .logo img {
+    max-height: 50px;
+}
+
+header .nav-icons {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+header .list-inline-item {
+    margin-right: 15px;
+}
+
+header .list-inline-item:last-child {
+    margin-right: 0;
+}
+
+header .fas {
+    font-size: 1.5rem;
+    transition: font-size 0.3s ease;
+}
+
+/* Push content below fixed header */
+body::before {
+    content: '';
+    display: block;
+    height: 80px;
+}
+
+/* Hero Section */
+.hero-section {
+    margin-top: 20px; 
+    background: url('/media/homepage_bg.jpg') no-repeat center center;
+    background-size: cover;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0;
+}
+
+/* Hero Image as Button */
+.hero-section img {
+    width: auto;
+    height: 100%; /* Fit the hero section */
+    max-width: 100%; /* Ensure it doesn't overflow */
+    cursor: pointer;
 }
 
 /* Logo Font */
@@ -41,6 +108,16 @@ html, body {
     color: white;
 }
 
+.btn-black {
+    background-color: #000; /* Black */
+    color: #FFF; /* White */
+}
+
+.btn-black:hover {
+    background-color: #222; /* Darker black */
+    color: #FFF; /* White */
+}
+
 /* Icons */
 .icon {
     display: inline-flex;
@@ -49,7 +126,7 @@ html, body {
     width: 1.5rem;
     height: 1.5rem;
     font-size: 1.5rem;
-    color: #101010;
+    color: #FFF; /* White for header icons */
 }
 
 /* Text and Highlights */
@@ -81,4 +158,93 @@ html, body {
 .image-button:hover {
     transform: scale(1.05);
     border-color: #00A3EB; /* Change border to Blue on hover */
+}
+
+/* Media Queries */
+
+/* Slightly larger container on xl screens */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 80%;
+  }
+}
+
+/* Adjust hero height for tablets */
+@media (max-width: 992px) {
+    .hero-section {
+        background-size: contain; 
+        margin-top: -27px;
+    }
+}
+
+
+/* Adjust hero height for smaller screens */
+@media (max-width: 768px) {
+    header {
+        flex-wrap: wrap; /* Allow items to wrap */
+    }
+
+    header .logo img {
+        max-height: 40px; /* Reduce logo size */
+    }
+
+    .search-bar {
+        order: 2; /* Place search bar in the middle */
+        width: 100%;
+        margin: 10px 0; /* Add spacing */
+    }
+
+    header .nav-icons {
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        width: 100%; 
+        flex-wrap: nowrap;
+    }
+    
+    .hero-section {
+        background-size: contain;
+        margin-top: -75px;
+    }
+}
+
+/* Adjust hero for small screens */
+@media (max-width: 591px) {
+    header .fas {
+        font-size: 1.2rem; /* Reduce icon size */
+    }
+
+    .hero-section {
+        background-size: contain;
+        margin-top: -115px;
+    }
+}
+
+/* Adjustments for very small screens */
+
+@media (max-width: 455px) {
+    header {
+        padding: 5px 0; /* Reduce header padding */
+    }
+
+    header .logo img {
+        max-height: 40px; /* Slightly reduce logo size */
+    }
+
+    header .list-inline-item {
+        margin-right: 5px; /* Reduce spacing */
+    }
+
+    header .nav-icons {
+        gap: 5px; /* Reduce space between icons */
+    }
+
+    header .fas {
+        font-size: 1.2rem; /* Smaller icon size */
+    }
+
+    .hero-section {
+        height: 50vh; /* Smaller height for small screens */
+        background-size: contain;
+    }
 }
