@@ -8,6 +8,14 @@ html, body {
     color: #fff; 
 }
 
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Luckiest Guy', cursive; /* Use Luckiest Guy for headings */
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
 /* Header */
 header {
     background-color: #000; /* Black background */
@@ -68,7 +76,6 @@ body::before {
     text-align: center;
     position: relative;
     z-index: 1;
-    padding: 0;
 }
 
 /* Hero Image as Button */
@@ -79,12 +86,20 @@ body::before {
     cursor: pointer;
 }
 
-/* Logo Font */
-.logo-font {
-    font-family: 'Luckiest Guy', cursive;
-    color: #FE0000; /* Red for hero elements */
-    text-transform: uppercase;
-    font-weight: bold;
+.hero-content {
+    max-width: 80%;
+}
+
+.hero-heading {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    color: #000;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.hero-subheading {
+    font-size: 1.2rem;
+    margin-top: 10px;
 }
 
 /* Buttons */
@@ -98,6 +113,7 @@ body::before {
     text-transform: uppercase;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    font-family: 'Luckiest Guy', cursive; /* Bold heading-style button font */
 }
 
 .shop-now-button:hover {
@@ -141,6 +157,7 @@ body::before {
     color: #FFD400; /* Yellow text */
     padding: 1rem;
     text-align: center;
+    font-family: 'Shantell Sans', Arial, sans-serif;
 }
 
 /* Buttons for Images */
