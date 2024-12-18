@@ -60,8 +60,7 @@ body::before {
 
 /* Hero Section */
 .hero-section {
-    margin-top: 20px; 
-    background: url('media/homepage-bg.webp') no-repeat center center;
+    margin-top: 20px;
     background-size: cover;
     height: 80vh;
     display: flex;

@@ -114,11 +114,13 @@
             {% endfor %}
         {% endif %}
     </div>
+    
 
     <!-- Main Content -->
-
-    {% block content %}
-    {% endblock %}
+    <div class="hero-section">
+        <img src="{% static 'media/homepage-bg.webp' %}" alt="Hero Background">
+    </div>
+    
 
     {% block postloadjs %}
     {% endblock %}
