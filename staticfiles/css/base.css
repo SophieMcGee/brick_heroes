@@ -61,7 +61,7 @@ body::before {
 /* Hero Section */
 .hero-section {
     margin-top: 20px; 
-    background: url('/media/homepage_bg.jpg') no-repeat center center;
+    background: url('media/homepage-bg.webp') no-repeat center center;
     background-size: cover;
     height: 80vh;
     display: flex;
@@ -244,7 +244,7 @@ body::before {
     }
 
     .hero-section {
-        height: 50vh; /* Smaller height for small screens */
+        margin-top: -90px;
         background-size: contain;
     }
 }
