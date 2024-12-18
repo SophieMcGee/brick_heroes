@@ -13,7 +13,6 @@ header {
     background-color: #000; /* Black background */
     color: #FFF; /* White text */
     padding: 10px 0;
-    border-bottom: 3px solid #FFD400; /* Yellow divider */
     z-index: 1000;
     position: fixed;
     width: 100%;
@@ -36,6 +35,7 @@ header .nav-icons {
     display: flex;
     flex-wrap: nowrap;
     gap: 10px;
+    justify-content: flex-end;
 }
 
 header .list-inline-item {
@@ -60,16 +60,14 @@ body::before {
 
 /* Hero Section */
 .hero-section {
-    margin-top: 20px;
     background-size: cover;
-    height: 80vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     position: relative;
     z-index: 1;
-    width: 100%;
     padding: 0;
 }
 
@@ -171,8 +169,7 @@ body::before {
 /* Adjust hero height for tablets */
 @media (max-width: 992px) {
     .hero-section {
-        background-size: contain; 
-        margin-top: -27px;
+        background-size: cover;
     }
 }
 
@@ -189,7 +186,7 @@ body::before {
 
     .search-bar {
         order: 2; /* Place search bar in the middle */
-        width: 100%;
+        width: 80%;
         margin: 10px 0; /* Add spacing */
     }
 
@@ -202,8 +199,7 @@ body::before {
     }
     
     .hero-section {
-        background-size: contain;
-        margin-top: -75px;
+        height: 80vh;
     }
 }
 
@@ -211,11 +207,6 @@ body::before {
 @media (max-width: 591px) {
     header .fas {
         font-size: 1.2rem; /* Reduce icon size */
-    }
-
-    .hero-section {
-        background-size: contain;
-        margin-top: -115px;
     }
 }
 
@@ -243,7 +234,6 @@ body::before {
     }
 
     .hero-section {
-        margin-top: -90px;
-        background-size: contain;
+        height: 70vh;
     }
 }

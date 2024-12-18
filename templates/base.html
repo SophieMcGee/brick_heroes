@@ -117,9 +117,8 @@
     
 
     <!-- Main Content -->
-    <div class="hero-section">
-        <img src="{% static 'media/homepage-bg.webp' %}" alt="Hero Background">
-    </div>
+    {% block content %}
+    {% endblock %}
     
 
     {% block postloadjs %}
