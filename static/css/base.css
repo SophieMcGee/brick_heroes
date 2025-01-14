@@ -11,15 +11,15 @@ html, body {
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Luckiest Guy', cursive; /* Use Luckiest Guy for headings */
+    font-family: 'Luckiest Guy', cursive; 
     color: #fff;
     margin-bottom: 1rem;
 }
 
 /* Header */
 header {
-    background-color: #000; /* Black background */
-    color: #FFF; /* White text */
+    background-color: #000;
+    color: #FFF; 
     padding: 10px 0;
     z-index: 1000;
     position: fixed;
@@ -32,7 +32,7 @@ header {
 }
 
 header a, header a:hover, header a:focus {
-    color: #FFF; /* White text for links */
+    color: #FFF;
 }
 
 header .logo img {
@@ -68,44 +68,52 @@ body::before {
 
 /* Hero Section */
 .hero-section {
-    background-size: cover;
+    position: relative; 
+    height: 80vh;
     width: 100%;
     display: flex;
+    justify-content: center; 
     align-items: center;
-    justify-content: center;
     text-align: center;
+    overflow: hidden;
+}
+
+/* Hero Background Image */
+.hero-section .hero-bg {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    z-index: -1; 
+}
+
+/* Hero Content */
+.hero-content {
     position: relative;
     z-index: 1;
-}
-
-/* Hero Image as Button */
-.hero-section img {
-    width: auto;
-    height: 100%; /* Fit the hero section */
-    max-width: 100%; /* Ensure it doesn't overflow */
-    cursor: pointer;
-}
-
-.hero-content {
-    max-width: 80%;
-}
-
-.hero-heading {
-    font-size: 2.5rem;
-    line-height: 1.2;
     color: #000;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
 
-.hero-subheading {
-    font-size: 1.2rem;
-    margin-top: 10px;
+.hero-heading {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #000;
 }
+
+.hero-subheading {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #000;
+}
+
 
 /* Buttons */
 .shop-now-button {
     background-color: #FE0000; /* Red */
-    color: white;
+    color: #000;
     border: none;
     padding: 0.75rem 1.5rem;
     font-size: 1rem;

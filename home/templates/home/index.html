@@ -3,10 +3,11 @@
 
 {% block content %}
     <!-- Hero Section -->
-    <div class="hero-section text-center">
-        <div class="hero-section">
-            <img src="{% static 'media/homepage-bg.webp' %}" alt="Hero Background" style="width: 100%; height: auto;">
-        </div>
+    <div class="hero-section">
+        <!-- Background Image -->
+        <img src="{% static 'media/homepage-bg.webp' %}" alt="Hero Background" class="hero-bg" style="z-index:0;">
+        
+        <!-- Hero Text Content -->
         <div class="hero-content">
             <h1 class="hero-heading logo-font">
                 Build Your World with Brick Heroes
