@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Admin Tools</h1>
+    <p>Welcome to the Admin Tools section. From here, you can manage various aspects of the site.</p>
+    <ul>
+        <li><a href="{% url 'manage_legosets' %}">Manage Lego Sets</a></li>
+        <li><a href="/admin/">Go to Django Admin</a></li>
+    </ul>
+</div>
+{% endblock %}

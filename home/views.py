@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Borrowing, Review, Notification, LegoSet
 from .forms import LegoSetForm
 
@@ -59,3 +60,8 @@ def delete_legoset(request, legoset_id):
     legoset = get_object_or_404(LegoSet, id=legoset_id)
     legoset.delete()
     return redirect('manage_legosets')
+
+@staff_member_required
+def admin_tools(request):
+    """ A view for superusers to access admin tools """
+    return render(request, 'home/admin_tools.html')
