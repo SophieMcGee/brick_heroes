@@ -1,0 +1,16 @@
+<div class="collapse navbar-collapse" id="main-nav">
+    <ul class="navbar-nav mx-auto">
+        <!-- All Products -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="all-products" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                All Lego Sets
+            </a>
+            <div class="dropdown-menu" aria-labelledby="all-products">
+                <a class="dropdown-item" href="{% url 'all_products' %}">View All</a>
+                <a class="dropdown-item" href="{% url 'filter_by_price' %}">By Price</a>
+                <a class="dropdown-item" href="{% url 'filter_by_rating' %}">By Rating</a>
+                <a class="dropdown-item" href="{% url 'filter_by_theme' %}">By Theme</a>
+            </div>
+        </li>
+    </ul>
+</div>
