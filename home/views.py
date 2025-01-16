@@ -75,3 +75,19 @@ def borrow_cart(request):
         'borrowings': borrowings,
         'total_borrowed': total_borrowed,
     })
+
+def all_products(request):
+    """A view to display all Lego sets."""
+    return render(request, 'home/all_products.html')
+
+def filter_by_price(request):
+    """A view to display Lego sets filtered by price."""
+    return render(request, 'home/filter_by_price.html')
+
+def filter_by_rating(request):
+    """A view to display Lego sets filtered by rating."""
+    return render(request, 'home/filter_by_rating.html')
+
+def filter_by_theme(request):
+    """A view to display Lego sets filtered by theme."""
+    return render(request, 'home/filter_by_theme.html')

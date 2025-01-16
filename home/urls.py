@@ -13,4 +13,8 @@ urlpatterns = [
     path('delete-legoset/<int:legoset_id>/', views.delete_legoset, name='delete_legoset'),
     path('admin-tools/', views.admin_tools, name='admin_tools'),
     path('borrow-cart/', views.borrow_cart, name='borrow_cart'),
+    path('all-products/', views.all_products, name='all_products'),
+    path('filter-by-price/', views.filter_by_price, name='filter_by_price'),
+    path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
+    path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
 ]
