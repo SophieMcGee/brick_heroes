@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Borrowing, Review
+from .models import Borrowing, Review, Notification
 
 def index(request):
     """ A view to return the index page """
@@ -24,3 +24,9 @@ def my_reviews(request):
     """ A view to show the user's reviews """
     reviews = Review.objects.filter(user=request.user)
     return render(request, 'home/my_reviews.html', {'reviews': reviews})
+
+@login_required
+def my_notifications(request):
+    """ A view to show the user's notifications """
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    return render(request, 'home/my_notifications.html', {'notifications': notifications})
