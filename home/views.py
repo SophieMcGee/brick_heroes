@@ -65,3 +65,13 @@ def delete_legoset(request, legoset_id):
 def admin_tools(request):
     """ A view for superusers to access admin tools """
     return render(request, 'home/admin_tools.html')
+
+@login_required
+def borrow_cart(request):
+    """ A view to display items in the borrowing cart """
+    borrowings = Borrowing.objects.filter(user=request.user, is_returned=False)
+    total_borrowed = borrowings.count()
+    return render(request, 'home/borrow_cart.html', {
+        'borrowings': borrowings,
+        'total_borrowed': total_borrowed,
+    })

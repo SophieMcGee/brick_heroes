@@ -22,7 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),  # Home app URLs
     path('accounts/', include('allauth.urls')),  # Allauth URLs
-    path('bag/', include('bag.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

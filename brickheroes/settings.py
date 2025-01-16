@@ -51,8 +51,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'bag',
-
 ]
 
 MIDDLEWARE = [
@@ -79,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request', #requires by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'home.context_processors.total_borrowed',
             ],
         },
     },

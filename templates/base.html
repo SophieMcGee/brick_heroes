@@ -92,14 +92,14 @@
                 </li>
                 <!-- Shopping Bag -->
                 <li class="list-inline-item">
-                    <a class="nav-link text-white" href="{% url 'bag' %}">
+                    <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
                         <div class="text-center">
                             <div><i class="fas fa-shopping-bag fa-lg"></i></div>
                             <p class="my-0">
-                                {% if grand_total %}
-                                    €{{ grand_total|floatformat:2 }}
+                                {% if total_borrowed %}
+                                    {{ total_borrowed }} Items
                                 {% else %}
-                                    €0.00
+                                    0 Items
                                 {% endif %}
                             </p>
                         </div>

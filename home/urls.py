@@ -12,4 +12,5 @@ urlpatterns = [
     path('edit-legoset/<int:legoset_id>/', views.edit_legoset, name='edit_legoset'),
     path('delete-legoset/<int:legoset_id>/', views.delete_legoset, name='delete_legoset'),
     path('admin-tools/', views.admin_tools, name='admin_tools'),
+    path('borrow-cart/', views.borrow_cart, name='borrow_cart'),
 ]
