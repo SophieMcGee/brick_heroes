@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import Borrowing, Review, Notification, LegoSet
+from .models import Review, Notification, LegoSet
 from .forms import LegoSetForm
+from subscriptions.models import Borrowing
 
 def index(request):
     """ A view to return the index page """
