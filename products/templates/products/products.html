@@ -1,18 +1,66 @@
 {% extends "base.html" %}
-
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container-fluid overlay">
     <div class="row">
         <div class="col">
-            <h1>All Products</h1>
-            <ul>
-                {% for product in products %}
-                    <li>{{ product.name }} - ${{ product.price }}</li>
-                {% endfor %}
-            </ul>
+            <h1 class="logo-font text-center">Explore Our Brick Collection</h1>
+            <hr class="mx-auto" style="width: 50%;">
+
+            <!-- Filtering Status -->
+            <div class="filter-status text-center mt-3">
+                {% if current_difficulty %}
+                    <p>Filtering by Difficulty: <strong>{{ current_difficulty }}</strong></p>
+                {% endif %}
+
+                {% if current_theme %}
+                    <p>Filtering by Theme: <strong>{{ current_theme }}</strong></p>
+                {% endif %}
+            </div>
         </div>
     </div>
+
+    <!-- Search and Filters -->
+    <div class="row">
+        <div class="col text-center">
+            <form method="get" action="{% url 'all_products' %}">
+                <button type="submit" name="difficulty" value="Beginner" class="btn btn-primary">Filter by Beginner</button>
+                <button type="submit" name="difficulty" value="Intermediate" class="btn btn-primary">Filter by Intermediate</button>
+                <button type="submit" name="difficulty" value="Expert" class="btn btn-primary">Filter by Expert</button>
+            </form>
+
+            <form method="get" action="{% url 'all_products' %}" class="mt-3">
+                <button type="submit" name="theme" value="Star Wars" class="btn btn-secondary">Filter by Star Wars</button>
+                <button type="submit" name="theme" value="Technic" class="btn btn-secondary">Filter by Technic</button>
+            </form>
+
+            <form method="get" action="{% url 'all_products' %}" class="mt-2">
+                <button type="submit" class="btn btn-warning">Clear Filters</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Products Section -->
+    {% if products %}
+        <div class="row mt-5">
+            {% for product in products %}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">${{ product.price }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Rating: {{ product.rating }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center mt-5">No products found matching your filters. Try adjusting the filters or clearing them.</p>
+    {% endif %}
 </div>
 {% endblock %}

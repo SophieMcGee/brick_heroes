@@ -159,6 +159,52 @@ body::before {
     border: 2px solid #101010 !important; /* Black borders */
 }
 
+/* Search Section*/
+
+.header-section {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 20px;
+}
+
+.search-section {
+    background-color: #FFD400;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.search-section .btn {
+    background-color: #000000;
+    color: #FFFFFF;
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Product Grid */
+.product-grid {
+    background-color: #00A3EB;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.product-card {
+    text-align: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+}
+
 /* Footer */
 .footer {
     background-color: #101010; /* Black */
