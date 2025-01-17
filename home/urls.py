@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -17,4 +17,6 @@ urlpatterns = [
     path('filter-by-price/', views.filter_by_price, name='filter_by_price'),
     path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
     path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
+    path('admin/', admin.site.urls),
+    path('products/', include('products.urls')),
 ]
