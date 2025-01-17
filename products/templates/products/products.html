@@ -41,6 +41,24 @@
         </div>
     </div>
 
+    <div class="filter-status text-center mt-3">
+        {% if current_difficulty %}
+            <p>Filtering by Difficulty: <strong>{{ current_difficulty }}</strong></p>
+        {% endif %}
+        
+        {% if current_theme %}
+            <p>Filtering by Theme: <strong>{{ current_theme }}</strong></p>
+        {% endif %}
+    
+        {% if current_categories %}
+            <p>Filtering by Category:
+                {% for category in current_categories %}
+                    <strong>{{ category.friendly_name }}</strong>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
     <!-- Products Section -->
     <div class="row mt-5">
         {% if products %}

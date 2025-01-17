@@ -11,6 +11,7 @@ def all_products(request):
     # Get filters from the query parameters
     difficulty = request.GET.get('difficulty')
     theme = request.GET.get('theme')
+    category = request.GET.get('category')
 
     # Define valid filters (optional)
     valid_difficulties = ['Beginner', 'Intermediate', 'Expert']
@@ -24,12 +25,20 @@ def all_products(request):
     if theme in valid_themes:
         products = products.filter(category__friendly_name__iexact=theme)
 
+    # Filter by category if provided
+    if category:
+        products = products.filter(category__name=category)
+
+    # Convert category names to category objects for template use
+    current_categories = Category.objects.filter(name__in=category.split(',')) if category else None
+
     # Add filters to the context
     context = {
         'products': products,
         'current_difficulty': difficulty if difficulty in valid_difficulties else None,
         'current_theme': theme if theme in valid_themes else None,
         'product_count': products.count(),
+        'current_categories': current_categories,
     }
 
     return render(request, 'products/products.html', context)
