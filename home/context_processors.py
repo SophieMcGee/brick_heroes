@@ -1,4 +1,4 @@
-from .models import Borrowing
+from subscriptions.models import Borrowing
 
 def total_borrowed(request):
     if request.user.is_authenticated:
