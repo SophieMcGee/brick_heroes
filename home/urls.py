@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name='home'),
     path('profile/', views.profile, name='user_profile'),
-    path('all-products/', views.all_products, name='all_products'),
     path('my-borrowings/', views.my_borrowings, name='my_borrowings'),
     path('my-reviews/', views.my_reviews, name='my_reviews'),
     path('my-notifications/', views.my_notifications, name='my_notifications'),
@@ -14,7 +13,6 @@ urlpatterns = [
     path('delete-legoset/<int:legoset_id>/', views.delete_legoset, name='delete_legoset'),
     path('admin-tools/', views.admin_tools, name='admin_tools'),
     path('borrow-cart/', views.borrow_cart, name='borrow_cart'),
-    path('all-products/', views.all_products, name='all_products'),
     path('filter-by-price/', views.filter_by_price, name='filter_by_price'),
     path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
     path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),

@@ -79,7 +79,7 @@ def borrow_cart(request):
 
 def all_products(request):
     """A view to display all Lego sets."""
-    return render(request, 'home/all_products.html')
+    return render(request, 'home/all-products.html')
 
 def filter_by_price(request):
     """A view to display Lego sets filtered by price."""
