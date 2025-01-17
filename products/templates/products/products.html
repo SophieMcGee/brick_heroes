@@ -42,12 +42,15 @@
     </div>
 
     <!-- Products Section -->
-    {% if products %}
-        <div class="row mt-5">
+    <div class="row mt-5">
+        {% if products %}
             {% for product in products %}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4">
                     <div class="card h-100">
-                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                        <!-- Wrap the image in a link to the product detail page -->
+                        <a href="{% url 'product_detail' product.id %}">
+                            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                        </a>
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
                             <p class="card-text">${{ product.price }}</p>
@@ -58,9 +61,8 @@
                     </div>
                 </div>
             {% endfor %}
-        </div>
-    {% else %}
-        <p class="text-center mt-5">No products found matching your filters. Try adjusting the filters or clearing them.</p>
-    {% endif %}
-</div>
+        {% else %}
+            <p class="text-center mt-5">No products found matching your filters. Try adjusting the filters or clearing them.</p>
+        {% endif %}
+    </div>
 {% endblock %}

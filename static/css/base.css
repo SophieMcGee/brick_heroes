@@ -205,6 +205,20 @@ body::before {
     height: auto;
 }
 
+/* Product Detail Page Styling */
+.product-detail-container {
+    background-color: #000;
+    color: #fff;
+}
+.btn-primary {
+    background-color: #ffcc00;
+    border: none;
+    color: #000;
+}
+.btn-primary:hover {
+    background-color: #ff9900;
+}
+
 /* Footer */
 .footer {
     background-color: #101010; /* Black */
