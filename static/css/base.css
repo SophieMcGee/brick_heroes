@@ -199,6 +199,16 @@ p.lead {
     cursor: pointer;
 }
 
+.alert {
+    margin-bottom: 0 !important; /* Remove the default margin and ensure it overrides Bootstrap */
+    margin-top: 1rem;
+    z-index: 1050;
+}
+
+.hg-danger {
+    margin-bottom: 0 !important; /* Ensure no space below the red banner */
+}
+
 /* Product Grid */
 .product-grid {
     background-color: #00A3EB;
@@ -271,6 +281,10 @@ p.lead {
     .hero-section {
         background-size: cover;
     }
+
+    .alert-success {
+        margin-top: 100px !important;
+    }
 }
 
 
@@ -278,6 +292,7 @@ p.lead {
 @media (max-width: 768px) {
     header {
         flex-wrap: wrap; /* Allow items to wrap */
+        z-index: 1040;
     }
 
     header .logo img {
@@ -300,6 +315,11 @@ p.lead {
     
     .hero-section {
         height: 80vh;
+    }
+
+    .hg-danger {
+        margin-top: 100px;
+        margin-bottom: 0 !important;
     }
 }
 
