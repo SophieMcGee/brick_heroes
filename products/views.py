@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
-from .models import Product
+from .models import Product, Category
 
 def all_products(request):
     """ A view to show all products, with optional filters """
@@ -9,6 +9,7 @@ def all_products(request):
     products = Product.objects.all()
 
     # Get filters from the query parameters
+    query = request.GET.get('q')
     difficulty = request.GET.get('difficulty')
     theme = request.GET.get('theme')
     category = request.GET.get('category')
@@ -16,6 +17,13 @@ def all_products(request):
     # Define valid filters (optional)
     valid_difficulties = ['Beginner', 'Intermediate', 'Expert']
     valid_themes = Product.objects.values_list('category__friendly_name', flat=True).distinct()
+
+    # Apply search filtering
+    if query:
+        # Filter products by name or description containing the query
+        products = products.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        )
 
     # Filter by difficulty if provided and valid
     if difficulty in valid_difficulties:
@@ -39,6 +47,7 @@ def all_products(request):
         'current_theme': theme if theme in valid_themes else None,
         'product_count': products.count(),
         'current_categories': current_categories,
+        'search_term': query,
     }
 
     return render(request, 'products/products.html', context)

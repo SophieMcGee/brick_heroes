@@ -17,10 +17,14 @@
                 {% if current_theme %}
                     <p>Filtering by Theme: <strong>{{ current_theme }}</strong></p>
                 {% endif %}
+
+                {% if search_term %}
+                    <p>Search results for: <strong>{{ search_term }}</strong></p>
+                {% endif %}
             </div>
         </div>
     </div>
-
+    
     <!-- Search and Filters -->
     <div class="row">
         <div class="col text-center">
