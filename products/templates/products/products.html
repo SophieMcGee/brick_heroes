@@ -3,64 +3,61 @@
 
 {% block content %}
 <div class="container-fluid overlay">
-    <div class="row">
+    <!-- Red Banner -->
+    <div class="row text-center py-5 bg-danger text-white">
         <div class="col">
-            <h1 class="logo-font text-center">Explore Our Brick Collection</h1>
-            <hr class="mx-auto" style="width: 50%;">
-
-            <!-- Filtering Status -->
-            <div class="filter-status text-center mt-3">
-                {% if current_difficulty %}
-                    <p>Filtering by Difficulty: <strong>{{ current_difficulty }}</strong></p>
-                {% endif %}
-
-                {% if current_theme %}
-                    <p>Filtering by Theme: <strong>{{ current_theme }}</strong></p>
-                {% endif %}
-
-                {% if search_term %}
-                    <p>Search results for: <strong>{{ search_term }}</strong></p>
-                {% endif %}
-            </div>
+            <h1 class="logo-font display-4 font-weight-bold">Explore Our Brick Collection</h1>
+            <p class="lead">Discover sets from your favourite themes, ready to build.</p>
         </div>
     </div>
-    
-    <!-- Search and Filters -->
+
+    <!-- Yellow Hero Section -->
     <div class="row">
         <div class="col text-center">
-            <form method="get" action="{% url 'all_products' %}">
-                <button type="submit" name="difficulty" value="Beginner" class="btn btn-primary">Filter by Beginner</button>
-                <button type="submit" name="difficulty" value="Intermediate" class="btn btn-primary">Filter by Intermediate</button>
-                <button type="submit" name="difficulty" value="Expert" class="btn btn-primary">Filter by Expert</button>
-            </form>
-
-            <form method="get" action="{% url 'all_products' %}" class="mt-3">
-                <button type="submit" name="theme" value="Star Wars" class="btn btn-secondary">Filter by Star Wars</button>
-                <button type="submit" name="theme" value="Technic" class="btn btn-secondary">Filter by Technic</button>
-            </form>
-
-            <form method="get" action="{% url 'all_products' %}" class="mt-2">
-                <button type="submit" class="btn btn-warning">Clear Filters</button>
-            </form>
+            <img src="{% static 'static/media/homepage-bg.webp' %}" alt="yellow background" class="img-fluid">
         </div>
     </div>
 
-    <div class="filter-status text-center mt-3">
-        {% if current_difficulty %}
-            <p>Filtering by Difficulty: <strong>{{ current_difficulty }}</strong></p>
-        {% endif %}
-        
-        {% if current_theme %}
-            <p>Filtering by Theme: <strong>{{ current_theme }}</strong></p>
-        {% endif %}
-    
-        {% if current_categories %}
-            <p>Filtering by Category:
-                {% for category in current_categories %}
-                    <strong>{{ category.friendly_name }}</strong>{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </p>
-        {% endif %}
+   <!-- Filters and Sorting -->
+   <div class="row mt-4">
+        <div class="col text-center">
+            <form method="get" action="{% url 'all_products' %}" class="form-inline justify-content-center">
+                <!-- Filter by Difficulty -->
+                <div class="form-group mx-2">
+                    <select name="difficulty" class="form-control bg-dark text-white">
+                        <option value="">Filter by Difficulty</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Theme -->
+                <div class="form-group mx-2">
+                    <select name="theme" class="form-control bg-dark text-white">
+                        <option value="">Filter by Theme</option>
+                        {% for theme in valid_themes %}
+                        <option value="{{ theme }}">{{ theme }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Sort By -->
+                <div class="form-group mx-2">
+                    <select name="sort_by" class="form-control bg-dark text-white">
+                        <option value="">Sort By</option>
+                        <option value="price">Price</option>
+                        <option value="alphabetical">Alphabetically</option>
+                        <option value="difficulty">Difficulty</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                </div>
+
+                <!-- Apply and Clear Filters -->
+                <button type="submit" class="btn btn-warning mx-2">Apply</button>
+                <a href="{% url 'all_products' %}" class="btn btn-warning mx-2">Clear Filters</a>
+            </form>
+        </div>
     </div>
 
     <!-- Products Section -->
@@ -75,7 +72,7 @@
                         </a>
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
-                            <p class="card-text">${{ product.price }}</p>
+                            <p class="card-text">€{{ product.price }}</p>
                         </div>
                         <div class="card-footer">
                             <small class="text-muted">Rating: {{ product.rating }}</small>

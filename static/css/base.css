@@ -159,6 +159,21 @@ body::before {
     border: 2px solid #101010 !important; /* Black borders */
 }
 
+.bg-danger {
+    background-color: #FF0000 !important;
+}
+
+h1.logo-font {
+    font-family: 'Luckiest Guy', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1.2;
+}
+
+p.lead {
+    font-size: 1.25rem;
+}
+
 /* Search Section*/
 
 .header-section {
