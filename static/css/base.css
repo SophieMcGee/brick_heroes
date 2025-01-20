@@ -59,6 +59,95 @@ header .fas {
     transition: font-size 0.3s ease;
 }
 
+
+/* Core Navbar Styles */
+.navbar {
+    background-color: #000; /* Consistent black navbar */
+    color: #FFF;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.navbar a {
+    color: #FFF;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.navbar a:hover {
+    color: #FFD700; /* Gold hover color */
+}
+
+.nav-icons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-item {
+    display: none; /* Hidden by default (desktop only) */
+}
+
+/* All Products Icon */
+.nav-icons .all-products-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #FFF;
+    cursor: pointer;
+}
+
+.nav-icons .all-products-icon:hover {
+    color: #FFD700; /* Gold hover */
+}
+
+/* Navbar Toggler */
+.navbar-toggler {
+    display: none; /* Hidden by default (desktop only) */
+}
+
+
+/* Navbar Collapse */
+.navbar-collapse {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #000;
+    padding: 1rem;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    display: none; /* Initially hidden */
+    z-index: 1050;
+}
+
+.collapse.show {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.navbar-collapse .nav-item {
+    display: block; /* Show in the collapsed menu */
+    margin: 0.5rem 0;
+}
+
+.navbar-collapse a {
+    font-size: 1rem;
+    color: #FFF;
+    text-decoration: none;
+    padding: 0.5rem;
+}
+
+.navbar-collapse a:hover {
+    color: #FFD700;
+}
+
+
 /* Push content below fixed header */
 body::before {
     content: '';
@@ -276,14 +365,73 @@ p.lead {
   }
 }
 
+/* Fix for black box appearing on larger screens */
+@media (min-width: 992px) {
+    .navbar-collapse {
+        display: none !important; /* Ensure the collapse menu stays hidden */
+        background: none; /* Remove the black background */
+    }
+}
+
 /* Adjust hero height for tablets */
-@media (max-width: 992px) {
+@media (max-width: 991px) {
     .hero-section {
         background-size: cover;
     }
 
     .alert-success {
         margin-top: 100px !important;
+    }
+
+    
+    /* Show Navbar Toggler */
+    .navbar-toggler {
+        display: block;
+        border: none;
+        padding: 0.5rem;
+        background-color: transparent;
+        position: absolute;
+        right: 10px;
+        top: -15px;
+    }
+
+    .navbar-toggler .fa-bars {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    /* Hide Icons and Search Bar */
+    header .nav-icons {
+        display: none !important; /* Hide icons on smaller screens */
+    }
+
+    /* Show Navbar Collapse */
+    .navbar-collapse {
+        display: none;
+    }
+
+    .collapse.navbar-collapse {
+        display: flex;
+        flex-direction: column;
+        background-color: #000;
+        padding: 1rem;
+        overflow: hidden;
+        overflow: hidden;
+        z-index: 1050;
+    }
+
+    .collapse.navbar-collapse .nav-link {
+        color: white;
+        text-align: left;
+        margin: 0.5rem 0;
+    }
+
+    /* Fix positioning of dropdowns */
+    .dropdown-menu {
+        background-color: #000;
+        color: #fff;
+        border: none;
+        box-shadow: none;
     }
 }
 
@@ -305,14 +453,6 @@ p.lead {
         margin: 10px 0; /* Add spacing */
     }
 
-    header .nav-icons {
-        display: flex;
-        justify-content: space-between;
-        gap: 5px;
-        width: 100%; 
-        flex-wrap: nowrap;
-    }
-    
     .hero-section {
         height: 80vh;
     }
@@ -345,6 +485,15 @@ p.lead {
         margin-right: 5px; /* Reduce spacing */
     }
 
+    navbar-collapse {
+        width: 100%; /* Full width for smaller devices */
+        padding: 1rem;
+    }
+
+    .navbar-toggler .fa-bars {
+        font-size: 1.3rem;
+    }
+    
     header .nav-icons {
         gap: 5px; /* Reduce space between icons */
     }
