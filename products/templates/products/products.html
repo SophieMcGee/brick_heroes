@@ -4,62 +4,51 @@
 {% block content %}
 <div class="container-fluid overlay">
     <!-- Red Banner -->
-    <div class="row text-center py-5 bg-danger text-white">
-        <div class="col">
-            <h1 class="logo-font display-4 font-weight-bold">Explore Our Brick Collection</h1>
-            <p class="lead">Discover sets from your favourite themes, ready to build.</p>
-        </div>
+<div class="row text-center py-5 bg-danger text-white">
+    <div class="col">
+        <h1 class="logo-font display-4 font-weight-bold">Explore Our Brick Collection</h1>
+        <p class="lead">Discover sets from your favourite themes, ready to build.</p>
+
+        <!-- Filters and Sorting -->
+        <form method="get" action="{% url 'all_products' %}" class="form-inline justify-content-center mt-4">
+            <!-- Filter by Difficulty -->
+            <div class="form-group mx-2">
+                <select name="difficulty" class="form-control bg-dark text-white">
+                    <option value="">Filter by Difficulty</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Expert">Expert</option>
+                </select>
+            </div>
+
+            <!-- Filter by Theme -->
+            <div class="form-group mx-2">
+                <select name="theme" class="form-control bg-dark text-white">
+                    <option value="">Filter by Theme</option>
+                    {% for theme in valid_themes %}
+                    <option value="{{ theme }}">{{ theme }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Sort By -->
+            <div class="form-group mx-2">
+                <select name="sort_by" class="form-control bg-dark text-white">
+                    <option value="">Sort By</option>
+                    <option value="price">Price</option>
+                    <option value="alphabetical">Alphabetically</option>
+                    <option value="difficulty">Difficulty</option>
+                    <option value="rating">Rating</option>
+                </select>
+            </div>
+
+            <!-- Apply and Clear Filters -->
+            <button type="submit" class="btn btn-warning mx-2">Apply</button>
+            <a href="{% url 'all_products' %}" class="btn btn-warning mx-2">Clear Filters</a>
+        </form>
     </div>
+</div>
 
-    
-   <!-- Filters and Sorting -->
-   <div class="row mt-4">
-        <div class="col text-center">
-            <form method="get" action="{% url 'all_products' %}" class="form-inline justify-content-center">
-                <!-- Filter by Difficulty -->
-                <div class="form-group mx-2">
-                    <select name="difficulty" class="form-control bg-dark text-white">
-                        <option value="">Filter by Difficulty</option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Expert">Expert</option>
-                    </select>
-                </div>
-
-                <!-- Filter by Theme -->
-                <div class="form-group mx-2">
-                    <select name="theme" class="form-control bg-dark text-white">
-                        <option value="">Filter by Theme</option>
-                        {% for theme in valid_themes %}
-                        <option value="{{ theme }}">{{ theme }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Sort By -->
-                <div class="form-group mx-2">
-                    <select name="sort_by" class="form-control bg-dark text-white">
-                        <option value="">Sort By</option>
-                        <option value="price">Price</option>
-                        <option value="alphabetical">Alphabetically</option>
-                        <option value="difficulty">Difficulty</option>
-                        <option value="rating">Rating</option>
-                    </select>
-                </div>
-
-                <!-- Apply and Clear Filters -->
-                <button type="submit" class="btn btn-warning mx-2">Apply</button>
-                <a href="{% url 'all_products' %}" class="btn btn-warning mx-2">Clear Filters</a>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Yellow Hero Section -->
-    <div class="row">
-        <div class="col text-center">
-            <img src="{% static 'media/yellow-background.jpg' %}" alt="yellow background" class="img-fluid">
-        </div>
-    </div>
 
     <!-- Products Section -->
     <div class="row mt-5">
