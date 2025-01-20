@@ -13,22 +13,21 @@
     {% endblock %}
 
     <!-- Core CSS -->
+
     {% block corecss %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Luckiest+Guy&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&family=Tenor+Sans&display=swap" rel="stylesheet">
 
-
     {% endblock %}
     {% block extracss %}
     {% endblock %}
 
-   <!-- Core JS -->
+    <!-- Core JS -->
     {% block corejs %}
     <script src="https://kit.fontawesome.com/c39eddf05d.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
     {% endblock %}
     {% block extrajs %}
     {% endblock %}
@@ -47,12 +46,11 @@
             </div>
     
             <!-- Burger Menu Button (visible only on smaller screens) -->
-            <div class="col-6 text-right d-lg-none">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-    
+            <input type="checkbox" id="burger-menu" class="sr-only">
+            <label class="burger-menu-label d-lg-none" for="burger-menu">
+                <i class="fas fa-bars"></i>
+            </label>
+
             <!-- Search Bar -->
             <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
                 <form method="GET" action="{% url 'all_products' %}">
@@ -73,9 +71,10 @@
                     </div>
                 </form>
             </div>
+
     
-            <!-- Account and Cart Icons -->
-            <div class="col-6 col-lg-4 my-auto py-1 py-lg-0 text-right nav-icons">
+            <!-- Icons for Larger Screens -->
+            <div class="col-6 col-lg-4 my-auto py-1 py-lg-0 text-right nav-icons d-none d-lg-flex">
                 <ul class="list-inline list-unstyled my-0">
                     <li class="list-inline-item">
                         <a class="nav-link text-white" href="{% url 'all_products' %}">
@@ -111,33 +110,19 @@
             </div>
         </div>
     
-        <!-- Collapsible Menu for Burger -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-black">
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'all_products' %}">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_profile' %}">Account</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'borrow_cart' %}">Cart</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'my_borrowings' %}">My Borrowings</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+        <!-- Collapsible Menu for Smaller Screens -->
+        <nav class="navbar-collapse d-lg-none">
+            <ul id="menu">
+                <li><a href="{% url 'all_products' %}">Products</a></li>
+                <li><a href="{% url 'user_profile' %}">Account</a></li>
+                <li><a href="{% url 'borrow_cart' %}">Cart</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'my_borrowings' %}">My Borrowings</a></li>
+                    <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'account_login' %}">Login</a></li>
+                {% endif %}
+            </ul>
         </nav>
     </header>
 
