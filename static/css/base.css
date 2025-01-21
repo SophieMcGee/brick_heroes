@@ -36,37 +36,29 @@ header a, header a:hover, header a:focus {
 }
 
 header .logo img {
-    max-height: 50px;
+    max-height: 70px;
 }
 
-header .nav-icons {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 15px;
-    justify-content: flex-end;
-}
-
-header .nav-icons .fas {
-    font-size: 1.5rem;
-}
 
 header .list-inline-item {
     margin-right: 15px;
 }
 
-header .list-inline-item:last-child {
-    margin-right: 0;
-}
 
 header .fas {
     font-size: 1.5rem;
     transition: font-size 0.3s ease;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    height: 1.5rem;
+    width: 1.5rem;
 }
 
 
 /* Core Navbar Styles */
 .navbar {
-    background-color: #000; /* Consistent black navbar */
+    background-color: #000;
     color: #FFF;
     z-index: 1050;
     display: flex;
@@ -80,36 +72,7 @@ header .fas {
     text-decoration: none;
     font-size: 0.9rem;
 }
-
-.navbar a:hover {
-    color: #FFD700; /* Gold hover color */
-}
-
-.nav-icons {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.nav-item {
-    display: none; /* Hidden by default (desktop only) */
-}
-
-/* All Products Icon */
-.nav-icons .all-products-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: #FFF;
-    cursor: pointer;
-}
-
-.nav-icons .all-products-icon:hover {
-    color: #FFD700; /* Gold hover */
-}
-
-/* Burger Menu Label */
+/* Burger Menu Label 
 .burger-menu-label {
     display: none;
     cursor: pointer;
@@ -121,13 +84,13 @@ header .fas {
     text-align: center;
 }
 
-/* Navbar Toggler */
+/* Navbar Toggler 
 .navbar-toggler {
     display: none; /* Hidden by default (desktop only) */
-}
 
 
-/* Navbar Collapse */
+
+/* Navbar Collapse 
 .navbar-collapse {
     display: flex;
     flex-direction: column;
@@ -138,7 +101,7 @@ header .fas {
     top: 100%;
     right: 0;
     width: 200px;
-    display: none; /* Initially hidden */
+    display: none; /* Initially hidden 
     z-index: 1050;
 }
 
@@ -148,7 +111,7 @@ header .fas {
 }
 
 .navbar-collapse .nav-item {
-    display: block; /* Show in the collapsed menu */
+    display: block; /* Show in the collapsed menu 
     margin: 0.5rem 0;
 }
 
@@ -162,7 +125,7 @@ header .fas {
 .navbar-collapse a:hover {
     color: #FFD700;
 }
-
+*/
 
 /* Push content below fixed header */
 body::before {
@@ -221,7 +184,7 @@ body::before {
     color: #000;
     border: none;
     padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+    font-size: 3rem;
     font-weight: bold;
     text-transform: uppercase;
     border-radius: 5px;
@@ -244,17 +207,6 @@ body::before {
     color: #FFF; /* White */
 }
 
-/* Icons */
-.icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 1.5rem;
-    color: #FFF; /* White for header icons */
-}
-
 /* Text and Highlights */
 .text-black {
     color: #101010 !important; /* Black text */
@@ -268,12 +220,6 @@ body::before {
     background-color: #FF0000 !important;
 }
 
-h1.logo-font {
-    font-family: 'Luckiest Guy', sans-serif;
-    font-weight: 700;
-    font-size: 3rem;
-    line-height: 1.2;
-}
 
 p.lead {
     font-size: 1.25rem;
@@ -306,13 +252,13 @@ header .btn:hover {
 }
 
 .alert {
-    margin-bottom: 0 !important; /* Remove the default margin and ensure it overrides Bootstrap */
+    margin-bottom: 0 !important;
     margin-top: 1rem;
     z-index: 1050;
 }
 
 .hg-danger {
-    margin-bottom: 0 !important; /* Ensure no space below the red banner */
+    margin-bottom: 0 !important;
 }
 
 /* Product Grid */
@@ -382,45 +328,46 @@ header .btn:hover {
   }
 }
 
-/* Fix for black box appearing on larger screens */
+/* Screens larger than tablet size*/
 @media (min-width: 992px) {
-    .navbar-collapse {
-        display: none !important; /* Ensure the collapse menu stays hidden */
-        background: none; /* Remove the black background */
-        flex-direction: row; /* Restore horizontal layout */
+    .fixed-top-desktop-only {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .header-container {
+        padding-top: 164px;
     }
 }
 
-/* Adjust hero height for tablets */
+/* Fix for black box appearing on larger screens
+@media (min-width: 992px) {
+    .navbar-collapse {
+        display: none !important; /* Ensure the collapse menu stays hidden
+        background: none; /* Remove the black background
+        flex-direction: row; /* Restore horizontal layout
+    }
+}
+
+/* Adjust hero height for tablets
 @media (max-width: 991px) {
     .hero-section {
         background-size: cover;
     }
 
     .alert-success {
-        margin-top: 50px !important;
+        margin-top: 150px !important;
     }
-
-    .burger-menu-label {
-        display: block;
-    }
-
+}
+    /* Hide icons on smaller screens 
     .nav-icons {
-        display: none; /* Hide icons on smaller screens */
+        display: none; /* Hide icons on smaller screens 
     }
 
     
-    /* Show Navbar Toggler */
-    .navbar-toggler {
-        display: block;
-        border: none;
-        z-index: 1050;
-        padding: 0.5rem;
-        background-color: transparent;
-        position: absolute;
-        right: 10px;
-        top: -15px;
-    }
 
     .navbar {
         display:none !important;
@@ -431,12 +378,12 @@ header .btn:hover {
         color: white;
     }
 
-    /* Hide Icons and Search Bar */
+    /* Hide Icons and Search Bar 
     header .nav-icons {
-        display: none !important; /* Hide icons on smaller screens */
+        display: none !important; /* Hide icons on smaller screens
     }
 
-    /* Show Navbar Collapse */
+    /* Show Navbar Collapse
     .navbar-collapse {
         display: none;
         position: absolute;
@@ -465,13 +412,13 @@ header .btn:hover {
         font-size: 1.2rem;
     }
 
-    /* Show the menu when the checkbox is checked */
+    /* Show the menu when the checkbox is checked 
     #burger-menu:checked + .burger-menu-label + .navbar-collapse {
         display: flex;
     }
 
     .collapse.navbar-collapse {
-        display: flex !important; /* Ensure visibility when toggled */
+        display: flex !important; /* Ensure visibility when toggled 
     }
 
     .collapse.navbar-collapse .nav-item {
@@ -486,7 +433,7 @@ header .btn:hover {
         margin: 0.5rem 0;
     }
 
-    /* Fix positioning of dropdowns */
+    /* Fix positioning of dropdowns 
     .dropdown-menu {
         background-color: #000;
         color: #fff;
@@ -510,24 +457,24 @@ header .btn:hover {
     header .form-control {
         width: 100%;
     }
-}
+
 
 
 /* Adjust hero height for smaller screens */
 @media (max-width: 768px) {
     header {
-        flex-wrap: wrap; /* Allow items to wrap */
+        flex-wrap: wrap;
         z-index: 1040;
     }
 
     header .logo img {
-        max-height: 40px; /* Reduce logo size */
+        max-height: 40px;
     }
 
     .search-bar {
-        order: 2; /* Place search bar in the middle */
+        order: 2; 
         width: 80%;
-        margin: 10px 0; /* Add spacing */
+        margin: 10px 0; 
     }
 
     .hero-section {

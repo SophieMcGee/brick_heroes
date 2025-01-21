@@ -37,107 +37,108 @@
   <body>
     <!-- Main Header -->
     <header class="container-fluid fixed-top">
-        <div class="row"></div>
-            <div class="row align-items-center py-2">
-                <!-- Logo -->
-                <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 text-center text-lg-left">
-                    <a href="{% url 'home' %}" class="logo">
-                        <img src="{% static 'media/brick-heroes-logo.jpg' %}" alt="Brick Heroes Logo">
-                    </a>
-                </div>
-        
-                <!-- Burger Menu Button (visible only on smaller screens) 
-                <input type="checkbox" id="burger-menu" class="sr-only">
-                <label class="burger-menu-label d-lg-none" for="burger-menu">
-                    <i class="fas fa-bars"></i>
-                </label> -->
+        <div id="mainnav" class="r-12pt-lg-2 d-none d-lg-flex"></div>
+            <div class="row"></div>
+                <div class="row align-items-center py-2">
+                    <!-- Logo -->
+                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 text-center text-lg-left">
+                        <a href="{% url 'home' %}" class="logo">
+                            <img src="{% static 'media/brick-heroes-logo.jpg' %}" alt="Brick Heroes Logo">
+                        </a>
+                    </div>
+            
+                    <!-- Burger Menu Button (visible only on smaller screens) 
+                    <input type="checkbox" id="burger-menu" class="sr-only">
+                    <label class="burger-menu-label d-lg-none" for="burger-menu">
+                        <i class="fas fa-bars"></i>
+                    </label> -->
 
-                <!-- Search Bar -->
-                <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
-                    <form method="GET" action="{% url 'all_products' %}">
-                        <div class="input-group w-100">
-                            <input
-                                class="form-control border border-black rounded-0"
-                                type="text"
-                                name="q"
-                                placeholder="Search Lego sets"
-                            >
-                            <div class="input-group-append">
-                                <button class="form-control btn btn-black border border-black rounded-0" type="submit">
-                                    <span class="icon">
-                                        <i class="fas fa-search"></i>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-        
-                <!-- Icons for Larger Screens -->
-                <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
-                    <ul class="list-inline list-unstyled text-center text-lg-right my-0">
-                        <li class="list-inline-item">
-                            <a class="text-white nav-link" href="{% url 'all_products' %}">
-                                <div class="text-center">
-                                    <div><i class="fas fa-th-large fa-lg"></i></div>
-                                    <p class="my-0">Products</p>
+                    <!-- Search Bar -->
+                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
+                        <form method="GET" action="{% url 'all_products' %}">
+                            <div class="input-group w-100">
+                                <input
+                                    class="form-control border border-black rounded-0"
+                                    type="text"
+                                    name="q"
+                                    placeholder="Search Lego sets"
+                                >
+                                <div class="input-group-append">
+                                    <button class="form-control btn btn-black border border-black rounded-0" type="submit">
+                                        <span class="icon">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                    </button>
                                 </div>
-                            </a>
-                        </li>
-                        <li class="list-inline-item dropdown">
-                            <a class="text-black nav-link" href="#" id="user-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <div class="text-center">
-                                    <div><i class="fas fa-user fa-lg"></i></div>
-                                    <p class="my-0">My Account</p>
-                                </div>
-                            </a>
-                            <div class="dropdown-menu border-0" aria-labelledby="user-options">
-                                {% if request.user.is_authenticated %}
-                                    {% if request.user.is_superuser %}
-                                        <a href="{% url 'admin:index' %}" class="dropdown-item">Manage Store</a>
-                                    {% endif %}
-                                    <a href="#" class="dropdown-item">My Profile</a>
-                                    <a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a>
-                                {% else %}
-                                    <a href="{% url 'account_signup' %}" class="dropdown-item">Register</a>
-                                    <a href="{% url 'account_login' %}" class="dropdown-item">Login</a>
-                                {% endif %}
                             </div>
-                        </li>
+                        </form>
+                    </div>
 
-                        <li class="list-inline-item">
-                            <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
-                                <div class="text-center">
-                                    <div><i class="fas fa-shopping-bag fa-lg"></i></div>
-                                    <p class="my-0">
-                                        {% if total_borrowed %}
-                                            {{ total_borrowed }} Items
-                                        {% else %}
-                                            0 Items
+            
+                    <!-- Icons for Larger Screens -->
+                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
+                        <ul class="list-inline list-unstyled text-center text-lg-right my-0">
+                            <li class="list-inline-item">
+                                <a class="text-white nav-link" href="{% url 'all_products' %}">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-th-large fa-lg"></i></div>
+                                        <p class="my-0">Products</p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="list-inline-item dropdown">
+                                <a class="text-white nav-link" href="#" id="user-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-user fa-lg"></i></div>
+                                        <p class="my-0">My Account</p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu border-0" aria-labelledby="user-options">
+                                    {% if request.user.is_authenticated %}
+                                        {% if request.user.is_superuser %}
+                                            <a href="{% url 'admin:index' %}" class="dropdown-item">Manage Store</a>
                                         {% endif %}
-                                    </p>
+                                        <a href="#" class="dropdown-item">My Profile</a>
+                                        <a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a>
+                                    {% else %}
+                                        <a href="{% url 'account_signup' %}" class="dropdown-item">Register</a>
+                                        <a href="{% url 'account_login' %}" class="dropdown-item">Login</a>
+                                    {% endif %}
                                 </div>
-                            </a>
-                        </li>
-                    </ul>
+                            </li>
+
+                            <li class="list-inline-item">
+                                <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-shopping-bag fa-lg"></i></div>
+                                        <p class="my-0">
+                                            {% if total_borrowed %}
+                                                {{ total_borrowed }} Items
+                                            {% else %}
+                                                0 Items
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-    
-        <!-- Collapsible Menu for Smaller Screens 
-        <nav class="navbar-collapse d-lg-none">
-            <ul id="menu">
-                <li><a href="{% url 'all_products' %}">Products</a></li>
-                <li><a href="{% url 'user_profile' %}">Account</a></li>
-                <li><a href="{% url 'borrow_cart' %}">Cart</a></li>
-                {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'my_borrowings' %}">My Borrowings</a></li>
-                    <li><a href="{% url 'account_logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'account_login' %}">Login</a></li>
-                {% endif %}
-            </ul>
-        </nav>-->
+        
+            <!-- Collapsible Menu for Smaller Screens 
+            <nav class="navbar-collapse d-lg-none">
+                <ul id="menu">
+                    <li><a href="{% url 'all_products' %}">Products</a></li>
+                    <li><a href="{% url 'user_profile' %}">Account</a></li>
+                    <li><a href="{% url 'borrow_cart' %}">Cart</a></li>
+                    {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'my_borrowings' %}">My Borrowings</a></li>
+                        <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'account_login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>-->
     </header>
 
 
