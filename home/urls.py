@@ -17,3 +17,4 @@ urlpatterns = [
     path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
     path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
 ]
+

@@ -319,6 +319,17 @@ header .btn:hover {
     border-color: #00A3EB; /* Change border to Blue on hover */
 }
 
+/* Dropdown Menu*/
+.dropdown-menu {
+    background-color: #000;
+    color: #fff;
+}
+
+.dropdown-item:hover {
+    background-color: #444;
+    color: #ffd700;
+}
+
 /* Media Queries */
 
 /* Slightly larger container on xl screens */
