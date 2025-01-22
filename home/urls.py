@@ -18,5 +18,6 @@ urlpatterns = [
     path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
     path('subscription-plans/', views.subscription_plans, name='subscription_plans'),
     path('gift-cards/', views.gift_cards, name='gift_cards'),
+    path('subscriptions/', include('subscriptions.urls')),
 ]
 

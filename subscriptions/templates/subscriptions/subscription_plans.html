@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container text-center py-5">
+    <!-- Header Section -->
+    <div class="row">
+        <div class="col">
+            <h1 class="logo-font display-4 font-weight-bold text-warning">Choose Your Plan</h1>
+            <p class="lead text-white">Find the subscription that fits your adventure needs!</p>
+        </div>
+    </div>
+
+    <!-- Pricing Tiers -->
+    <div class="row mt-5">
+        <!-- Tier 1 -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h3 class="card-title logo-font">€9.99/Month</h3>
+                    <h5 class="card-subtitle mb-3">Mystery Subscription</h5>
+                    <ul class="list-unstyled">
+                        <li>Borrow one set each month</li>
+                        <li>Our heroes will pick your set</li>
+                        <li>Free returns</li>
+                        <li>Cancel anytime</li>
+                    </ul>
+                    <a href="{% url 'subscribe' 1 %}" class="btn btn-dark btn-block">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h3 class="card-title logo-font">€14.99/Month</h3>
+                    <h5 class="card-subtitle mb-3">Step 2: Build and Enjoy</h5>
+                    <ul class="list-unstyled">
+                        <li>Unlimited sets each month</li>
+                        <li>You pick two sets at a time</li>
+                        <li>Free returns</li>
+                        <li>Cancel anytime</li>
+                    </ul>
+                    <a href="{% url 'subscribe' 2 %}" class="btn btn-dark btn-block">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h3 class="card-title logo-font">€19.99/Month</h3>
+                    <h5 class="card-subtitle mb-3">Step 3: Return & Repeat</h5>
+                    <ul class="list-unstyled">
+                        <li>Unlimited sets each month</li>
+                        <li>Borrow and return as many sets as you like</li>
+                        <li>Free returns</li>
+                        <li>Cancel anytime</li>
+                    </ul>
+                    <a href="{% url 'subscribe' 3 %}" class="btn btn-dark btn-block">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row mt-5">
+        <div class="col">
+            <h2 class="text-warning logo-font">Join the Adventure Today!</h2>
+            <p class="lead text-white">Pick your plan and start building with Brick Heroes.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
