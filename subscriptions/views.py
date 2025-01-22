@@ -30,3 +30,15 @@ def cancel_subscription(request):
 
     messages.success(request, "Your subscription has been cancelled.")
     return redirect('user_profile')
+
+def subscription_checkout(request, subscription_id):
+    """Handle subscription checkout."""
+    subscription = get_object_or_404(SubscriptionPlan, id=subscription_id)
+
+    if request.method == "POST":
+        user_profile = UserProfile.objects.get(user=request.user)
+        user_profile.subscription = subscription
+        user_profile.save()
+        return redirect('user_profile')
+
+    return render(request, 'subscriptions/subscription_checkout.html', {'subscription': subscription})

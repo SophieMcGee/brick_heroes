@@ -19,5 +19,6 @@ urlpatterns = [
     path('subscription-plans/', views.subscription_plans, name='subscription_plans'),
     path('gift-cards/', views.gift_cards, name='gift_cards'),
     path('subscriptions/', include('subscriptions.urls')),
+    path('cart/', include('cart.urls')),
 ]
 

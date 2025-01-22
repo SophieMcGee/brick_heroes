@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Checkout - Subscription</h1>
+    <p><strong>{{ subscription.name }}</strong></p>
+    <p>Price: €{{ subscription.price }}</p>
+    <p>Max Borrow Per Month: {{ subscription.max_borrow_per_month }}</p>
+    <p>Max Active Borrows: {{ subscription.max_active_borrows }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary mt-3">Subscribe Now</button>
+    </form>
+</div>
+{% endblock %}

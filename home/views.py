@@ -70,8 +70,17 @@ def admin_tools(request):
 @login_required
 def borrow_cart(request):
     """ A view to display items in the borrowing cart """
+
+    # Check if user has a valid subscription
+    user_profile = UserProfile.objects.get(user=request.user)
+    if not user_profile.subscription:
+        messages.error(request, "You need an active subscription to borrow sets.")
+        return redirect('subscription_plans')
+
+    # Retrieve borrowings
     borrowings = Borrowing.objects.filter(user=request.user, is_returned=False)
     total_borrowed = borrowings.count()
+
     return render(request, 'home/borrow_cart.html', {
         'borrowings': borrowings,
         'total_borrowed': total_borrowed,
