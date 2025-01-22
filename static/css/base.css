@@ -78,8 +78,6 @@ header .fas {
     font-size: 0.9rem;
 }
 
-
-/* Mini-Nav */
 .bg-black {
     background-color: #000;
 }
@@ -125,9 +123,9 @@ header .fas {
     color: #000;
 }
 
-/* Mini Navigation Styling */
+/* Mini Navigation Styling 
 #mini-nav {
-    background-color: #000; /* Black background */
+    background-color: #000; /* Black background 
     padding: 0.5rem 0;
 }
 
@@ -139,7 +137,7 @@ header .fas {
     border: 2px solid #000 !important; 
     border-radius: 5px !important;
     color: #000 !important;
-}
+} */
 
 /* Push content below fixed header */
 body::before {

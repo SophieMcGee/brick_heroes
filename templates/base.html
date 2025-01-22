@@ -70,83 +70,19 @@
                     </div>
 
             
-                    <!-- Icons -->
-                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
+                    <!-- Main Navigation for Large Screens - Icons -->
+                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 d-none d-lg-flex">
                         <ul class="list-inline list-unstyled d-flex justify-content-lg-end text-center my-0">
-                            <li class="list-inline-item">
-                                <a class="text-white nav-link" href="{% url 'all_products' %}">
+                            <!-- Browse Lego Sets -->
+                            <li class="list-inline-item dropdown">
+                                <a class="nav-link text-white dropdown-toggle" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <div class="text-center">
                                         <div><i class="fas fa-th-large fa-lg"></i></div>
-                                        <p class="my-0"> All Lego Sets</p>
+                                        <p class="my-0">Browse</p>
                                     </div>
-                                </a>
-                            </li>
-                            <li class="list-inline-item dropdown">
-                                <a class="text-white nav-link dropdown-toggle" href="#" id="user-options" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <div class="text-center">
-                                        <div><i class="fas fa-user fa-lg"></i></div>
-                                        <p class="my-0">My Account</p>
-                                    </div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right border-0 bg-dark text-white" aria-labelledby="user-options">
-                                    {% if request.user.is_authenticated %}
-                                        {% if request.user.is_superuser %}
-                                            <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
-                                        {% endif %}
-                                        <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
-                                        <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
-                                    {% else %}
-                                        <a href="{% url 'account_signup' %}" class="dropdown-item text-white">Register</a>
-                                        <a href="{% url 'account_login' %}" class="dropdown-item text-white">Login</a>
-                                    {% endif %}
-                                </div>
-                            </li>
-
-                            <li class="list-inline-item">
-                                <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
-                                    <div class="text-center">
-                                        <div><i class="fas fa-shopping-bag fa-lg"></i></div>
-                                        <p class="my-0">
-                                            {% if total_borrowed %}
-                                                {{ total_borrowed }} Items
-                                            {% else %}
-                                                0 Items
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                </a>
-                            </li>
-
-                            <!-- Subscription Plans Icon -->
-                            <li class="list-inline-item">
-                                <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
-                                    <div class="text-center">
-                                        <div><i class="fas fa-crown fa-lg"></i></div>
-                                        <p class="my-0">Subscriptions</p>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-        
-            <!-- Mini Navigation Menu -->
-            <div class="row bg-black text-white">
-                <nav class="navbar navbar-expand-lg w-100">
-                    <!-- Toggle Button for Small Screens -->
-                    <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#mini-nav" aria-controls="mini-nav" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    
-                    <!-- Mini-Nav Content -->
-                    <div class="collapse navbar-collapse" id="mini-nav">
-                        <ul class="navbar-nav mx-auto">
-                            <!-- Browse Categories -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-white" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Browse Categories
                                 </a>
                                 <div class="dropdown-menu bg-dark border-0" aria-labelledby="categoriesDropdown">
+                                    <a class="dropdown-item text-white" href="{% url 'all_products' %}">All Products</a>
                                     <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}">Disney</a>
                                     <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
                                     <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
@@ -160,27 +96,144 @@
                             </li>
 
                             <!-- Subscription Plans -->
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
+                            <li class="list-inline-item">
+                                <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-crown fa-lg"></i></div>
+                                        <p class="my-0">Subscriptions</p>
+                                    </div>
+                                </a>
                             </li>
 
-                            <!-- My Borrowings -->
-                            <li class="nav-item">
-                                {% if request.user.is_authenticated and request.user.has_subscription %}
-                                    <a class="nav-link text-white" href="{% url 'my_borrowings' %}">My Borrowings</a>
+                            <!-- Borrow Cart -->
+                            <li class="list-inline-item">
+                                <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-shopping-bag fa-lg"></i></div>
+                                        <p class="my-0">
+                                            {% if total_borrowed %}
+                                                {{ total_borrowed }} Borrowed
+                                            {% else %}
+                                                0 Borrowed
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                    
+                            <!-- Purchase Cart -->
+                            <li class="list-inline-item">
+                                <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-shopping-cart fa-lg"></i></div>
+                                        <p class="my-0">
+                                            {% if total_purchased %}
+                                                {{ total_purchased }} Items
+                                            {% else %}
+                                                0 Items
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                    
+                            <!-- My Account -->
+                            <li class="list-inline-item dropdown">
+                                <a class="text-white nav-link dropdown-toggle" href="#" id="user-options" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="text-center">
+                                        <div><i class="fas fa-user fa-lg"></i></div>
+                                        <p class="my-0">My Account</p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right border-0 bg-dark text-white" aria-labelledby="user-options">
+                                {% if request.user.is_authenticated %}
+                                    {% if request.user.is_superuser %}
+                                        <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                    {% endif %}
+                                    <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
+                                    <a href="{% url 'my_borrowings' %}" class="dropdown-item text-white">My Borrowings</a>
+                                    <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
                                 {% else %}
-                                    <a class="nav-link text-white" href="{% url 'subscription_plans' %}">My Borrowings (Subscribers Only)</a>
+                                    <a href="{% url 'account_signup' %}" class="dropdown-item text-white">Register</a>
+                                    <a href="{% url 'account_login' %}" class="dropdown-item text-white">Login</a>
                                 {% endif %}
-                            </li>
-
-                            <!-- Gift Cards -->
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{% url 'gift_cards' %}">Gift Cards</a>
+                            </div>
                             </li>
                         </ul>
                     </div>
-                </nav>
+        
+                <!-- Mini Navigation Menu -->
+                <div class="row bg-black text-white">
+                    <nav class="navbar navbar-expand-lg w-100">
+                    <!-- Toggle Button for Small Screens -->
+                    <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#mini-nav" aria-controls="mini-nav" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>  
+                </div>
+                 <!-- Collapsible Menu Content -->
+                <div class="collapse navbar-collapse bg-black text-white" id="mini-nav">
+                    <ul class="navbar-nav mx-auto">
+                        <!-- Browse Lego Sets -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Browse Lego Sets
+                            </a>
+                            <div class="dropdown-menu bg-dark border-0" aria-labelledby="categoriesDropdown">
+                                <a class="dropdown-item text-white" href="{% url 'all_products' %}">All Products</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}">Disney</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'marvel' %}">Marvel</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'minecraft' %}">Minecraft</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'ninjago' %}">NINJAGO</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'speed_champions' %}">Speed Champions</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'star_wars' %}">Star Wars</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'technic' %}">Technic</a>
+                            </div>
+                        </li>
+
+                        <!-- Subscription Plans -->
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
+                        </li>
+
+                        <!-- Borrow Cart -->
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
+                                Borrow Cart ({{ total_borrowed|default:0 }})
+                            </a>
+                        </li>
+
+                        <!-- Purchase Cart -->
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
+                                Purchase Cart ({{ total_purchased|default:0 }})
+                            </a>
+                        </li>
+
+                        <!-- My Account -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                My Account
+                            </a>
+                            <div class="dropdown-menu bg-dark border-0" aria-labelledby="accountDropdown">
+                                {% if request.user.is_authenticated %}
+                                    {% if request.user.is_superuser %}
+                                        <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                    {% endif %}
+                                    <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
+                                    <a href="{% url 'my_borrowings' %}" class="dropdown-item text-white">My Borrowings</a>
+                                    <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
+                                {% else %}
+                                    <a href="{% url 'account_signup' %}" class="dropdown-item text-white">Register</a>
+                                    <a href="{% url 'account_login' %}" class="dropdown-item text-white">Login</a>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
+        </div>        
     </header>
 
 <!-- Messages -->
