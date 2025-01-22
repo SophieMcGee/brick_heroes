@@ -3,9 +3,9 @@ from django.db.models import Q
 from django.contrib import messages
 from .models import Product, Category
 
-def all_products(request):
+def all_products(request, category_name=None):
     """ A view to show all products, with optional filters """
-
+    
     # Get all products
     products = Product.objects.all()
 
@@ -52,6 +52,7 @@ def all_products(request):
         'current_difficulty': difficulty,
         'current_theme': theme,
         'valid_themes': Product.objects.values_list('category__friendly_name', flat=True).distinct(),
+        'category_name': category_name,
     }
 
     return render(request, 'products/products.html', context)

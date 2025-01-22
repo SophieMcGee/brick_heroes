@@ -55,6 +55,11 @@ header .fas {
     width: 1.5rem;
 }
 
+/* Add spacing below the fixed header */
+.content-wrapper {
+    padding-top: 100px;
+}
+
 
 /* Core Navbar Styles */
 .navbar {

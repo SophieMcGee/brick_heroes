@@ -2,17 +2,17 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid overlay">
+<div class="container-fluid overlay content-wrapper">
 
     <!-- Category Heading -->
     {% if category_name %}
-        <div class="row text-center py-3 bg-warning text-dark">
+        <div class="row text-center bg-warning text-dark">
             <div class="col">
-                <h2 class="display-5 font-weight-bold">Showing Products in Category: {{ category_name|title }}</h2>
+                <h2 class="text-center my-4">Showing Products in Category: {{ category_name|title }}</h2>
             </div>
         </div>
     {% endif %}
-    
+
     <!-- Red Banner -->
     <div class="row text-center py-5 bg-danger text-white">
         <div class="col">

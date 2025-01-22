@@ -197,6 +197,29 @@
         setTimeout(() => {
             $('.alert').alert('close');
         }, 5000);
+
+        // Adjust padding dynamically for messages
+        document.addEventListener('DOMContentLoaded', () => {
+        const adjustPadding = () => {
+            const headerHeight = document.querySelector('header').offsetHeight;
+            const contentWrapper = document.querySelector('.content-wrapper');
+            const screenWidth = window.innerWidth;
+
+            if (screenWidth > 991) {
+                contentWrapper.style.paddingTop = '100px';
+            } else if (screenWidth <= 991 && screenWidth > 768) {
+                contentWrapper.style.paddingTop = '230px';
+            } else if (screenWidth <= 768) {
+                contentWrapper.style.paddingTop = '200px';
+            }
+        };
+
+        // Adjust padding on load
+        adjustPadding();
+
+        // Adjust padding on window resize
+        window.addEventListener('resize', adjustPadding);
+        })
     </script>
 {% endblock %}
 </body>
