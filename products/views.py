@@ -9,6 +9,10 @@ def all_products(request):
     # Get all products
     products = Product.objects.all()
 
+    # Apply category filter if category_name is provided
+    if category_name:
+        products = products.filter(category__name=category_name)
+
     # Get search query
     query = request.GET.get('q')
     if query:
@@ -56,3 +60,8 @@ def product_detail(request, product_id):
     """ A view to show individual product details """
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'products/product_detail.html', {'product': product})
+
+def products_by_category(request, category_name):
+    """Filter products by category."""
+    products = Product.objects.filter(category__name=category_name)
+    return render(request, 'products/category_products.html', {'products': products, 'category_name': category_name})

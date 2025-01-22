@@ -47,12 +47,6 @@
                             <img src="{% static 'media/brick-heroes-logo.jpg' %}" alt="Brick Heroes Logo">
                         </a>
                     </div>
-            
-                    <!-- Burger Menu Button (visible only on smaller screens) 
-                    <input type="checkbox" id="burger-menu" class="sr-only">
-                    <label class="burger-menu-label d-lg-none" for="burger-menu">
-                        <i class="fas fa-bars"></i>
-                    </label> -->
 
                     <!-- Search Bar -->
                     <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
@@ -83,7 +77,7 @@
                                 <a class="text-white nav-link" href="{% url 'all_products' %}">
                                     <div class="text-center">
                                         <div><i class="fas fa-th-large fa-lg"></i></div>
-                                        <p class="my-0">Products</p>
+                                        <p class="my-0"> All Lego Sets</p>
                                     </div>
                                 </a>
                             </li>
@@ -126,20 +120,49 @@
                     </div>
                 </div>
         
-            <!-- Collapsible Menu for Smaller Screens 
-            <nav class="navbar-collapse d-lg-none">
-                <ul id="menu">
-                    <li><a href="{% url 'all_products' %}">Products</a></li>
-                    <li><a href="{% url 'user_profile' %}">Account</a></li>
-                    <li><a href="{% url 'borrow_cart' %}">Cart</a></li>
-                    {% if request.user.is_authenticated %}
-                        <li><a href="{% url 'my_borrowings' %}">My Borrowings</a></li>
-                        <li><a href="{% url 'account_logout' %}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{% url 'account_login' %}">Login</a></li>
-                    {% endif %}
+            <!-- Mini Navigation Menu -->
+            <nav class="mini-nav">
+                <ul class="list-inline text-center">
+                    <!-- Browse Categories -->
+                    <li class="list-inline-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Browse Categories
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'disney' %}">Disney</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'marvel' %}">Marvel</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'minecraft' %}">Minecraft</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'ninjago' %}">NINJAGO</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'speed_champions' %}">Speed Champions</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'star_wars' %}">Star Wars</a>
+                            <a class="dropdown-item" href="{% url 'products_by_category' 'technic' %}">Technic</a>
+                        </div>
+                    </li>
+
+                    <!-- Subscription Plans -->
+                    <li class="list-inline-item">
+                        <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
+                    </li>
+
+                    <!-- My Borrowings -->
+                    <li class="list-inline-item">
+                        {% if request.user.is_authenticated and request.user.has_subscription %}
+                            <a class="nav-link text-white" href="{% url 'my_borrowings' %}">My Borrowings</a>
+                        {% else %}
+                            <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
+                                My Borrowings (Subscribers Only)
+                            </a>
+                        {% endif %}
+                    </li>
+
+                    <!-- Gift Cards -->
+                    <li class="list-inline-item">
+                        <a class="nav-link text-white" href="{% url 'gift_cards' %}">Gift Cards</a>
+                    </li>
                 </ul>
-            </nav>-->
+            </nav>
     </header>
 
 <!-- Messages -->

@@ -16,5 +16,7 @@ urlpatterns = [
     path('filter-by-price/', views.filter_by_price, name='filter_by_price'),
     path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
     path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
+    path('subscription-plans/', views.subscription_plans, name='subscription_plans'),
+    path('gift-cards/', views.gift_cards, name='gift_cards'),
 ]
 

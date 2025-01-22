@@ -92,3 +92,11 @@ def filter_by_rating(request):
 def filter_by_theme(request):
     """A view to display Lego sets filtered by theme."""
     return render(request, 'home/filter_by_theme.html')
+
+def subscription_plans(request):
+    """Display subscription plans."""
+    return render(request, 'products/subscription_plans.html')
+
+def gift_cards(request):
+    """Display gift card options."""
+    return render(request, 'products/gift_cards.html')
