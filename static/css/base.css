@@ -120,6 +120,22 @@ header .fas {
     color: #000;
 }
 
+/* Mini Navigation Styling */
+#mini-nav {
+    background-color: #000; /* Black background */
+    padding: 0.5rem 0;
+}
+
+.navbar .navbar-toggler {
+    padding: 0.5rem 1rem !important; 
+    font-size: 1rem !important; 
+    line-height: 1.5 !important; 
+    background-color: #FFf !important; 
+    border: 2px solid #000 !important; 
+    border-radius: 5px !important;
+    color: #000 !important;
+}
+
 /* Push content below fixed header */
 body::before {
     content: '';
@@ -345,105 +361,6 @@ header .btn:hover {
     .header-container {
         padding-top: 164px;
     }
-}
-
-/* Fix for black box appearing on larger screens
-@media (min-width: 992px) {
-    .navbar-collapse {
-        display: none !important; /* Ensure the collapse menu stays hidden
-        background: none; /* Remove the black background
-        flex-direction: row; /* Restore horizontal layout
-    }
-}
-
-/* Adjust hero height for tablets
-@media (max-width: 991px) {
-    .hero-section {
-        background-size: cover;
-    }
-
-    .alert-success {
-        margin-top: 150px !important;
-    }
-}
-    /* Hide icons on smaller screens 
-    .nav-icons {
-        display: none; /* Hide icons on smaller screens 
-    }
-
-    
-
-    .navbar {
-        display:none !important;
-    }
-
-    .navbar-toggler .fa-bars {
-        font-size: 1.5rem;
-        color: white;
-    }
-
-    /* Hide Icons and Search Bar 
-    header .nav-icons {
-        display: none !important; /* Hide icons on smaller screens
-    }
-
-    /* Show Navbar Collapse
-    .navbar-collapse {
-        display: none;
-        position: absolute;
-        background-color: #000;
-        top: 100%;
-        right: 0;
-        width: 100%;
-        flex-direction: column;
-        z-index: 1050;
-        padding: 1rem;
-    }
-
-    .navbar-collapse ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .navbar-collapse ul li {
-        margin: 0.5rem 0;
-    }
-
-    .navbar-collapse ul li a {
-        color: #FFF;
-        text-decoration: none;
-        font-size: 1.2rem;
-    }
-
-    /* Show the menu when the checkbox is checked 
-    #burger-menu:checked + .burger-menu-label + .navbar-collapse {
-        display: flex;
-    }
-
-    .collapse.navbar-collapse {
-        display: flex !important; /* Ensure visibility when toggled 
-    }
-
-    .collapse.navbar-collapse .nav-item {
-        display: block;
-        margin: 0.5rem 0;
-        text-align: left;
-    }
-
-    .collapse.navbar-collapse .nav-link {
-        color: white;
-        text-align: left;
-        margin: 0.5rem 0;
-    }
-
-    /* Fix positioning of dropdowns 
-    .dropdown-menu {
-        background-color: #000;
-        color: #fff;
-        border: none;
-        box-shadow: none;
-    }
 
     /* Avoid content overlap */
     body::before {
@@ -462,9 +379,18 @@ header .btn:hover {
         width: 100%;
     }
 
+}
+/* Adjust for smaller tablet screens */
 
+@media (max-width: 991px) {
+    ul.list-inline {
+        justify-content: center !important;
+        text-align: center; 
+        margin-top: 1rem;
+    }
+}
 
-/* Adjust hero height for smaller screens */
+/* Adjust for smaller mobile screens */
 @media (max-width: 768px) {
     header {
         flex-wrap: wrap;
@@ -513,14 +439,6 @@ header .btn:hover {
         margin-right: 5px; /* Reduce spacing */
     }
 
-    navbar-collapse {
-        width: 100%; /* Full width for smaller devices */
-        padding: 1rem;
-    }
-
-    .navbar-toggler .fa-bars {
-        font-size: 1.3rem;
-    }
     
     header .nav-icons {
         gap: 5px; /* Reduce space between icons */

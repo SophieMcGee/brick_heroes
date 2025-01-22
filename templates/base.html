@@ -70,7 +70,7 @@
                     </div>
 
             
-                    <!-- Icons for Larger Screens -->
+                    <!-- Icons -->
                     <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
                         <ul class="list-inline list-unstyled d-flex justify-content-lg-end text-center my-0">
                             <li class="list-inline-item">
@@ -159,9 +159,7 @@
                                 {% if request.user.is_authenticated and request.user.has_subscription %}
                                     <a class="nav-link text-white" href="{% url 'my_borrowings' %}">My Borrowings</a>
                                 {% else %}
-                                    <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
-                                        My Borrowings (Subscribers Only)
-                                    </a>
+                                    <a class="nav-link text-white" href="{% url 'subscription_plans' %}">My Borrowings (Subscribers Only)</a>
                                 {% endif %}
                             </li>
 
@@ -172,7 +170,7 @@
                         </ul>
                     </div>
                 </nav>
-            </div>  
+            </div>
     </header>
 
 <!-- Messages -->
