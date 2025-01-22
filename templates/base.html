@@ -121,48 +121,58 @@
                 </div>
         
             <!-- Mini Navigation Menu -->
-            <nav class="mini-nav">
-                <ul class="list-inline text-center">
-                    <!-- Browse Categories -->
-                    <li class="list-inline-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Browse Categories
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'disney' %}">Disney</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'marvel' %}">Marvel</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'minecraft' %}">Minecraft</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'ninjago' %}">NINJAGO</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'speed_champions' %}">Speed Champions</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'star_wars' %}">Star Wars</a>
-                            <a class="dropdown-item" href="{% url 'products_by_category' 'technic' %}">Technic</a>
-                        </div>
-                    </li>
+            <div class="row bg-black text-white">
+                <nav class="navbar navbar-expand-lg w-100">
+                    <!-- Toggle Button for Small Screens -->
+                    <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#mini-nav" aria-controls="mini-nav" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <!-- Mini-Nav Content -->
+                    <div class="collapse navbar-collapse" id="mini-nav">
+                        <ul class="navbar-nav mx-auto">
+                            <!-- Browse Categories -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Browse Categories
+                                </a>
+                                <div class="dropdown-menu bg-dark border-0" aria-labelledby="categoriesDropdown">
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}">Disney</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'marvel' %}">Marvel</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'minecraft' %}">Minecraft</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'ninjago' %}">NINJAGO</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'speed_champions' %}">Speed Champions</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'star_wars' %}">Star Wars</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'technic' %}">Technic</a>
+                                </div>
+                            </li>
 
-                    <!-- Subscription Plans -->
-                    <li class="list-inline-item">
-                        <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
-                    </li>
+                            <!-- Subscription Plans -->
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
+                            </li>
 
-                    <!-- My Borrowings -->
-                    <li class="list-inline-item">
-                        {% if request.user.is_authenticated and request.user.has_subscription %}
-                            <a class="nav-link text-white" href="{% url 'my_borrowings' %}">My Borrowings</a>
-                        {% else %}
-                            <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
-                                My Borrowings (Subscribers Only)
-                            </a>
-                        {% endif %}
-                    </li>
+                            <!-- My Borrowings -->
+                            <li class="nav-item">
+                                {% if request.user.is_authenticated and request.user.has_subscription %}
+                                    <a class="nav-link text-white" href="{% url 'my_borrowings' %}">My Borrowings</a>
+                                {% else %}
+                                    <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
+                                        My Borrowings (Subscribers Only)
+                                    </a>
+                                {% endif %}
+                            </li>
 
-                    <!-- Gift Cards -->
-                    <li class="list-inline-item">
-                        <a class="nav-link text-white" href="{% url 'gift_cards' %}">Gift Cards</a>
-                    </li>
-                </ul>
-            </nav>
+                            <!-- Gift Cards -->
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'gift_cards' %}">Gift Cards</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>  
     </header>
 
 <!-- Messages -->
