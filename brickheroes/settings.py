@@ -27,9 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-x%82+$q$wqex=zkl2=6my7wy6z1npc-pyi$49+#wntc3smg&q1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net']
+ALLOWED_HOSTS = [
+    '8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net'
+    'https://brick-heroes.herokuapp.com/'
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net',
