@@ -309,14 +309,29 @@ header .btn:hover {
 }
 
 /* Footer */
-.footer {
+footer.footer-custom {
     background-color: #101010; /* Black */
-    color: #FFD400; /* Yellow text */
+    color: #FFD400 !important;
     padding: 1rem;
     text-align: center;
     font-family: 'Shantell Sans', Arial, sans-serif;
+    padding: 25px 0;
+    margin-top: auto;
 }
 
+.footer-custom .social-media-icons {
+    margin-top: 15px;
+}
+
+.footer-custom .social-media-icons a {
+    margin: 0 15px;
+    color: #00A3EB;
+    font-size: 1.5rem;
+}
+
+.footer-custom .social-icons a:hover {
+    color: #FE0000
+}
 /* Buttons for Images */
 .image-button {
     display: inline-block;
