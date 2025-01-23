@@ -31,6 +31,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     '8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net'
+    'brick-heroes-52ffabb94b76.herokuapp.com',
     'https://brick-heroes.herokuapp.com/'
 ]
 
