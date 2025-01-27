@@ -37,23 +37,26 @@ def all_products(request, category_name=None):
         products = products.filter(category__friendly_name__iexact=theme)
 
     # Sorting logic
-    if sort_by == "price":
+    if sort_by == "price_asc":
         products = products.order_by('price')
-    elif sort_by == "alphabetical":
+    elif sort_by == "price_desc":
+        products = products.order_by('-price')
+    elif sort_by == "name_asc":
         products = products.order_by('name')
-    elif sort_by == "difficulty":
-        products = products.order_by('difficulty')
+    elif sort_by == "name_desc":
+        products = products.order_by('-name')
     elif sort_by == "rating":
         products = products.order_by('-rating')
 
     # Add filters to the context
     context = {
-        'products': products,
-        'current_difficulty': difficulty,
-        'current_theme': theme,
-        'valid_themes': Product.objects.values_list('category__friendly_name', flat=True).distinct(),
-        'category_name': category_name,
-    }
+    'products': products,
+    'current_difficulty': difficulty,
+    'current_theme': theme,
+    'valid_themes': Product.objects.values_list('category__friendly_name', flat=True).distinct(),
+    'difficulties': Product.objects.values_list('difficulty', flat=True).distinct(),
+    'category_name': category_name,
+}
 
     return render(request, 'products/products.html', context)
 
