@@ -10,13 +10,33 @@
         </div>
 
         <!-- Product Details -->
-        <div class="col-md-4">
-            <h1 class="logo-font">{{ product.name }}</h1>
-            <p class="text-muted">€{{ product.price }}</p>
-            <p>{{ product.description }}</p>
-            <p><strong>Rating:</strong> {{ product.rating }}</p>
+        <div class="col-12 col-md-4">
+            <h1 class="display-4">{{ product.name }}</h1>
+            <p class="h4">€{{ product.price }}</p>
 
-            <button class="btn btn-primary mt-3">Borrow Now</button>
+            <!-- Display rating if available -->
+            {% if product.rating %}
+                <p>Rating: {{ product.rating }} / 5</p>
+            {% endif %}
+
+            <!-- Product description -->
+            <p class="mt-4">{{ product.description }}</p>
+
+            <!-- Stock and Action Buttons -->
+            {% if product.stock > 0 %}
+                <div class="mt-3">
+                    <!-- Borrow button: Display only if the user has a subscription -->
+                    {% if user.is_authenticated and user.profile.has_subscription %}
+                        <button class="btn btn-primary btn-lg mb-2">Borrow</button>
+                        <p class="text-muted">* Requires an active subscription</p>
+                    {% endif %}
+                    
+                    <!-- Purchase button: Always displayed -->
+                    <button class="btn btn-success btn-lg">Add to Bag</button>
+                </div>
+            {% else %}
+                <p class="text-danger mt-3">Out of Stock</p>
+            {% endif %}
         </div>
     </div>
 </div>

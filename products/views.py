@@ -63,7 +63,16 @@ def all_products(request, category_name=None):
 def product_detail(request, product_id):
     """ A view to show individual product details """
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'products/product_detail.html', {'product': product})
+
+    # Include context for borrowing availability
+    user_subscription = None
+    if request.user.is_authenticated:
+        user_subscription = request.user.profile.has_subscription
+
+    return render(request, 'products/product_detail.html', {
+        'product': product,
+        'user_subscription': user_subscription,
+    })
 
 def products_by_category(request, category_name):
     """Filter products by category."""
