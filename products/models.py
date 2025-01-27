@@ -13,6 +13,7 @@ class Product(models.Model):
     difficulty = models.CharField(max_length=50, null=True, blank=True)
     theme = models.CharField(max_length=50, null=True, blank=True)
     is_borrowed = models.BooleanField(default=False)
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
