@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Product, Category
+from subscriptions.models import UserProfile
 
 def all_products(request, category_name=None):
     """ A view to show all products, with optional filters """
@@ -59,10 +61,9 @@ def product_detail(request, product_id):
     """ A view to show individual product details """
     product = get_object_or_404(Product, id=product_id)
 
-    # Include context for borrowing availability
-    user_subscription = None
-    if request.user.is_authenticated:
-        user_subscription = request.user.profile.has_subscription
+    # Ensure the user has a UserProfile
+    user_profile = getattr(request.user, "userprofile", None)
+    user_subscription = user_profile.subscription if user_profile else None
 
     return render(request, 'products/product_detail.html', {
         'product': product,
