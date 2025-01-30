@@ -57,26 +57,19 @@
   <body>
     <!-- Main Header -->
     <header class="container-fluid fixed-top">
-        <div id="mainnav" class="r-12pt-lg-2 d-none d-lg-flex"></div>
-            <div class="row"></div>
-                <div class="row align-items-center py-2">
+        <div id="mainnav" class="row align-items-center py-2 w-100 mx-0">
                     <!-- Logo -->
-                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 text-center text-lg-left">
+                    <div class="col-12 col-lg-2 my-auto py-1 py-lg-0 text-center text-lg-left">
                         <a href="{% url 'home' %}" class="logo">
                             <img src="{% static 'media/brick-heroes-logo.jpg' %}" alt="Brick Heroes Logo">
                         </a>
                     </div>
 
                     <!-- Search Bar -->
-                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0">
+                    <div class="col-12 col-lg-5 my-auto py-1 py-lg-0 d-flex justify-content-start">
                         <form method="GET" action="{% url 'all_products' %}">
                             <div class="input-group w-100">
-                                <input
-                                    class="form-control border border-black rounded-0"
-                                    type="text"
-                                    name="q"
-                                    placeholder="Search Lego sets"
-                                >
+                                <input class="form-control border border-black rounded-0" type="text" name="q" placeholder="Search Lego sets">
                                 <div class="input-group-append">
                                     <button class="form-control btn btn-black border border-black rounded-0" type="submit">
                                         <span class="icon">
@@ -90,8 +83,8 @@
 
             
                     <!-- Main Navigation for Large Screens - Icons -->
-                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 d-none d-lg-flex">
-                        <ul class="list-inline list-unstyled d-flex justify-content-lg-end text-center my-0">
+                    <div class="col-12 col-lg-4 my-auto py-1 py-lg-0 d-none d-lg-flex justify-content-end">
+                        <ul class="list-inline list-unstyled d-flex text-center my-0">
                             <!-- Browse Lego Sets -->
                             <li class="list-inline-item dropdown">
                                 <a class="nav-link text-white dropdown-toggle" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
