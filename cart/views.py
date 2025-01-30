@@ -50,6 +50,14 @@ def add_to_cart(request, item_type, item_id):
     messages.error(request, "Invalid request method.")
     return redirect('shopping_cart')
 
+@login_required
+def view_cart(request):
+    """Display the user's shopping cart."""
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    context = {
+        'cart': cart,
+    }
+    return render(request, 'cart/shopping_cart.html', context)
 
 @login_required
 def remove_from_cart(request, item_id):
