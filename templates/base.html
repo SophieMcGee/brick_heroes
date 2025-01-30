@@ -140,22 +140,6 @@
                                 </a>
                             </li>
                     
-                            <!-- Purchase Cart -->
-                            <li class="list-inline-item">
-                                <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
-                                    <div class="text-center">
-                                        <div><i class="fas fa-shopping-cart fa-lg"></i></div>
-                                        <p class="my-0">
-                                            {% if total_purchased %}
-                                                {{ total_purchased }} Items
-                                            {% else %}
-                                                0 Items
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                </a>
-                            </li>
-                    
                             <!-- My Account -->
                             <li class="list-inline-item dropdown">
                                 <a class="text-white nav-link dropdown-toggle" href="#" id="user-options" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -214,13 +198,6 @@
                         <!-- Subscription Plans -->
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
-                        </li>
-
-                        <!-- Borrow Cart -->
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
-                                Borrow Cart ({{ total_borrowed|default:0 }})
-                            </a>
                         </li>
 
                         <!-- Purchase Cart -->

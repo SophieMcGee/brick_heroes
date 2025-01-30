@@ -5,24 +5,6 @@ from .models import Cart, CartItem
 from products.models import Product
 from subscriptions.models import SubscriptionPlan
 
-@login_required
-def shopping_cart(request):
-    """View the shopping cart contents."""
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    cart_items = cart.items.all()
-
-    # Calculate total
-    cart_total = sum(
-        item.product.price * item.quantity if item.product else item.subscription.price
-        for item in cart_items
-    )
-
-    context = {
-        'cart': cart,
-        'cart_total': cart_total,
-    }
-    return render(request, 'cart/shopping_cart.html', context)
-
 
 @login_required
 def add_to_cart(request, item_type, item_id):

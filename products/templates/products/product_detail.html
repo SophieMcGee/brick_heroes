@@ -12,7 +12,6 @@
         <!-- Product Details -->
         <div class="col-12 col-md-4">
             <h1 class="display-4">{{ product.name }}</h1>
-            <p class="h4">€{{ product.price }}</p>
 
             <!-- Display rating if available -->
             {% if product.rating %}
@@ -22,18 +21,15 @@
             <!-- Product description -->
             <p class="mt-4">{{ product.description }}</p>
 
-            <!-- Stock and Action Buttons -->
+            <!-- Stock and Borrowing Option -->
             {% if product.stock > 0 %}
-                <div class="mt-3">
-                    <!-- Borrow button: Display only if the user has a subscription -->
-                    {% if user.is_authenticated and user.profile.has_subscription %}
-                        <button class="btn btn-primary btn-lg mb-2">Borrow</button>
-                        <p class="text-muted">* Requires an active subscription</p>
-                    {% endif %}
-                    
-                    <!-- Purchase button: Always displayed -->
-                    <button class="btn btn-success btn-lg">Add to Bag</button>
-                </div>
+                {% if user.is_authenticated and user.profile.has_subscription %}
+                    <button class="btn btn-primary btn-lg">Borrow This Set</button>
+                    <p class="text-muted">* This set will be sent to you as part of your subscription</p>
+                {% else %}
+                    <p class="text-warning">You need an active subscription to borrow this set.</p>
+                    <a href="{% url 'subscribe' %}" class="btn btn-warning btn-lg">Subscribe Now</a>
+                {% endif %}
             {% else %}
                 <p class="text-danger mt-3">Out of Stock</p>
             {% endif %}
