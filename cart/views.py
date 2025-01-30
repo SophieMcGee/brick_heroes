@@ -8,25 +8,43 @@ from subscriptions.models import SubscriptionPlan
 
 @login_required
 def add_to_cart(request, item_type, item_id):
-    """Add a product or subscription to the cart."""
-    if request.method == "POST":
-        cart, _ = Cart.objects.get_or_create(user=request.user)
+    """Add a subscription or Lego set to the cart based on the user's plan."""
+    cart, _ = Cart.objects.get_or_create(user=request.user)
 
-        if item_type == "product":
-            product = get_object_or_404(Product, id=item_id)
-            cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-            if not created:
-                cart_item.quantity += 1
-            cart_item.save()
-            messages.success(request, f"{product.name} has been added to your cart!")
+    # Check if user has a subscription
+    user_subscription = CartItem.objects.filter(cart=cart, subscription__isnull=False).first()
 
-        elif item_type == "subscription":
-            subscription = get_object_or_404(SubscriptionPlan, id=item_id)
-            # Remove any other subscription in the cart
-            CartItem.objects.filter(cart=cart, subscription__isnull=False).delete()
-            CartItem.objects.get_or_create(cart=cart, subscription=subscription)
-            messages.success(request, f"Subscription {subscription.name} added to your cart!")
+    if item_type == "subscription":
+        subscription = get_object_or_404(SubscriptionPlan, id=item_id)
+        
+        # Remove any previous subscription in the cart
+        CartItem.objects.filter(cart=cart, subscription__isnull=False).delete()
+        CartItem.objects.get_or_create(cart=cart, subscription=subscription)
+        
+        messages.success(request, f"You have selected the {subscription.name} plan!")
+        return redirect('shopping_cart')
 
+    elif item_type == "product":
+        if not user_subscription:
+            messages.error(request, "You need a subscription to borrow Lego sets.")
+            return redirect('subscriptions')  # Redirect to subscription page
+
+        product = get_object_or_404(Product, id=item_id)
+
+        # Check borrowing limits
+        borrowed_items = CartItem.objects.filter(cart=cart, product__isnull=False).count()
+        max_borrow = user_subscription.subscription.max_active_borrows  # Get limit from subscription
+
+        if borrowed_items >= max_borrow:
+            messages.error(request, f"You've reached your borrowing limit of {max_borrow} sets.")
+            return redirect('shopping_cart')
+
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            cart_item.quantity += 1  # Increment if already in cart
+        cart_item.save()
+
+        messages.success(request, f"{product.name} has been added to your cart!")
         return redirect('shopping_cart')
 
     messages.error(request, "Invalid request method.")
@@ -35,82 +53,75 @@ def add_to_cart(request, item_type, item_id):
 
 @login_required
 def remove_from_cart(request, item_id):
-    """Remove an item from the cart."""
+    """Remove an item from the cart (either subscription or borrowed sets)."""
     cart = get_object_or_404(Cart, user=request.user)
     cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
-    if cart_item.product:
+
+    if cart_item.subscription:
+        # If removing a subscription, also remove all borrowed sets
+        CartItem.objects.filter(cart=cart, product__isnull=False).delete()
+        messages.success(request, f"Subscription {cart_item.subscription.name} and all borrowed sets have been removed.")
+    elif cart_item.product:
         messages.success(request, f"{cart_item.product.name} removed from your cart.")
-    elif cart_item.subscription:
-        messages.success(request, f"Subscription {cart_item.subscription.name} removed from your cart.")
+
     cart_item.delete()
     return redirect('shopping_cart')
 
-
-@login_required
-def update_cart(request, item_id):
-    """Update the quantity of a cart item."""
-    if request.method == "POST":
-        cart = get_object_or_404(Cart, user=request.user)
-        cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
-        quantity = request.POST.get('quantity')
-        if quantity and int(quantity) > 0:
-            cart_item.quantity = int(quantity)
-            cart_item.save()
-            messages.success(request, f"Updated quantity of {cart_item.product.name if cart_item.product else 'Subscription'} to {quantity}.")
-        else:
-            messages.error(request, "Invalid quantity.")
-    return redirect('shopping_cart')
-
-
 @login_required
 def checkout(request):
-    """Handle the checkout process."""
+    """Handle checkout for subscriptions and borrowed Lego sets."""
     cart = get_object_or_404(Cart, user=request.user)
     cart_items = cart.items.all()
 
-    # Separate subscription and product items
+    # Get user's subscription
     subscription_item = cart_items.filter(subscription__isnull=False).first()
-    product_items = cart_items.filter(product__isnull=False)
+    borrowed_items = cart_items.filter(product__isnull=False)
 
-    if subscription_item:
-        return redirect('subscription_checkout', subscription_id=subscription_item.subscription.id)
+    if not subscription_item:
+        messages.error(request, "You must select a subscription before checking out.")
+        return redirect('subscriptions')
 
-    if product_items.exists():
-        return redirect('product_checkout')
-
-    messages.error(request, "Your cart is empty.")
-    return redirect('shopping_cart')
-
-
-@login_required
-def product_checkout(request):
-    """Checkout view for products."""
-    cart = get_object_or_404(Cart, user=request.user)
-    product_items = cart.items.filter(product__isnull=False)
-
-    if request.method == "POST":
-        # Process checkout logic for products
-        product_items.delete()
-        messages.success(request, "Your product purchase was successful!")
+    # Ensure user is within borrowing limits
+    max_borrow = subscription_item.subscription.max_active_borrows
+    if borrowed_items.count() > max_borrow:
+        messages.error(request, f"You're exceeding your limit of {max_borrow} borrowed sets.")
         return redirect('shopping_cart')
 
-    context = {'product_items': product_items}
-    return render(request, 'cart/product_checkout.html', context)
+    if request.method == "POST":
+        # Assign subscription to user profile
+        user_profile = request.user.userprofile
+        user_profile.subscription = subscription_item.subscription
+        user_profile.save()
 
+        # Mark Lego sets as borrowed
+        borrowed_items.delete()  # Clear the cart after checkout
+
+        messages.success(request, "Your subscription is active! Your Lego sets will be delivered soon.")
+        return redirect('dashboard')
+
+    context = {
+        'subscription': subscription_item.subscription,
+        'borrowed_items': borrowed_items
+    }
+    return render(request, 'cart/subscription_checkout.html', context)
 
 @login_required
 def subscription_checkout(request, subscription_id):
-    """Checkout view for a subscription."""
+    """Checkout view for a subscription and confirm borrowed sets."""
     subscription = get_object_or_404(SubscriptionPlan, id=subscription_id)
+    cart = get_object_or_404(Cart, user=request.user)
 
     if request.method == "POST":
         # Assign the subscription to the user
         user_profile = request.user.userprofile
         user_profile.subscription = subscription
         user_profile.save()
-        CartItem.objects.filter(cart__user=request.user, subscription=subscription).delete()
-        messages.success(request, f"You have successfully subscribed to {subscription.name}!")
-        return redirect('shopping_cart')
+
+        # Clear the cart after checkout
+        CartItem.objects.filter(cart=cart).delete()
+        
+        messages.success(request, f"You have successfully subscribed to {subscription.name} and confirmed your borrowed sets!")
+        return redirect('dashboard')
 
     context = {'subscription': subscription}
     return render(request, 'cart/subscription_checkout.html', context)

@@ -2,14 +2,28 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Checkout - Subscription</h1>
-    <p><strong>{{ subscription.name }}</strong></p>
-    <p>Price: €{{ subscription.price }}</p>
-    <p>Max Borrow Per Month: {{ subscription.max_borrow_per_month }}</p>
+    <h1>Confirm Your Subscription</h1>
+
+    <p><strong>Plan: {{ subscription.name }}</strong></p>
+    <p>Max Borrows Per Month: {{ subscription.max_borrow_per_month }}</p>
     <p>Max Active Borrows: {{ subscription.max_active_borrows }}</p>
+
+    <!-- Borrowed Items List -->
+    <h4 class="mt-4">Borrowing This Month:</h4>
+    {% if borrowed_items %}
+        <ul class="list-group">
+            {% for item in borrowed_items %}
+                <li class="list-group-item">{{ item.product.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-danger">You haven't selected any sets to borrow yet.</p>
+    {% endif %}
+
+    <!-- Confirm Checkout Button -->
     <form method="POST">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary mt-3">Subscribe Now</button>
+        <button type="submit" class="btn btn-success mt-3">Confirm Subscription & Borrow</button>
     </form>
 </div>
 {% endblock %}

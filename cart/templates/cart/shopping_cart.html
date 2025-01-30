@@ -3,45 +3,38 @@
 {% block content %}
 <div class="container mt-5">
     <h1>Your Cart</h1>
+
     {% if cart.items.exists %}
         <ul class="list-group">
             {% for item in cart.items.all %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        {% if item.product %}
-                            <strong>{{ item.product.name }}</strong><br>
-                            Price: €{{ item.product.price }}
-                        {% elif item.subscription %}
-                            <strong>Subscription: {{ item.subscription.name }}</strong><br>
-                            Price: €{{ item.subscription.price }}
+                        {% if item.subscription %}
+                            <strong>Subscription: {{ item.subscription.name }}</strong>
+                            <p>Max Borrows Per Month: {{ item.subscription.max_borrow_per_month }}</p>
+                        {% elif item.product %}
+                            <strong>{{ item.product.name }}</strong>
                         {% endif %}
-                        <br>Quantity: {{ item.quantity }}
                     </div>
-                    <form method="post" action="{% url 'update_cart' item.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
-                        <button type="submit" class="btn btn-warning btn-sm">Update</button>
-                    </form>
                     <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
                 </li>
             {% endfor %}
         </ul>
 
-        <!-- Total Summary -->
-        <div class="mt-4 text-right">
-            <h4>Total: €{{ cart_total }}</h4>
-        </div>
+        <!-- Borrowing Limit Notice -->
+        {% if user.userprofile.subscription %}
+            <p class="mt-3">You can borrow up to {{ user.userprofile.subscription.max_active_borrows }} sets at a time.</p>
+        {% else %}
+            <p class="text-danger mt-3">You must subscribe to borrow sets.</p>
+        {% endif %}
 
-        <!-- Checkout Buttons -->
+        <!-- Checkout Button -->
         <div class="mt-4 text-right">
-            <!-- Show Product Checkout Button If Products Exist -->
-            {% if cart.items.filter(product__isnull=False).exists %}
-                <a href="{% url 'product_checkout' %}" class="btn btn-success">Proceed to Product Checkout</a>
-            {% endif %}
-
-            <!-- Show Subscription Checkout Button If Subscriptions Exist -->
             {% if cart.items.filter(subscription__isnull=False).exists %}
-                <a href="{% url 'subscription_checkout' %}" class="btn btn-primary">Proceed to Subscription Checkout</a>
+                <a href="{% url 'subscription_checkout' cart.items.filter(subscription__isnull=False).first.subscription.id %}" 
+                   class="btn btn-primary">
+                   Proceed to Subscription Checkout
+                </a>
             {% endif %}
         </div>
     {% else %}

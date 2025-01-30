@@ -12,12 +12,11 @@ class Cart(models.Model):
         return f"Cart of {self.user.username}"
 
 class CartItem(models.Model):
-    """Model for items in the cart"""
+    """Model for Lego sets added to the cart within subscription limits"""
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
-    subscription = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True)
-    quantity = models.PositiveIntegerField(default=1)
-    added_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)  # Borrowed Lego sets
+    subscription = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, null=True, blank=True)  # User's subscription plan
+    quantity = models.PositiveIntegerField(default=1)  # Number of sets user wants to borrow
 
     def __str__(self):
         if self.product:
