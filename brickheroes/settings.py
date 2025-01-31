@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '8000-sophiemcgee-brickheroes-f3rzxh3hcfu.ws.codeinstitute-ide.net',
+    '127.0.0.1',
     'brick-heroes-52ffabb94b76.herokuapp.com',
     'localhost',
 ]
