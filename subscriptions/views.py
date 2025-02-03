@@ -3,6 +3,7 @@ from django.utils.timezone import now, timedelta
 from .models import SubscriptionPlan, Subscription, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from notifications.models import Notification
 
 def subscription_plans(request):
     """A view to display all subscription plans."""
@@ -38,7 +39,11 @@ def subscribe(request, plan_id):
     user_profile.subscription = new_subscription
     user_profile.save()
 
-    messages.success(request, "Subscription successful!")
+    Notification.objects.create(
+        user=request.user,
+        message=f"You've successfully subscribed to {plan.name}!"
+    )
+
     return redirect('user_profile')
 
 
