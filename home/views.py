@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Review, Notification, LegoSet
 from .forms import LegoSetForm
-from subscriptions.models import Borrowing
+from subscriptions.models import Borrowing, Subscription
+from notifications.models import Notification
 
 def index(request):
     """ A view to return the index page """
@@ -18,9 +19,10 @@ def collections(request):
 
 @login_required
 def my_borrowings(request):
-    """ A view to show the user's borrowed Lego sets """
-    borrowings = Borrowing.objects.filter(user=request.user, is_returned=False)
-    return render(request, 'home/my_borrowings.html', {'borrowings': borrowings})
+    """View for tracking all LEGO sets a user has borrowed."""
+    borrowings = Borrowing.objects.filter(user=request.user).order_by('-borrowed_on')
+
+    return render(request, 'users/my_borrowings.html', {'borrowings': borrowings})
 
 @login_required
 def my_reviews(request):
@@ -66,6 +68,30 @@ def delete_legoset(request, legoset_id):
 def admin_tools(request):
     """ A view for superusers to access admin tools """
     return render(request, 'home/admin_tools.html')
+
+
+@staff_member_required
+def admin_notifications(request):
+    """Admin-only notifications."""
+    admin_notifications = Notification.objects.all().order_by('-created_at')[:10]
+
+    return render(request, 'admin/admin_notifications.html', {
+        'admin_notifications': admin_notifications,
+    })
+
+@login_required
+def user_profile(request):
+    """User profile page displaying user info, notifications, and borrowed sets."""
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]  # Last 5
+    borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
+
+    return render(request, 'users/user_profile.html', {
+        'user_profile': user_profile,
+        'notifications': notifications,
+        'borrowed_sets': borrowed_sets,
+    })
 
 @login_required
 def borrow_cart(request):

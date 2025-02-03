@@ -146,6 +146,7 @@
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
                                         <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                        <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">Admin Notifications</a>
                                     {% endif %}
                                     <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
                                     <a href="{% url 'my_borrowings' %}" class="dropdown-item text-white">My Borrowings</a>
@@ -210,6 +211,7 @@
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
                                         <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                        <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">Admin Notifications</a>
                                     {% endif %}
                                     <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
                                     <a href="{% url 'my_borrowings' %}" class="dropdown-item text-white">My Borrowings</a>

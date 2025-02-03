@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-warning">My Profile</h1>
+    
+    <!-- User Info -->
+    <div class="card bg-dark text-white my-3 p-3">
+        <h3>{{ user.username }}</h3>
+        <p>Email: {{ user.email }}</p>
+    </div>
+
+    <!-- Subscription Details -->
+    {% if subscription %}
+    <div class="card bg-warning text-dark my-3 p-3">
+        <h3>Subscription: {{ subscription.subscription_type }}</h3>
+        <p>Start Date: {{ subscription.start_date }}</p>
+        <p>End Date: {{ subscription.end_date }}</p>
+        <p>Status: {% if subscription.status %}Active{% else %}Expired{% endif %}</p>
+    </div>
+    {% else %}
+    <p class="text-danger">No active subscription. <a href="{% url 'subscription_plans' %}" class="btn btn-warning">Subscribe Now</a></p>
+    {% endif %}
+
+    <!-- Borrowed Sets -->
+    <h3 class="text-warning">Currently Borrowed</h3>
+    {% if borrowings %}
+        <ul class="list-group">
+        {% for borrow in borrowings %}
+            <li class="list-group-item bg-dark text-white">
+                {{ borrow.lego_set.title }} - Due: {{ borrow.due_date }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No borrowed LEGO sets.</p>
+    {% endif %}
+
+    <!-- Notifications -->
+    <h3 class="text-warning mt-4">Notifications</h3>
+    {% if notifications %}
+        <ul class="list-group">
+        {% for notification in notifications %}
+            <li class="list-group-item bg-dark text-white">
+                {{ notification.message }} <span class="text-muted">{{ notification.created_at }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No new notifications.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,25 +1,29 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-    <div class="container mt-5">
-        <h1>My Borrowed Sets</h1>
-        {% if borrowings %}
-            <ul class="list-group">
-                {% for borrowing in borrowings %}
-                    <li class="list-group-item">
-                        <strong>{{ borrowing.lego_set.title }}</strong><br>
-                        Borrowed on: {{ borrowing.borrow_date }}<br>
-                        Due date: {{ borrowing.due_date }}<br>
-                        {% if borrowing.is_returned %}
-                            Status: Returned
-                        {% else %}
-                            Status: Not Returned
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>You have no borrowed sets at the moment.</p>
-        {% endif %}
+<div class="container py-5">
+    <h2 class="text-warning logo-font">My Borrowings</h2>
+
+    <div class="row">
+        {% for borrow in borrowings %}
+            <div class="col-md-4">
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        <h5>{{ borrow.lego_set.title }}</h5>
+                        <p>Borrowed on: {{ borrow.borrowed_on }}</p>
+                        <p>Due date: {{ borrow.due_date }}</p>
+                        <p>Status: 
+                            {% if borrow.is_returned %}
+                                <span class="text-success">Returned</span>
+                            {% else %}
+                                <span class="text-danger">Active</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No borrowings found.</p>
+        {% endfor %}
     </div>
+</div>
 {% endblock %}
