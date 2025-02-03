@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Category
 from subscriptions.models import UserProfile
 
+
 def all_products(request, category_name=None):
     """ A view to show all products, with optional filters """
-    
     # Get all products
     products = Product.objects.all()
 
@@ -18,7 +18,7 @@ def all_products(request, category_name=None):
     # Get search query
     query = request.GET.get('q')
     if query:
-        # Filter products by name or description containing the query (case-insensitive)
+        # Filter products by name or description containing the query
         products = products.filter(
             Q(name__icontains=query) | Q(description__icontains=query)
         )
@@ -50,12 +50,21 @@ def all_products(request, category_name=None):
         'products': products,
         'current_difficulty': difficulty,
         'current_theme': theme,
-        'valid_themes': Product.objects.values_list('category__friendly_name', flat=True).distinct(),
-        'difficulties': Product.objects.values_list('difficulty', flat=True).distinct(),
+        'valid_themes': (
+            Product.objects
+            .values_list('category__friendly_name', flat=True)
+            .distinct()
+        ),
+        'difficulties': (
+            Product.objects
+            .values_list('difficulty', flat=True)
+            .distinct()
+        ),
         'category_name': category_name,
     }
 
     return render(request, 'products/products.html', context)
+
 
 def product_detail(request, product_id):
     """A view to show individual product details"""
@@ -66,10 +75,16 @@ def product_detail(request, product_id):
     if request.user.is_authenticated:
         user_profile = UserProfile.objects.filter(user=request.user).first()
         if user_profile and user_profile.subscription:
-            if user_profile.subscription.status and user_profile.subscription.end_date > now():
+            if (
+                user_profile.subscription.status and
+                user_profile.subscription.end_date > now()
+            ):
                 user_subscription = user_profile.subscription
             else:
-                messages.warning(request, "Your subscription has expired! Renew to continue borrowing.")
+                messages.warning(
+                    request,
+                    "Your subscription has expired! Renew to borrow."
+                )
                 return redirect('renew_subscription')
 
     return render(request, 'products/product_detail.html', {
@@ -77,7 +92,15 @@ def product_detail(request, product_id):
         'user_subscription': user_subscription,
     })
 
+
 def products_by_category(request, category_name):
     """Filter products by category."""
     products = Product.objects.filter(category__name=category_name)
-    return render(request, 'products/category_products.html', {'products': products, 'category_name': category_name})
+    return render(
+        request,
+        'products/category_products.html',
+        {
+            'products': products,
+            'category_name': category_name,
+        },
+    )

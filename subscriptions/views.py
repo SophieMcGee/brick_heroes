@@ -5,18 +5,35 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from notifications.models import Notification
 
+
 def subscription_plans(request):
     """A view to display all subscription plans."""
     plans = SubscriptionPlan.objects.all()
-    return render(request, 'subscriptions/subscription_plans.html', {'plans': plans})
+    return render(
+        request,
+        'subscriptions/subscription_plans.html',
+        {
+            'plans': plans,
+        },
+    )
+
 
 def subscribe(request, plan_id):
     """A view to handle user subscription."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    user_profile, created = UserProfile.objects.get_or_create(
+        user=request.user,
+    )
 
     # Check if the user already has an active subscription
-    existing_subscription = Subscription.objects.filter(user=request.user, status=True).first()
+    existing_subscription = (
+        Subscription.objects
+        .filter(
+            user=request.user,
+            status=True,
+        )
+        .first()
+    )
 
     if existing_subscription:
         messages.warning(request, "You already have an active subscription.")
@@ -53,7 +70,7 @@ def cancel_subscription(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     if not user_profile.subscription:
-        messages.error(request, "You don't have an active subscription to cancel.")
+        messages.error(request, "No active subscription to cancel.")
         return redirect('user_profile')
 
     # Set subscription status to inactive
@@ -63,13 +80,14 @@ def cancel_subscription(request):
     messages.success(request, "Your subscription has been cancelled.")
     return redirect('user_profile')
 
+
 @login_required
 def renew_subscription(request):
     """Allow users to renew their subscription after expiry."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     if not user_profile.subscription or user_profile.subscription.status:
-        messages.warning(request, "You don't have an expired subscription to renew.")
+        messages.warning(request, "No expired subscription to renew.")
         return redirect('subscription_plans')
 
     # Extend the subscription by another 30 days
@@ -80,6 +98,7 @@ def renew_subscription(request):
 
     messages.success(request, "Subscription renewed successfully!")
     return redirect('user_profile')
+
 
 def check_and_update_subscriptions():
     """Function for homepage to auto-expire subscriptions."""
