@@ -208,21 +208,22 @@ body::before {
 
 /* Hero Background Image */
 .hero-section .hero-bg {
-    position: absolute; 
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    z-index: -1; 
+    height: auto;
 }
 
 /* Hero Content */
 .hero-content {
-    position: relative;
-    z-index: 1;
-    color: #000;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+}
+
+.step-title {
+    font-weight: bold;
+    font-size: 1.5rem;
 }
 
 .hero-heading {
@@ -235,6 +236,12 @@ body::before {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
     color: #000;
+}
+
+.lego-img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
 

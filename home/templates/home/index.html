@@ -4,85 +4,78 @@
 {% block content %}
 
 <!-- Hero Section -->
-<div class="hero-section">
-    <!-- Background Image -->
+<div class="hero-section text-center">
     <img src="{% static 'media/homepage-bg.webp' %}" alt="Hero Background" class="hero-bg">
-    
-    <!-- Hero Text Content -->
-    <div class="hero-content text-center">
-        <h1 class="hero-heading logo-font">
-            Build Your World with Brick Heroes
-        </h1>
-        <p class="hero-subheading">
-            Explore our Lego sets!
-        </p>
-        <a href="{% url 'all_products' %}" class="btn shop-now-button mt-4">
-            Browse Sets
-        </a>
+    <div class="hero-content">
+        <h1 class="hero-heading logo-font">Build Your World with Brick Heroes</h1>
+        <p class="hero-subheading">Explore our Lego sets!</p>
+        <a href="{% url 'all_products' %}" class="btn shop-now-button mt-4">Browse Sets</a>
     </div>
 </div>
 
-<!-- Main Content Wrapper -->
-<div class="container mt-5">
-    <!-- How It Works Section -->
-    <section class="how-it-works py-5 text-center">
-        <h2 class="section-heading">How It Works</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="info-card">
-                    <img src="{% static 'media/step1.webp' %}" alt="Step 1" class="info-img">
-                    <h3>Step 1</h3>
-                    <p>Choose your set</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="info-card">
-                    <img src="{% static 'media/step2.webp' %}" alt="Step 2" class="info-img">
-                    <h3>Step 2</h3>
-                    <p>Build and Enjoy</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="info-card">
-                    <img src="{% static 'media/step3.webp' %}" alt="Step 3" class="info-img">
-                    <h3>Step 3</h3>
-                    <p>Return & Repeat</p>
-                </div>
-            </div>
+<!-- How It Works Section -->
+<div class="container-fluid bg-primary py-5 text-center">
+    <h2 class="section-heading text-white">How It Works</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-center">
+            <img src="{% static 'media/kapow-image.webp' %}" alt="Step 1" class="info-img">
+            <h3 class="step-title">STEP 1</h3>
+            <p>Choose your set</p>
         </div>
-    </section>
+        <div class="col-md-4 text-center">
+            <img src="{% static 'media/omg-image.webp' %}" alt="Step 2" class="info-img">
+            <h3 class="step-title">STEP 2</h3>
+            <p>Build & Enjoy</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="{% static 'media/wow.webp' %}" alt="Step 3" class="info-img">
+            <h3 class="step-title">STEP 3</h3>
+            <p>Return & Repeat</p>
+        </div>
+    </div>
+</div>
 
-    <!-- Explore Our Sets (Gallery) -->
-    <section class="explore-sets py-5 text-center">
-        <h2 class="section-heading">Explore Our Sets</h2>
-        <div class="row">
-            {% for product in featured_products %}
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card">
-                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-img">
-                    <p>{{ product.title }}</p>
-                </div>
-            </div>
-            {% endfor %}
+<!-- Explore Our Sets -->
+<div class="container-fluid bg-dark py-5 text-center">
+    <h2 class="section-heading text-white">Explore Our Sets</h2>
+    <div class="row">
+        {% for product in random_products %}
+        <div class="col-sm-6 col-md-4 col-lg-2 mb-4">
+            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="lego-img">
         </div>
-        <a href="{% url 'all_products' %}" class="btn btn-primary mt-3">View All</a>
-    </section>
+        {% endfor %}
+    </div>
+    <a href="{% url 'all_products' %}" class="btn btn-warning mt-3">View All</a>
+</div>
 
-    <!-- Choose Your Plan -->
-    <section class="choose-plan py-5 text-center">
-        <h2 class="section-heading">Choose Your Plan</h2>
-        <div class="row">
-            {% for plan in subscription_plans %}
-            <div class="col-md-4">
-                <div class="plan-card">
-                    <h3>{{ plan.name }}</h3>
-                    <p class="price">€{{ plan.price }}/Month</p>
-                    <p>{{ plan.max_borrow_per_month }} sets per month</p>
-                    <a href="{% url 'subscription_plans' %}" class="btn btn-warning">Choose Plan</a>
-                </div>
+<!-- Choose Your Plan -->
+<div class="container-fluid bg-warning py-5 text-center">
+    <h2 class="section-heading text-dark">Choose Your Plan</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white p-4">
+                <h3>€9.99/Month</h3>
+                <h4>Mystery Subscription</h4>
+                <p>Our heroes pick your set</p>
+                <a href="{% url 'subscription_plans' %}" class="btn btn-danger">Subscribe Now</a>
             </div>
-            {% endfor %}
         </div>
-    </section>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white p-4">
+                <h3>€14.99/Month</h3>
+                <h4>Step 2: Build & Enjoy</h4>
+                <p>Pick your own sets</p>
+                <a href="{% url 'subscription_plans' %}" class="btn btn-danger">Subscribe Now</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white p-4">
+                <h3>€19.99/Month</h3>
+                <h4>Step 3: Return & Repeat</h4>
+                <p>Unlimited sets each month</p>
+                <a href="{% url 'subscription_plans' %}" class="btn btn-danger">Subscribe Now</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

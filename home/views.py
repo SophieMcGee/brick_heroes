@@ -5,11 +5,14 @@ from .models import Review, Notification, LegoSet
 from .forms import LegoSetForm
 from subscriptions.models import Borrowing, Subscription
 from notifications.models import Notification
+from products.models import Product
+import random
 
 
 def index(request):
-    """ A view to return the index page """
-    return render(request, 'home/index.html')
+    random_products = list(Product.objects.filter(is_borrowed=False))
+    random.shuffle(random_products)
+    return render(request, 'home/index.html', {'random_products': random_products[:6]})
 
 
 @login_required
