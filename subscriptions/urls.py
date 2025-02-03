@@ -5,5 +5,4 @@ urlpatterns = [
     path('subscription-plans/', views.subscription_plans, name='subscription_plans'),
     path('subscribe/<int:plan_id>/', views.subscribe, name='subscribe'),
     path('cancel/', views.cancel_subscription, name='cancel_subscription'),
-    path('checkout/<int:subscription_id>/', views.subscription_checkout, name='subscription_checkout'),
 ]

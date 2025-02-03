@@ -2,25 +2,44 @@ from django.db import models
 from django.conf import settings
 import random
 from products.models import Product
+from django.utils.timezone import now
+
 
 class SubscriptionPlan(models.Model):
     """Model for subscription tiers"""
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    max_borrow_per_month = models.IntegerField()  # Max sets borrowable per month
-    max_active_borrows = models.IntegerField()  # Max concurrent active borrowings
+    max_borrow_per_month = models.IntegerField()  # Max sets borrowable
+    max_active_borrows = models.IntegerField()  # Max active borrows
     can_cancel_anytime = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+    
+class Subscription(models.Model):
+    """Tracks user subscriptions"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(auto_now_add=True) 
+    end_date = models.DateTimeField(null=True, blank=True)
+    status = models.BooleanField(default=True)
 
+    def __str__(self):
+        return f"{self.user.username} - {self.subscription_plan.name} ({'Active' if self.status else 'Inactive'})"
+
+def check_expired_subscriptions():
+    """Deactivate subscriptions that have passed their end date"""
+    expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
+    for sub in expired_subs:
+        sub.status = False
+        sub.save()
 
 class Borrowing(models.Model):
     """Model for tracking borrowed LEGO sets"""
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='subscriptions_borrowing'  # Avoids clashes with other borrowing models
+        related_name='subscriptions_borrowing'
     )
     lego_set = models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True)
     borrowed_on = models.DateTimeField(auto_now_add=True)
@@ -29,16 +48,6 @@ class Borrowing(models.Model):
 
     def __str__(self):
         return f"{self.user.username} borrowed {self.lego_set.name}"
-
-
-class Purchase(models.Model):
-    """Model for tracking purchased LEGO sets"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    lego_set = models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True)
-    purchased_on = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} purchased {self.lego_set.name}"
 
 
 class UserProfile(models.Model):
@@ -52,12 +61,10 @@ class UserProfile(models.Model):
 
     def can_borrow(self):
         """Check if the user is eligible to borrow based on their subscription"""
-        if not self.subscription:
+        if not self.subscription or not self.subscription.status:
             return False
         active_borrows = Borrowing.objects.filter(user=self.user, is_returned=False).count()
-        if self.subscription.max_active_borrows > active_borrows:
-            return True
-        return False
+        return active_borrows < self.subscription.subscription_plan.max_active_borrows
 
     def random_lego_set(self):
         """Get a random LEGO set for the user"""

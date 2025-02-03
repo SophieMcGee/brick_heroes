@@ -58,12 +58,19 @@ def all_products(request, category_name=None):
     return render(request, 'products/products.html', context)
 
 def product_detail(request, product_id):
-    """ A view to show individual product details """
+    """A view to show individual product details"""
     product = get_object_or_404(Product, id=product_id)
 
-    # Ensure the user has a UserProfile
-    user_profile = getattr(request.user, "userprofile", None)
-    user_subscription = user_profile.subscription if user_profile else None
+    # Check if user is subscribed & active
+    user_subscription = None
+    if request.user.is_authenticated:
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        if user_profile and user_profile.subscription:
+            if user_profile.subscription.status and user_profile.subscription.end_date > now():
+                user_subscription = user_profile.subscription
+            else:
+                messages.warning(request, "Your subscription has expired! Renew to continue borrowing.")
+                return redirect('renew_subscription')
 
     return render(request, 'products/product_detail.html', {
         'product': product,
