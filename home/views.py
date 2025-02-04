@@ -10,7 +10,7 @@ import random
 
 
 def index(request):
-    random_products = list(Product.objects.filter(is_borrowed=False))
+    random_products = list(Product.objects.filter(is_borrowed=False).exclude(image=""))
     random.shuffle(random_products)
     return render(request, 'home/index.html', {'random_products': random_products[:6]})
 
