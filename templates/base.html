@@ -247,18 +247,39 @@
 {% endblock %}
 
 <!-- Footer Section -->
-<footer class="footer-custom mt-auto py-3">
-    <!-- Social Media Section -->
-    <section class="container text-center mt-5">
-        <h3>Connect With Us</h3>
-        <div class="social-media-icons">
-            <a href="https://x.com/" target="_blank" rel="noopener" aria-label="Visit our X, this will open in a new tab."><i class="fab fa-twitter"></i></a>
-            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Visit our Facebook, this will open in a new tab."><i class="fab fa-facebook"></i></a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Visit our LinkedIn, this will open in a new tab."><i class="fab fa-linkedin"></i></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Visit our Instagram, this will open in a new tab."><i class="fab fa-instagram"></i></a>
+<footer class="footer-section">
+    <div class="footer-container">
+        <div class="contact-form">
+            <h2 class="contact-header">Get in Touch with Brick Heroes</h2>
+            <!-- Contact Form -->
+            <form id="contact-form" action="#" method="POST">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" class="form-input" required>
+
+                <label for="email">Your Email</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="form-input" required>
+
+                <label for="message">Your Message</label>
+                <textarea id="message" name="message" class="form-input" rows="4" required></textarea>
+
+                <button type="submit" class="btn contact-button">Send Message</button>
+            </form>
         </div>
-    </section>
-    <br>
+    </div>
+
+    <!-- Social Media Links -->
+    <div class="social-media-section">
+        <h3 class="social-heading">Connect With Us</h3>
+        <div class="social-media-icons">
+            <a href="https://x.com/" target="_blank" rel="noopener" aria-label="Visit our X"><i class="fab fa-twitter"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Visit our Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Visit our LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Visit our Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
 </footer>
 
 
