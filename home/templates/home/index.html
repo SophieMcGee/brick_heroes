@@ -4,7 +4,7 @@
 {% block content %}
 
 <!-- Hero Section -->
-<div class="hero-section text-center">
+<div class="hero-section">
     <img src="{% static 'media/homepage-bg.webp' %}" alt="Hero Background" class="hero-bg">
     <div class="hero-content">
         <h1 class="hero-heading logo-font">Build Your World with Brick Heroes</h1>
@@ -14,23 +14,45 @@
 </div>
 
 <!-- How It Works Section -->
-<div class="container-fluid bg-primary py-5 text-center">
-    <h2 class="section-heading text-white">How It Works</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-4 text-center">
-            <img src="{% static 'media/kapow-image.webp' %}" alt="Step 1" class="info-img">
-            <h3 class="step-title">STEP 1</h3>
-            <p>Choose your set</p>
+<div class="container-fluid how-it-works">
+    <div class="row">
+        <div class="col">
+            <h1 class="logo-font display-4 font-weight-bold text-white">How It Works</h1>
         </div>
-        <div class="col-md-4 text-center">
-            <img src="{% static 'media/omg-image.webp' %}" alt="Step 2" class="info-img">
-            <h3 class="step-title">STEP 2</h3>
-            <p>Build & Enjoy</p>
+    </div>
+
+    <div class="row center-row">
+        <!-- Step 1 -->
+        <div class="col-md-4 col-lg-3">
+            <div class="home-card shadow">
+                <div class="card-body text-center">
+                    <img src="{% static 'media/kapow-image.webp' %}" alt="Step 1" class="img-fluid mb-3" style="max-height: 80px;">
+                    <h3 class="home-card-title">Step 1</h3>
+                    <p class="home-card-text">Choose your set</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 text-center">
-            <img src="{% static 'media/wow.webp' %}" alt="Step 3" class="info-img">
-            <h3 class="step-title">STEP 3</h3>
-            <p>Return & Repeat</p>
+
+        <!-- Step 2 -->
+        <div class="col-md-4 col-lg-3">
+            <div class="home-card shadow">
+                <div class="card-body text-center">
+                    <img src="{% static 'media/omg-image.webp' %}" alt="Step 2" class="img-fluid mb-3" style="max-height: 80px;">
+                    <h3 class="home-card-title">Step 2</h3>
+                    <p class="home-card-text">Build and Enjoy</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-md-4 col-lg-3">
+            <div class="home-card shadow">
+                <div class="card-body text-center">
+                    <img src="{% static 'media/wow.webp' %}" alt="Step 3" class="img-fluid mb-3" style="max-height: 80px;">
+                    <h3 class="home-card-title">Step 3</h3>
+                    <p class="home-card-text">Return & Repeat</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
