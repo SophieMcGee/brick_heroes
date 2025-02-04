@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
 from .models import Review, Notification, LegoSet
-from .forms import LegoSetForm
+from .forms import LegoSetForm, ContactForm
 from subscriptions.models import Borrowing, Subscription
 from notifications.models import Notification
 from products.models import Product
@@ -184,6 +186,29 @@ def subscription_plans(request):
     return render(request, 'products/subscription_plans.html')
 
 
-def gift_cards(request):
-    """Display gift card options."""
-    return render(request, 'products/gift_cards.html')
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            contact_message = form.save()
+
+            # Send an automatic reply to the user
+            send_mail(
+                subject="Thank You for Contacting Us!",
+                message=f"Hello {contact_message.name},\n\n"
+                        "Thank you for reaching out! This website is part of a test project for a learning program, messages are not monitored and you will not receive a reply.\n\n"
+                        "Best Regards,\nBrick Heroes Team",
+                from_email="sophiebmcgee@gmail",
+                recipient_list=[contact_message.email],
+                fail_silently=False,
+            )
+
+            return redirect('home/contact_success')
+    else:
+        form = ContactForm()
+
+    return render(request, 'home/contact.html', {'form': form})
+
+
+def contact_success(request):
+    return render(request, 'home/contact_success.html')

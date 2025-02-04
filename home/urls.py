@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.contrib import admin
 from . import views
+from .views import contact_view, contact_success
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -21,7 +22,6 @@ urlpatterns = [
     ),
     path('admin-tools/', views.admin_tools, name='admin_tools'),
     path('borrow-cart/', views.borrow_cart, name='borrow_cart'),
-    path('filter-by-price/', views.filter_by_price, name='filter_by_price'),
     path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
     path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
     path(
@@ -29,7 +29,8 @@ urlpatterns = [
         views.subscription_plans,
         name='subscription_plans',
     ),
-    path('gift-cards/', views.gift_cards, name='gift_cards'),
     path('subscriptions/', include('subscriptions.urls')),
     path('cart/', include('cart.urls')),
+    path('contact/', contact_view, name='contact'),
+    path('contact/success/', contact_success, name='contact_success'),
 ]
