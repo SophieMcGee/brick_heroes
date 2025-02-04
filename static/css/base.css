@@ -389,6 +389,44 @@ header .btn:hover {
     transform: scale(1.05);
 }
 
+/* Homepage Plan Section*/
+
+.choose-plan-section {
+    background-color: #FFD400;
+    padding: 50px 0;
+}
+
+.subscription-card {
+    background-color: #000 !important;  
+    color: #fff !important;
+    max-width: 280px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Make the images larger */
+.subscription-img {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 15px;
+}
+
+/* Subscription Card Text */
+.subscription-card .home-card-title {
+    font-family: 'Shantell Sans', Arial, sans-serif !important;
+    color: #fff !important;
+    font-size: 1.8rem !important;
+    font-weight: bold !important;
+}
+
+.subscription-card .home-card-text {
+    color: #fff !important; 
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
 /* Images inside the cards */
 .product-image {
     width: 100%;
@@ -520,6 +558,11 @@ footer.footer-custom {
         flex: 0 0 33.333%;
         max-width: 33.333%;
     }
+
+    choose-plan-section .row {
+        display: flex;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 991px) {
@@ -597,6 +640,11 @@ footer.footer-custom {
     .col-12 {
         flex: 0 0 100%;
         max-width: 100%;
+    }
+
+    .subscription-card {
+        max-width: 100%;
+        margin-bottom: 20px;
     }
 }
 
