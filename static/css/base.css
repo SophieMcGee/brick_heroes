@@ -38,7 +38,6 @@ header {
     justify-content: space-between; 
     flex-wrap: nowrap;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
 header a, header a:hover, header a:focus {
@@ -53,7 +52,6 @@ header .list-inline {
     margin: 0 !important;
     padding: 0 !important;
     flex-wrap: nowrap; /* Prevent wrapping */
-    justify-content: flex-end; /* Push icons to right */
     width: 100%; /* Ensure it takes full width */
 }
 
@@ -73,8 +71,8 @@ header .list-inline-item a {
     align-items: center;
     text-decoration: none;
     color: #fff;
-    font-size: 1.2rem; /* Default size */
-    transition: font-size 0.3s ease; /* Smooth scaling */
+    font-size: 0.6rem;
+    transition: font-size 0.3s ease;
     max-width: 100%;
 }
 
@@ -113,7 +111,6 @@ header .col-12 {
 
 /* Core Navbar Styles */
 .navbar {
-    background-color: #000;
     color: #FFF;
     z-index: 1050;
     display: flex;
@@ -404,6 +401,7 @@ header .btn:hover {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+    text-align: center;
 }
 
 /* Make the images larger */
@@ -551,6 +549,12 @@ footer.footer-custom {
 
 /* Media Queries */
 
+@media (min-width: 1300px) {
+    header .list-inline-item a {
+        font-size: 1rem;
+    }
+}
+
 /* Adjust for tablet screens screens */
 
 @media (min-width: 992px) {
@@ -559,9 +563,15 @@ footer.footer-custom {
         max-width: 33.333%;
     }
 
-    choose-plan-section .row {
-        display: flex;
+    .choose-plan-section .row {
         justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .subscription-card {
+        max-width: 90%;
     }
 }
 
@@ -643,8 +653,8 @@ footer.footer-custom {
     }
 
     .subscription-card {
-        max-width: 100%;
-        margin-bottom: 20px;
+        max-width: 85%;
+        padding: 15px;
     }
 }
 
@@ -664,6 +674,11 @@ footer.footer-custom {
 
     .list-inline {
         flex-wrap: wrap;
+    }
+
+    .subscription-card {
+        max-width: 80%;
+        padding: 10px;
     }
 }
 
