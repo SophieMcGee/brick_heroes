@@ -2,6 +2,7 @@ from django.urls import path, include
 from django.contrib import admin
 from . import views
 from .views import contact_view, contact_success
+from notifications.views import admin_notifications
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -33,4 +34,5 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('contact/', contact_view, name='contact'),
     path('contact/success/', contact_success, name='contact_success'),
+    path("admin/notifications/", admin_notifications, name="admin_notifications"),
 ]

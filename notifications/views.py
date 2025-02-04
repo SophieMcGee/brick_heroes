@@ -16,3 +16,6 @@ def user_notifications(request):
         'notifications/notifications.html',
         {'notifications': notifications},
     )
+
+def admin_notifications(request):
+    return render(request, "notifications/admin_notifications.html")
