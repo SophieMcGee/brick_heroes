@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -150,3 +151,13 @@ def add_review(request, product_id):
         form = ReviewForm()
 
     return render(request, 'reviews/add_review.html', {'form': form, 'product': product})
+
+
+@staff_member_required
+def delete_review(request, review_id):
+    """Allow only admin/superusers to delete reviews."""
+    review = get_object_or_404(Review, id=review_id)
+    product_id = review.product.id  # Ensure redirection after deletion
+    review.delete()
+    messages.success(request, "Review deleted successfully.")
+    return redirect('product_detail', product_id=product_id)

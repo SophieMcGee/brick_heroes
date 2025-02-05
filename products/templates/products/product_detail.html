@@ -34,28 +34,37 @@
                     <a href="{% url 'subscription_plans' %}" class="btn btn-warning btn-lg">
                         Subscribe Now
                     </a>
+                    <br>
                 {% endif %}
             {% else %}
                 <p class="text-danger mt-3">Out of Stock</p>
             {% endif %}
             <br>
-            <!-- Display all reviews -->
-            <br>
-            <h2>Reviews:</h2>
-            {% if product.reviews.all %}
-                {% for review in product.reviews.all %}
-                    <div class="review">
-                        <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
-                        <p>{{ review.content }}</p>
-                        <small>Posted on {{ review.created_on }}</small>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>No reviews yet.</p>
-            {% endif %}
-
-            <!-- Button to Add a Review -->
-            <a href="{% url 'add_review' product.id %}" class="btn btn-primary">Write a Review</a>
+             <!-- Display all reviews -->
+             <h2>Reviews:</h2>
+             {% if product.reviews.all %}
+                 {% for review in product.reviews.all %}
+                     <div class="review p-3 border rounded my-2">
+                         <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
+                         <p>{{ review.content }}</p>
+                         <small>Posted on {{ review.created_on }}</small>
+ 
+                         <!-- Show delete button only for staff members -->
+                         {% if request.user.is_staff %}
+                             <form action="{% url 'delete_review' review.id %}" method="POST" class="d-inline">
+                                 {% csrf_token %}
+                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                             </form>
+                         {% endif %}
+                     </div>
+                 {% endfor %}
+             {% else %}
+                 <p>No reviews yet.</p>
+             {% endif %}
+ 
+             <!-- Button to Add a Review -->
+             <a href="{% url 'add_review' product.id %}" class="btn btn-primary">Write a Review</a>
+         </div>
         </div>
     </div>
 </div>
