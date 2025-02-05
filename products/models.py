@@ -59,5 +59,3 @@ class Review(models.Model):
     def save(self, *args, **kwargs):
         """Update the product's average rating when a new review is saved"""
         super().save(*args, **kwargs)
-        self.product.update_average_rating()
-

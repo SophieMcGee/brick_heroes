@@ -139,7 +139,7 @@ def add_review(request, product_id):
             # Notify admin of new review
             send_mail(
                 subject="New Review Submitted",
-                message=f"A new review was submitted by {request.user.username} for {lego_set.title}.",
+                message=f"A new review was submitted by {request.user.username} for {Product.title}.",
                 from_email="sophiebmcgee@gmail.com",
                 recipient_list=["sophiebmcgee@gmail.com"],
                 fail_silently=True,
