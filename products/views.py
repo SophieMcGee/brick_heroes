@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.mail import send_mail
@@ -149,4 +149,4 @@ def add_review(request, product_id):
     else:
         form = ReviewForm()
 
-     return render(request, 'reviews/add_review.html', {'form': form, 'product': product})
+    return render(request, 'reviews/add_review.html', {'form': form, 'product': product})

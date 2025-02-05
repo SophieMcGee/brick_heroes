@@ -3,13 +3,10 @@ from .models import Review
 
 
 class ReviewForm(forms.ModelForm):
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]  # 1 to 5 stars
+
+    rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.RadioSelect)
+
     class Meta:
         model = Review
-        fields = ['rating', 'content']
-
-    def clean_rating(self):
-        """ Ensure rating is between 1 and 5 """
-        rating = self.cleaned_data.get('rating')
-        if rating < 1 or rating > 5:
-            raise forms.ValidationError("Rating must be between 1 and 5.")
-        return rating
+        fields = ['content', 'rating']

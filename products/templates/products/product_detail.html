@@ -13,11 +13,12 @@
         <div class="col-12 col-md-4">
             <h1 class="display-4">{{ product.name }}</h1>
 
-            <!-- Display rating if available -->
-            {% if product.rating %}
-                <p>Rating: {{ product.rating }} / 5</p>
+            <!-- Display average rating -->
+            {% if product.average_rating %}
+                <p><strong>Rated {{ product.average_rating|floatformat:1 }} out of 5</strong> ({{ product.reviews.count }} reviews)</p>
+            {% else %}
+                <p>No ratings yet</p>
             {% endif %}
-
             <!-- Product description -->
             <p class="mt-4">{{ product.description }}</p>
 
@@ -37,11 +38,12 @@
             {% else %}
                 <p class="text-danger mt-3">Out of Stock</p>
             {% endif %}
-            
-            <!-- Display Reviews-->
-            {% if lego_set.review_set.all %}
-                <h2>Reviews</h2>
-                {% for review in lego_set.review_set.all %}
+            <br>
+            <!-- Display all reviews -->
+            <br>
+            <h2>Reviews:</h2>
+            {% if product.reviews.all %}
+                {% for review in product.reviews.all %}
                     <div class="review">
                         <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
                         <p>{{ review.content }}</p>
@@ -53,7 +55,7 @@
             {% endif %}
 
             <!-- Button to Add a Review -->
-            <a href="{% url 'add_review' lego_set.id %}" class="btn btn-primary">Write a Review</a>
+            <a href="{% url 'add_review' product.id %}" class="btn btn-primary">Write a Review</a>
         </div>
     </div>
 </div>
