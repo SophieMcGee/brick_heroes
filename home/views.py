@@ -203,11 +203,9 @@ def contact_view(request):
                 fail_silently=False,
             )
 
-            return redirect('home/contact_success')
+            return redirect('contact_success')
     else:
         form = ContactForm()
-
-    return render(request, 'home/contact.html', {'form': form})
 
 
 def contact_success(request):
