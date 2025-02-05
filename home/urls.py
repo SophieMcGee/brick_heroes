@@ -35,4 +35,5 @@ urlpatterns = [
     path('contact/', contact_view, name='contact'),
     path('contact/success/', contact_success, name='contact_success'),
     path("admin/notifications/", admin_notifications, name="admin_notifications"),
+    path('admin/', admin.site.urls),
 ]

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from .models import Review, Notification, LegoSet
+from .models import Review, LegoSet
 from .forms import LegoSetForm, ContactForm
 from subscriptions.models import Borrowing, Subscription
 from notifications.models import Notification

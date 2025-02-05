@@ -12,31 +12,48 @@ def add_to_cart(request, item_type, item_id):
     cart, _ = Cart.objects.get_or_create(user=request.user)
 
     # Check if user has a subscription
-    user_subscription = CartItem.objects.filter(cart=cart, subscription__isnull=False).first()
+    user_subscription = (
+        CartItem.objects
+        .filter(cart=cart, subscription__isnull=False)
+        .first()
+    )
 
     if item_type == "subscription":
         subscription = get_object_or_404(SubscriptionPlan, id=item_id)
-        
         # Remove any previous subscription in the cart
         CartItem.objects.filter(cart=cart, subscription__isnull=False).delete()
         CartItem.objects.get_or_create(cart=cart, subscription=subscription)
-        
-        messages.success(request, f"You have selected the {subscription.name} plan!")
+        messages.success(
+            request,
+            f"You have selected the {subscription.name} plan!"
+        )
         return redirect('shopping_cart')
 
     elif item_type == "product":
         if not user_subscription:
-            messages.error(request, "You need a subscription to borrow Lego sets.")
+            messages.error(
+                request,
+                "You need a subscription to borrow Lego sets."
+            )
+
             return redirect('subscriptions')  # Redirect to subscription page
 
         product = get_object_or_404(Product, id=item_id)
 
         # Check borrowing limits
-        borrowed_items = CartItem.objects.filter(cart=cart, product__isnull=False).count()
-        max_borrow = user_subscription.subscription.max_active_borrows  # Get limit from subscription
+        borrowed_items = (
+            CartItem.objects
+            .filter(cart=cart, product__isnull=False)
+            .count()
+        )
+
+        max_borrow = user_subscription.subscription.max_active_borrows
 
         if borrowed_items >= max_borrow:
-            messages.error(request, f"You've reached your borrowing limit of {max_borrow} sets.")
+            messages.error(
+                request,
+                f"You've reached your borrowing limit of {max_borrow} sets."
+            )
             return redirect('shopping_cart')
 
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
@@ -58,6 +75,7 @@ def view_cart(request):
         'cart': cart,
     }
     return render(request, 'cart/shopping_cart.html', context)
+
 
 @login_required
 def remove_from_cart(request, item_id):
@@ -113,6 +131,7 @@ def checkout(request):
     }
     return render(request, 'cart/subscription_checkout.html', context)
 
+
 @login_required
 def subscription_checkout(request, subscription_id):
     """Checkout view for a subscription and confirm borrowed sets."""
@@ -127,7 +146,6 @@ def subscription_checkout(request, subscription_id):
 
         # Clear the cart after checkout
         CartItem.objects.filter(cart=cart).delete()
-        
         messages.success(request, f"You have successfully subscribed to {subscription.name} and confirmed your borrowed sets!")
         return redirect('dashboard')
 
