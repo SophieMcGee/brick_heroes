@@ -2,23 +2,20 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid overlay content-wrapper">
-
-    <!-- Category Heading -->
-    {% if category_name %}
-        <div class="row text-center bg-warning text-dark">
-            <div class="col">
-                <h2 class="text-center my-4">Showing Products in Category: {{ category_name|title }}</h2>
-            </div>
-        </div>
-    {% endif %}
-
+<div class="container-fluid mt-5">
     <!-- Red Banner -->
     <div class="row text-center py-5 bg-danger text-white">
         <div class="col">
             <h1 class="logo-font display-4 font-weight-bold">Explore Our Brick Collection</h1>
             <p class="lead">Discover sets from your favourite themes, ready to build.</p>
-
+            <!-- Category Heading -->
+                {% if category_name %}
+                    <div class="row text-center bg-warning text-dark">
+                        <div class="col">
+                            <h2 class="text-center my-4">Showing Products in Category: {{ category_name|title }}</h2>
+                        </div>
+                    </div>
+                {% endif %}
             <!-- Filters and Sorting -->
             <button class="btn btn-outline-warning d-md-none mb-3" data-toggle="collapse" data-target="#filtersCollapse" aria-expanded="false" aria-controls="filtersCollapse">
                 Filters & Sorting

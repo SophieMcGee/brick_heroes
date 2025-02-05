@@ -103,7 +103,7 @@ header .col-12 {
     align-items: center;
 }
 
-/* Add spacing below the fixed header */
+/* Add spacing below the fixed header
 .content-wrapper {
     padding-top: 100px;
 }

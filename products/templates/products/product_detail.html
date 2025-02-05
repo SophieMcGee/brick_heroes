@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid overlay">
+<div class="container-fluid mt-5">
     <div class="row mt-5">
         <!-- Product Image -->
         <div class="col-md-6 offset-md-1">
@@ -11,7 +11,7 @@
 
         <!-- Product Details -->
         <div class="col-12 col-md-4">
-            <h1 class="display-4">{{ product.name }}</h1>
+            <h1 class="display-6">{{ product.name }}</h1>
 
             <!-- Display average rating -->
             {% if product.average_rating %}
