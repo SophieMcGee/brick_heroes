@@ -3,6 +3,9 @@ from django.conf import settings
 import random
 from products.models import Product
 from django.utils.timezone import now
+from notifications.models import Notification
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class SubscriptionPlan(models.Model):
@@ -72,16 +75,13 @@ class UserProfile(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-
     subscription = models.ForeignKey(
-        SubscriptionPlan,
+        Subscription,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
-
-    borrowed_this_month = models.IntegerField(
-        default=0,  # Tracks monthly borrow count
-    )
+    borrowed_this_month = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username
@@ -99,9 +99,12 @@ class UserProfile(models.Model):
             .count()
         )
         return (
-            active_borrows <
-            self.subscription.subscription_plan.max_active_borrows
+            active_borrows < self.subscription.subscription_plan.max_active_borrows
         )
+
+    def get_notifications(self):
+        """Fetch the latest notifications for the user"""
+        return Notification.objects.filter(user=self.user).order_by('-created_at')[:5]
 
     def random_lego_set(self):
         """Get a random LEGO set for the user"""
@@ -109,3 +112,10 @@ class UserProfile(models.Model):
         if available_sets.exists():
             return random.choice(available_sets)
         return None
+
+
+# Create a UserProfile automatically when a new User is created
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)

@@ -1,52 +1,112 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container py-5">
-    <h1 class="text-warning">My Profile</h1>
-    
-    <!-- User Info -->
-    <div class="card bg-dark text-white my-3 p-3">
-        <h3>{{ user.username }}</h3>
-        <p>Email: {{ user.email }}</p>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-12">
+            <div class="card shadow-lg p-4 bg-white rounded">
+                <h1 class="text-warning text-center">My Profile</h1>
+
+                <!-- User Info -->
+                <div class="card bg-dark text-white my-3 p-3">
+                    <h3 class="text-uppercase">{{ user.username }}</h3>
+                    <p>Email: {{ user.email }}</p>
+                </div>
+
+                <!-- Email Management Section -->
+                <h3 class="text-warning">Manage Email</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-dark">
+                        <thead>
+                            <tr>
+                                <th>Email Address</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emailaddress in emailaddresses %}
+                            <tr>
+                                <td>{{ emailaddress.email }}</td>
+                                <td>
+                                    {% if emailaddress.verified %}
+                                        <span class="badge bg-success">Verified</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Unverified</span>
+                                    {% endif %}
+                                    {% if emailaddress.primary %}
+                                        <span class="badge bg-info">Primary</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="post" action="{% url 'account_email' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="email" value="{{ emailaddress.email }}">
+                                        <button type="submit" name="action_primary" class="btn btn-sm btn-outline-primary">Make Primary</button>
+                                        <button type="submit" name="action_send" class="btn btn-sm btn-outline-secondary">Re-send Verification</button>
+                                        <button type="submit" name="action_remove" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add Email Form -->
+                <form method="post" action="{% url 'account_email' %}" class="row g-2">
+                    {% csrf_token %}
+                    <div class="col-md-8">
+                        <input type="email" name="email" class="form-control" placeholder="Enter new email" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" name="action_add" class="btn btn-warning w-100">Add Email</button>
+                    </div>
+                </form>
+
+                <!-- Subscription Details -->
+                <h3 class="text-warning mt-4">Subscription Details</h3>
+                {% if subscription %}
+                <div class="card bg-warning text-dark my-3 p-3">
+                    <h3>Subscription: {{ subscription.subscription_type }}</h3>
+                    <p>Start Date: {{ subscription.start_date }}</p>
+                    <p>End Date: {{ subscription.end_date }}</p>
+                    <p>Status: {% if subscription.status %}Active{% else %}Expired{% endif %}</p>
+                </div>
+                {% else %}
+                <p class="text-danger text-center">No active subscription. 
+                    <a href="{% url 'subscription_plans' %}" class="btn btn-warning">Subscribe Now</a>
+                </p>
+                {% endif %}
+
+                <!-- Borrowed Sets -->
+                <h3 class="text-warning mt-4">Currently Borrowed</h3>
+                {% if borrowings %}
+                    <ul class="list-group">
+                    {% for borrow in borrowings %}
+                        <li class="list-group-item bg-dark text-white">
+                            {{ borrow.lego_set.title }} - Due: {{ borrow.due_date }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center">No borrowed LEGO sets.</p>
+                {% endif %}
+
+                <!-- Notifications -->
+                <h3 class="text-warning mt-4">Notifications</h3>
+                {% if notifications %}
+                    <ul class="list-group">
+                    {% for notification in notifications %}
+                        <li class="list-group-item bg-dark text-white">
+                            {{ notification.message }} <span class="text-muted">{{ notification.created_at }}</span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center">No new notifications.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-
-    <!-- Subscription Details -->
-    {% if subscription %}
-    <div class="card bg-warning text-dark my-3 p-3">
-        <h3>Subscription: {{ subscription.subscription_type }}</h3>
-        <p>Start Date: {{ subscription.start_date }}</p>
-        <p>End Date: {{ subscription.end_date }}</p>
-        <p>Status: {% if subscription.status %}Active{% else %}Expired{% endif %}</p>
-    </div>
-    {% else %}
-    <p class="text-danger">No active subscription. <a href="{% url 'subscription_plans' %}" class="btn btn-warning">Subscribe Now</a></p>
-    {% endif %}
-
-    <!-- Borrowed Sets -->
-    <h3 class="text-warning">Currently Borrowed</h3>
-    {% if borrowings %}
-        <ul class="list-group">
-        {% for borrow in borrowings %}
-            <li class="list-group-item bg-dark text-white">
-                {{ borrow.lego_set.title }} - Due: {{ borrow.due_date }}
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-muted">No borrowed LEGO sets.</p>
-    {% endif %}
-
-    <!-- Notifications -->
-    <h3 class="text-warning mt-4">Notifications</h3>
-    {% if notifications %}
-        <ul class="list-group">
-        {% for notification in notifications %}
-            <li class="list-group-item bg-dark text-white">
-                {{ notification.message }} <span class="text-muted">{{ notification.created_at }}</span>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-muted">No new notifications.</p>
-    {% endif %}
 </div>
 {% endblock %}

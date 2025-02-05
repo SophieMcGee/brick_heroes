@@ -5,9 +5,10 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from .models import LegoSet
 from .forms import LegoSetForm, ContactForm
-from subscriptions.models import Borrowing, Subscription
+from subscriptions.models import Borrowing, Subscription, UserProfile
 from notifications.models import Notification
 from products.models import Product, Review
+from allauth.account.models import EmailAddress
 import random
 
 
@@ -15,11 +16,6 @@ def index(request):
     random_products = list(Product.objects.filter(is_borrowed=False).exclude(image=""))
     random.shuffle(random_products)
     return render(request, 'home/index.html', {'random_products': random_products[:6]})
-
-
-@login_required
-def profile(request):
-    return render(request, 'home/profile.html')
 
 
 def collections(request):
@@ -117,27 +113,6 @@ def admin_notifications(request):
 
     return render(request, 'admin/admin_notifications.html', {
         'admin_notifications': admin_notifications,
-    })
-
-
-@login_required
-def user_profile(request):
-    """User profile page displaying user info, notifications, borrowed sets."""
-    user_profile = get_object_or_404(UserProfile, user=request.user)
-    notifications = (
-        Notification.objects.filter(user=request.user)
-        .order_by('-created_at')
-    )[:5]  # Last 5
-
-    borrowed_sets = Borrowing.objects.filter(
-        user=request.user,
-        is_returned=False,
-    )
-
-    return render(request, 'users/user_profile.html', {
-        'user_profile': user_profile,
-        'notifications': notifications,
-        'borrowed_sets': borrowed_sets,
     })
 
 

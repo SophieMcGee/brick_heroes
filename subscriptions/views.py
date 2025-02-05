@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now, timedelta
-from .models import SubscriptionPlan, Subscription, UserProfile
+from .models import SubscriptionPlan, Subscription, UserProfile, Borrowing
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from notifications.models import Notification
+from allauth.account.models import EmailAddress
 
 
 def subscription_plans(request):
@@ -103,3 +104,31 @@ def renew_subscription(request):
 def check_and_update_subscriptions():
     """Function for homepage to auto-expire subscriptions."""
     check_expired_subscriptions()
+
+
+@login_required
+def user_profile(request):
+    """User profile page displaying user info, subscriptions, emails, and borrowed sets."""
+
+    # Ensure the user has a UserProfile
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    # Fetch subscription details
+    subscription = Subscription.objects.filter(user=request.user).first()
+
+    # Fetch borrowed LEGO sets
+    borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
+
+    # Fetch latest 5 notifications
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
+
+    # Fetch email addresses linked to the account
+    emailaddresses = EmailAddress.objects.filter(user=request.user)
+
+    return render(request, 'home/user_profile.html', {
+        'user_profile': user_profile,
+        'subscription': subscription,
+        'borrowed_sets': borrowed_sets,
+        'notifications': notifications,
+        'emailaddresses': emailaddresses,
+    })

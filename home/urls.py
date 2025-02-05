@@ -3,10 +3,11 @@ from django.contrib import admin
 from . import views
 from .views import contact_view, contact_success
 from notifications.views import admin_notifications
+from subscriptions.views import user_profile
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/', user_profile, name='user_profile'),
     path('my-borrowings/', views.my_borrowings, name='my_borrowings'),
     path('my-reviews/', views.my_reviews, name='my_reviews'),
     path('my-notifications/', views.my_notifications, name='my_notifications'),

@@ -60,23 +60,6 @@
                         </div>
                     {% endif %}
 
-                    {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
-                        <hr>
-                        <div class="text-center">
-                            {% if PASSKEY_LOGIN_ENABLED %}
-                                <button type="submit" form="mfa_login" id="passkey_login"
-                                    class="btn btn-outline-primary btn-block">
-                                    <i class="fas fa-key"></i> {% trans "Sign in with a passkey" %}
-                                </button>
-                            {% endif %}
-                            {% if LOGIN_BY_CODE_ENABLED %}
-                                <a href="{{ request_login_code_url }}" class="btn btn-outline-primary btn-block">
-                                    <i class="fas fa-envelope"></i> {% trans "Mail me a sign-in code" %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-
                     {% if SOCIALACCOUNT_ENABLED %}
                         <hr>
                         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
@@ -86,11 +69,4 @@
         </div>
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_body %}
-    {{ block.super }}
-    {% if PASSKEY_LOGIN_ENABLED %}
-        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
-    {% endif %}
 {% endblock %}
