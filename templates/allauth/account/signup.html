@@ -20,16 +20,6 @@
                         {% endblocktranslate %}
                     </p>
 
-                    {% if SOCIALACCOUNT_ENABLED and not user.is_authenticated %}
-                        <hr>
-                        <div class="text-center">
-                            <p class="text-muted">
-                                {% trans "You can also sign up using a social account." %}
-                            </p>
-                            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-                        </div>
-                    {% endif %}
-
                     <form method="post" action="{% url 'account_signup' %}">
                         {% csrf_token %}
                         <div class="form-group">
@@ -56,11 +46,6 @@
                             <i class="fas fa-user-plus"></i> {% trans "Sign Up" %}
                         </button>
                     </form>
-
-                    {% if SOCIALACCOUNT_ENABLED %}
-                        <hr>
-                        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-                    {% endif %}
                 </div>
             </div>
         </div>
