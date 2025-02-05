@@ -22,13 +22,3 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} ({self.email})"
-
-class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    lego_set = models.ForeignKey('LegoSet', on_delete=models.CASCADE)
-    review_text = models.TextField()
-    rating = models.PositiveIntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Review by {self.user.username} for {self.lego_set.title}"

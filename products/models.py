@@ -1,5 +1,8 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
+from django.contrib.auth.models import User
+from django.apps import apps
+
 
 class Product(models.Model):
     sku = models.CharField(max_length=254, unique=True)
@@ -17,6 +20,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
 class Category(models.Model):
     name = models.CharField(max_length=254)
     friendly_name = models.CharField(max_length=254, null=True, blank=True)
@@ -29,3 +33,18 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = "Categories"
+
+
+class Review(models.Model):
+    """Stores reviews for LEGO sets"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    content = models.TextField()
+    rating = models.PositiveIntegerField()
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'product')  # Users can only review once
+        
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.product.name}"

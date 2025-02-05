@@ -37,6 +37,23 @@
             {% else %}
                 <p class="text-danger mt-3">Out of Stock</p>
             {% endif %}
+            
+            <!-- Display Reviews-->
+            {% if lego_set.review_set.all %}
+                <h2>Reviews</h2>
+                {% for review in lego_set.review_set.all %}
+                    <div class="review">
+                        <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
+                        <p>{{ review.content }}</p>
+                        <small>Posted on {{ review.created_on }}</small>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endif %}
+
+            <!-- Button to Add a Review -->
+            <a href="{% url 'add_review' lego_set.id %}" class="btn btn-primary">Write a Review</a>
         </div>
     </div>
 </div>
