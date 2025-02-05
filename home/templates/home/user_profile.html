@@ -110,6 +110,13 @@
             {% else %}
                 <p class="text-muted">No new notifications.</p>
             {% endif %}
+
+            <!-- Change Password Link -->
+            <div class="text-center mt-4">
+                <a href="{% url 'account_change_password' %}" class="btn btn-danger w-100">
+                    <i class="fas fa-key"></i> Change Password
+                </a>
+            </div>
         </div>
     </div>
 </div>
