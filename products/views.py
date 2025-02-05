@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from .models import Product, Category, Review
 from subscriptions.models import UserProfile, Subscription
@@ -109,42 +110,43 @@ def products_by_category(request, category_name):
 
 
 @login_required
-def add_review(request, lego_set_id):
+def add_review(request, product_id):
     """ Allow users to leave a review if they have a valid subscription """
-    lego_set = get_object_or_404(LegoSet, id=lego_set_id)
+    product = get_object_or_404(Product, id=product_id)
 
     # Check if user has an active subscription
-    has_subscription = Subscription.objects.filter(user=request.user, status=True).exists()
+    user_profile = UserProfile.objects.filter(user=request.user).first()
+    has_subscription = user_profile and user_profile.subscription and user_profile.subscription.status
     if not has_subscription:
         messages.error(request, "You need an active subscription to leave a review.")
         return redirect('subscription_plans')
 
     # Check if user has already reviewed this LEGO set
-    existing_review = Review.objects.filter(user=request.user, lego_set=lego_set).exists()
+    existing_review = Review.objects.filter(user=request.user, lego_set=product).exists()
     if existing_review:
         messages.error(request, "You have already reviewed this LEGO set.")
-        return redirect('product_detail', lego_set_id=lego_set.id)
+        return redirect('product_detail', product_id=product.id)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.user = request.user
-            review.lego_set = lego_set
+            review.lego_set = product
             review.save()
 
             # Notify admin of new review
             send_mail(
                 subject="New Review Submitted",
                 message=f"A new review was submitted by {request.user.username} for {lego_set.title}.",
-                from_email="noreply@brickheroes.com",
-                recipient_list=["admin@brickheroes.com"],
+                from_email="sophiebmcgee@gmail.com",
+                recipient_list=["sophiebmcgee@gmail.com"],
                 fail_silently=True,
             )
 
             messages.success(request, "Your review has been posted!")
-            return redirect('product_detail', lego_set_id=lego_set.id)
+            return redirect('product_detail', product_id=product.id)
     else:
         form = ReviewForm()
 
-    return render(request, 'reviews/add_review.html', {'form': form, 'lego_set': lego_set})
+     return render(request, 'reviews/add_review.html', {'form': form, 'product': product})
