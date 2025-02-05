@@ -126,7 +126,7 @@ ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True  # Avoid typos
 ACCOUNT_USERNAME_MIN_LENGTH = 4  # Minimum username length
 LOGIN_REDIRECT_URL = '/'  # Redirect after login
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = "allauth/account/login.html",
+LOGIN_URL = 'accounts/login/'
 
 WSGI_APPLICATION = 'brickheroes.wsgi.application'
 
