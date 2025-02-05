@@ -123,6 +123,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # username or email
 ACCOUNT_EMAIL_REQUIRED = True  # Email is mandatory for registration
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Require email verification
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True  # Avoid typos
+ACCOUNT_SIGNUP_REDIRECT_URL = "/accounts/verification_sent/"
 ACCOUNT_USERNAME_MIN_LENGTH = 4  # Minimum username length
 LOGIN_REDIRECT_URL = '/'  # Redirect after login
 LOGOUT_REDIRECT_URL = '/'
