@@ -134,6 +134,7 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
 
         if event['type'] == 'invoice.payment_succeeded':
+            # User successfully paid for a subscription
             customer_email = event['data']['object']['customer_email']
             user = get_object_or_404(UserProfile, user__email=customer_email)
 

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="text-success">Subscription Confirmed!</h1>
+    <p>Thank you for subscribing to Brick Heroes! Your subscription is now active.</p>
+    <a href="{% url 'user_profile' %}" class="btn btn-primary">Go to My Profile</a>
+</div>
+{% endblock %}
