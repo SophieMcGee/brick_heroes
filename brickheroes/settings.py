@@ -110,7 +110,7 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 # Log emails to the console for development
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.SMTPexi.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
