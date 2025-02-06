@@ -1,40 +1,98 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load allauth i18n %}
 
 {% block head_title %}
-    {% trans "Verify Your Email Address" %}
+    {% trans "Sign Up" %}
 {% endblock head_title %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-6 col-lg-5">
+        <div class="col-12 col-md-8 col-lg-6">
             <div class="card shadow-lg p-4">
                 <div class="card-body">
-                    <h1 class="logo-font text-primary text-center">{% trans "Verify Your Email Address" %}</h1>
-                    <p class="text-muted text-center">
-                        {% blocktrans %}
-                            We have sent an email to you for verification. 
-                            Follow the link provided to finalize the signup process.
-                        {% endblocktrans %}
+                    <h1 class="logo-font text-primary text-center">{% trans "Sign Up" %}</h1>
+                    <p class="text-muted text-center">{% trans "Create your account to start borrowing LEGO sets!" %}</p>
+
+                    <p class="text-center">
+                        {% blocktranslate %}Already have an account?  
+                            <a href="{{ login_url }}" class="text-primary font-weight-bold">Sign in</a>.
+                        {% endblocktranslate %}
                     </p>
 
-                    <p class="text-center text-muted">
-                        {% trans "If you do not see the verification email in your inbox, check your spam folder." %}
-                    </p>
+                    <!-- ✅ Django Allauth Signup Form -->
+                    <form method="post" action="{% url 'account_signup' %}" class="needs-validation" novalidate>
+                        {% csrf_token %}
 
-                    <p class="text-center text-muted">
-                        {% trans "Please contact us if you do not receive the verification email within a few minutes." %}
-                    </p>
+                        <div class="form-group">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                        </div>
 
-                    <div class="text-center mt-4">
-                        <a href="{% url 'account_login' %}" class="btn btn-warning">
-                            <i class="fas fa-sign-in-alt"></i> {% trans "Return to Login" %}
-                        </a>
-                    </div>
+                        <div class="form-group">
+                            {{ form.email2.label_tag }}
+                            {{ form.email2 }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.username.label_tag }}
+                            {{ form.username }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.password1.label_tag }}
+                            {{ form.password1 }}
+                            {% if form.password1.help_text %}
+                                <small class="form-text text-muted">{{ form.password1.help_text }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.password2.label_tag }}
+                            {{ form.password2 }}
+                        </div>
+
+                        <!-- Display form errors properly -->
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-warning btn-block">
+                            <i class="fas fa-user-plus"></i> {% trans "Sign Up" %}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Fix input field responsiveness -->
+<style>
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    /* Fixes for smaller screens */
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+    }
+</style>
 {% endblock %}
