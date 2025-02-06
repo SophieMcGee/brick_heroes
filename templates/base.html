@@ -120,12 +120,12 @@
 
                             <!-- Borrow Cart -->
                             <li class="list-inline-item">
-                                <a class="nav-link text-white" href="{% url 'borrow_cart' %}">
+                                <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
                                     <div class="text-center">
                                         <div><i class="fas fa-shopping-bag fa-lg"></i></div>
                                         <p class="my-0">
-                                            {% if total_borrowed %}
-                                                {{ total_borrowed }} Borrowed
+                                            {% if cart_item_count %}
+                                                <span class="badge badge-danger">{{ cart_item_count }}</span> Borrowed
                                             {% else %}
                                                 0 Borrowed
                                             {% endif %}
@@ -195,10 +195,15 @@
                             <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
                         </li>
 
-                        <!-- Purchase Cart -->
+                        <!-- Borrow Cart -->
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
-                                Purchase Cart ({{ total_purchased|default:0 }})
+                                Borrow Cart
+                                {% if cart_item_count %}
+                                    (<span class="badge badge-danger">{{ cart_item_count }}</span>)
+                                {% else %}
+                                    (0)
+                                {% endif %}
                             </a>
                         </li>
 

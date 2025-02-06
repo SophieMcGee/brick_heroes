@@ -85,16 +85,21 @@
 
             <!-- Borrowed Sets -->
             <h3 class="text-warning mt-4">Currently Borrowed</h3>
-            {% if borrowings %}
+            {% if orders %}
                 <ul class="list-group">
-                {% for borrow in borrowings %}
-                    <li class="list-group-item bg-light text-dark">
-                        {{ borrow.lego_set.title }} - Due: {{ borrow.due_date }}
-                    </li>
-                {% endfor %}
+                    {% for order in orders %}
+                        <li class="list-group-item">
+                            Order #{{ order.id }} - {{ order.created_at|date:"M d, Y" }} - Status: {{ order.status }}
+                            <ul>
+                                {% for item in order.borroworderitem_set.all %}
+                                    <li>{{ item.product.name }} (Qty: {{ item.quantity }})</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
                 </ul>
             {% else %}
-                <p class="text-muted">No borrowed LEGO sets.</p>
+                <p>You have no borrow orders.</p>
             {% endif %}
 
             <!-- Notifications -->

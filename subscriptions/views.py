@@ -10,6 +10,7 @@ from django.contrib import messages
 from notifications.models import Notification
 from allauth.account.models import EmailAddress
 from django.core.mail import send_mail
+from orders.models import BorrowOrder
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -159,7 +160,7 @@ def stripe_webhook(request):
 def user_profile(request):
     """User profile page displaying subscriptions, emails, and borrowed sets."""
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-
+    orders = BorrowOrder.objects.filter(user=request.user).order_by('-created_at')
     subscription = Subscription.objects.filter(user=request.user).first()
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
@@ -171,4 +172,5 @@ def user_profile(request):
         'borrowed_sets': borrowed_sets,
         'notifications': notifications,
         'emailaddresses': emailaddresses,
+        'orders': orders,
     })
