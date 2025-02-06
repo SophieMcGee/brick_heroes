@@ -5,14 +5,17 @@ from orders.models import BorrowOrder, BorrowOrderItem
 from .models import Cart, CartItem
 from products.models import Product
 from .forms import DeliveryInfoForm
-from django.db import transaction 
+from django.db import transaction
 from django.utils.timezone import now
 
 
 @login_required
 def view_cart(request):
-    """Display the borrowed LEGO sets"""
+    """Display the borrowed LEGO sets."""
     cart, _ = Cart.objects.get_or_create(user=request.user)
+
+    if not cart.items.exists():
+        messages.info(request, "Your borrow cart is empty. Add LEGO sets to start borrowing.")
 
     context = {
         "cart": cart,
@@ -36,7 +39,10 @@ def add_to_cart(request, product_id):
     active_borrows = CartItem.objects.filter(cart=cart).count()
 
     if active_borrows >= subscription.subscription_plan.max_active_borrows:
-        messages.error(request, f"You have reached your borrowing limit of {subscription.subscription_plan.max_active_borrows} sets.")
+        messages.warning(
+            request, 
+            f"You have reached your borrowing limit of {subscription.subscription_plan.max_active_borrows} sets."
+        )
         return redirect("shopping_cart")
 
     # Add LEGO set to cart
@@ -55,6 +61,7 @@ def remove_from_cart(request, item_id):
     cart_item.delete()
     return redirect("shopping_cart")
 
+
 @login_required
 def checkout(request):
     """Handle the checkout process for borrowing LEGO sets."""
@@ -68,12 +75,12 @@ def checkout(request):
     if request.method == "POST":
         form = DeliveryInfoForm(request.POST)
         if form.is_valid():
-
             with transaction.atomic():
                 # Create a new BorrowOrder
                 order = form.save(commit=False)
                 order.user = request.user
                 order.save()
+
                 # Create BorrowOrderItems for each item in the cart
                 for item in cart_items:
                     BorrowOrderItem.objects.create(
@@ -81,9 +88,11 @@ def checkout(request):
                         product=item.product,
                         quantity=1
                     )
+
                 # Clear the cart after order is confirmed
                 cart.items.all().delete()
-                messages.success(request, "Your borrow order has been placed successfully!")
+
+                messages.success(request, "Your borrow order has been placed successfully! Your sets will be shipped soon.")
                 return redirect("user_profile")
         else:
             messages.error(request, "Please correct the errors below.")
@@ -95,3 +104,4 @@ def checkout(request):
         "cart_items": cart_items,
     }
     return render(request, "cart/checkout.html", context)
+

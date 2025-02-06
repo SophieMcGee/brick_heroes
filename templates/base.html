@@ -54,7 +54,28 @@
 
     <title>Brick Heroes - {% block extratitle %}{% endblock %}</title>
   </head>
+  
   <body>
+
+    <!-- Toast Notifications -->
+    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1050;">
+        <div class="toast-container">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "success" %}
+                        {% include 'includes/toasts/toast_success.html' %}
+                    {% elif message.tags == "error" %}
+                        {% include 'includes/toasts/toast_error.html' %}
+                    {% elif message.tags == "warning" %}
+                        {% include 'includes/toasts/toast_warning.html' %}
+                    {% else %}
+                        {% include 'includes/toasts/toast_info.html' %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
             
     <!-- Main Header --> 
     <header class="container-fluid fixed-top">
@@ -318,6 +339,12 @@
         // Adjust padding on window resize
         window.addEventListener('resize', adjustPadding);
         })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".toast").toast({ delay: 5000 });  // Display for 5 seconds
+            $(".toast").toast("show");  // Show the toast automatically
+        });
     </script>
 {% endblock %}
 </body>

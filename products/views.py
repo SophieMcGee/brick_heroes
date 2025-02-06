@@ -50,6 +50,9 @@ def all_products(request, category_name=None):
     elif sort_by == "rating":
         products = products.order_by('-rating')
 
+    if not products.exists():
+        messages.warning(request, "No LEGO sets found matching your criteria.")
+
     context = {
         'products': products,
         'current_difficulty': difficulty,
@@ -100,6 +103,10 @@ def product_detail(request, product_id):
 def products_by_category(request, category_name):
     """Filter products by category."""
     products = Product.objects.filter(category__name=category_name)
+
+    if not products.exists():
+        messages.info(request, f"No LEGO sets found in {category_name} category.")
+
     return render(
         request,
         'products/category_products.html',
@@ -125,7 +132,7 @@ def add_review(request, product_id):
     # Check if user has already reviewed this LEGO set
     existing_review = Review.objects.filter(user=request.user, lego_set=product).exists()
     if existing_review:
-        messages.error(request, "You have already reviewed this LEGO set.")
+        messages.warning(request, "You have already reviewed this LEGO set.")
         return redirect('product_detail', product_id=product.id)
 
     if request.method == 'POST':
@@ -139,14 +146,16 @@ def add_review(request, product_id):
             # Notify admin of new review
             send_mail(
                 subject="New Review Submitted",
-                message=f"A new review was submitted by {request.user.username} for {Product.title}.",
+                message=f"A new review was submitted by {request.user.username} for {product.name}.",
                 from_email="sophiebmcgee@gmail.com",
                 recipient_list=["sophiebmcgee@gmail.com"],
                 fail_silently=True,
             )
 
-            messages.success(request, "Your review has been posted!")
+            messages.success(request, "Your review has been posted successfully!")
             return redirect('product_detail', product_id=product.id)
+        else:
+            messages.error(request, "There was an error in your review submission. Please try again.")
     else:
         form = ReviewForm()
 
@@ -161,3 +170,4 @@ def delete_review(request, review_id):
     review.delete()
     messages.success(request, "Review deleted successfully.")
     return redirect('product_detail', product_id=product_id)
+

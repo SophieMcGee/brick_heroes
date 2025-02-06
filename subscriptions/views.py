@@ -35,25 +35,30 @@ def subscribe(request, plan_id):
         messages.warning(request, "You already have an active subscription.")
         return redirect('user_profile')
 
-    # Create Stripe Checkout Session
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        customer_email=request.user.email,
-        mode='subscription',
-        line_items=[{
-            'price_data': {
-                'currency': 'eur',
-                'product_data': {'name': plan.name},
-                'unit_amount': int(plan.price * 100),
-                'recurring': {'interval': 'month'},
-            },
-            'quantity': 1,
-        }],
-        success_url=request.build_absolute_uri('/subscriptions/success/'),
-        cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
-    )
+    try:
+        # Create Stripe Checkout Session
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            customer_email=request.user.email,
+            mode='subscription',
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {'name': plan.name},
+                    'unit_amount': int(plan.price * 100),
+                    'recurring': {'interval': 'month'},
+                },
+                'quantity': 1,
+            }],
+            success_url=request.build_absolute_uri('/subscriptions/success/'),
+            cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
+        )
+        messages.success(request, f"You have successfully subscribed to {plan.name}! Redirecting to Stripe...")
+        return redirect(session.url)
 
-    return redirect(session.url)
+    except stripe.error.StripeError as e:
+        messages.error(request, f"Stripe error: {str(e)}")
+        return redirect('subscription_plans')
 
 
 @login_required
@@ -142,6 +147,7 @@ def stripe_webhook(request):
             user.subscription.end_date = now() + timedelta(days=30)
             user.subscription.status = True
             user.subscription.save()
+            messages.success(request, "Your subscription payment was successful!")
 
         elif event['type'] == 'customer.subscription.deleted':
             customer_email = event['data']['object']['customer_email']
@@ -150,6 +156,7 @@ def stripe_webhook(request):
             # Mark subscription as cancelled
             user.subscription.status = False
             user.subscription.save()
+            messages.error(request, "Your subscription has been cancelled due to a failed payment.")
 
     except stripe.error.SignatureVerificationError:
         return HttpResponse(status=400)
@@ -166,6 +173,8 @@ def user_profile(request):
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
+
+    messages.info(request, "Welcome back! Here is your subscription and borrowing summary.")
 
     return render(request, 'home/user_profile.html', {
         'user_profile': user_profile,
