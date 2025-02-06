@@ -312,38 +312,41 @@
 
 {% block postloadjs %}
     <script>
-        // Automatically hide messages after 5 seconds
+        // Automatically hide standard Django messages after 5 seconds
         setTimeout(() => {
-            $('.alert').alert('close');
+            $(".alert").alert("close");
         }, 5000);
 
         // Adjust padding dynamically for messages
-        document.addEventListener('DOMContentLoaded', () => {
-        const adjustPadding = () => {
-            const headerHeight = document.querySelector('header').offsetHeight;
-            const contentWrapper = document.querySelector('.content-wrapper');
-            const screenWidth = window.innerWidth;
+        document.addEventListener("DOMContentLoaded", () => {
+            const adjustPadding = () => {
+                const header = document.querySelector("header");
+                const contentWrapper = document.querySelector(".content-wrapper");
+                
+                if (header && contentWrapper) {  // Ensure elements exist to prevent errors
+                    const headerHeight = header.offsetHeight;
+                    const screenWidth = window.innerWidth;
 
-            if (screenWidth > 991) {
-                contentWrapper.style.paddingTop = '100px';
-            } else if (screenWidth <= 991 && screenWidth > 768) {
-                contentWrapper.style.paddingTop = '230px';
-            } else if (screenWidth <= 768) {
-                contentWrapper.style.paddingTop = '200px';
-            }
-        };
+                    if (screenWidth > 991) {
+                        contentWrapper.style.paddingTop = "100px";
+                    } else if (screenWidth <= 991 && screenWidth > 768) {
+                        contentWrapper.style.paddingTop = "230px";
+                    } else {
+                        contentWrapper.style.paddingTop = "200px";
+                    }
+                }
+            };
 
-        // Adjust padding on load
-        adjustPadding();
-
-        // Adjust padding on window resize
-        window.addEventListener('resize', adjustPadding);
-        })
+            // Adjust padding on load and window resize
+            adjustPadding();
+            window.addEventListener("resize", adjustPadding);
+        });
     </script>
+
     <script>
-        $(document).ready(function() {
-            $(".toast").toast({ delay: 5000 });  // Display for 5 seconds
-            $(".toast").toast("show");  // Show the toast automatically
+        // Show Bootstrap toasts automatically
+        $(document).ready(function () {
+            $(".toast").toast({ delay: 5000 }).toast("show");
         });
     </script>
 {% endblock %}
