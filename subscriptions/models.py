@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 import random
 from products.models import Product
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from notifications.models import Notification
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -12,8 +12,8 @@ class SubscriptionPlan(models.Model):
     """Model for subscription tiers"""
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    max_borrow_per_month = models.IntegerField()  # Max sets borrowable
-    max_active_borrows = models.IntegerField()  # Max active borrows
+    max_borrow_per_month = models.IntegerField()  # ✅ Max sets a user can borrow per month
+    max_active_borrows = models.IntegerField()  # Max sets a user can have at once
     can_cancel_anytime = models.BooleanField(default=True)
 
     def __str__(self):
@@ -40,6 +40,18 @@ class Subscription(models.Model):
             f"{'Active' if self.status else 'Inactive'})"
         )
 
+    def renew_subscription(self):
+        """Extend the subscription for another month"""
+        self.start_date = now()
+        self.end_date = now() + timedelta(days=30)
+        self.status = True
+        self.save()
+
+    def cancel_subscription(self):
+        """Cancel the subscription and prevent auto-renewal"""
+        self.status = False
+        self.save()
+
 
 def check_expired_subscriptions():
     """Deactivate subscriptions that have passed their end date"""
@@ -55,6 +67,12 @@ class Borrowing(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='subscriptions_borrowing'
+    )
+    subscription = models.ForeignKey(  # Links borrowing to a subscription
+        Subscription,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     lego_set = models.ForeignKey(
         'products.Product',
@@ -101,6 +119,11 @@ class UserProfile(models.Model):
         return (
             active_borrows < self.subscription.subscription_plan.max_active_borrows
         )
+
+    def reset_monthly_borrow_count(self):
+        """Reset the borrow count at the start of each month"""
+        self.borrowed_this_month = 0
+        self.save()
 
     def get_notifications(self):
         """Fetch the latest notifications for the user"""
