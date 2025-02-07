@@ -1,4 +1,5 @@
 import stripe
+import json
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,7 @@ from django.contrib import messages
 from notifications.models import Notification
 from allauth.account.models import EmailAddress
 from django.core.mail import send_mail
+import logging
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -142,57 +144,67 @@ def check_and_update_subscriptions():
             recipient_list=[sub.user.email],
         )
 
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def stripe_webhook(request):
-    """Handles Stripe Webhook events (e.g., subscription payments, cancellations)."""
+    """Handles Stripe Webhook events."""
     payload = request.body
     sig_header = request.headers.get("Stripe-Signature", "")
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
+        # Verify Stripe signature
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except ValueError as e:
+        # Invalid payload
+        return JsonResponse({"error": "Invalid payload"}, status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return JsonResponse({"error": "Invalid signature"}, status=400)
 
-        if event["type"] == "invoice.payment_succeeded":
-            intent = event["data"]["object"]
-            pid = intent["id"]
+    # Process Stripe events
+    if event["type"] == "invoice.payment_succeeded":
+        invoice = event["data"]["object"]
+        customer_id = invoice.get("customer")
 
-            # Get the latest charge object
-            latest_charge_id = intent.get("latest_charge")
-            stripe_charge = stripe.Charge.retrieve(latest_charge_id) if latest_charge_id else None
+        # Fetch user profile based on Stripe customer ID
+        user_profile = UserProfile.objects.filter(user__stripe_customer_id=customer_id).first()
 
-            # Extract billing details
-            billing_details = stripe_charge["billing_details"] if stripe_charge else None
+        if user_profile and user_profile.subscription:
+            # Extend subscription for another month
+            user_profile.subscription.end_date = now() + timedelta(days=30)
+            user_profile.subscription.status = True
+            user_profile.subscription.save()
 
-            customer_email = billing_details["email"] if billing_details else None
-            if customer_email:
-                user_profile = get_object_or_404(UserProfile, user__email=customer_email)
+            return JsonResponse({"message": "Subscription renewed successfully"}, status=200)
 
-                # Fetch or Create Subscription
-                subscription, created = Subscription.objects.get_or_create(user=user_profile.user)
-                subscription.start_date = now()
-                subscription.end_date = now() + timedelta(days=30)
-                subscription.status = True
-                subscription.stripe_subscription_id = intent.get("subscription")  # Store Stripe subscription ID
-                subscription.save()
+    elif event["type"] == "customer.subscription.created":
+        subscription_data = event["data"]["object"]
+        customer_id = subscription_data.get("customer")
+        stripe_subscription_id = subscription_data.get("id")
+        price_id = subscription_data["items"]["data"][0]["price"]["id"]
 
-                messages.success(request, "Your subscription is now active!")
+        # Find corresponding subscription plan
+        plan = SubscriptionPlan.objects.filter(stripe_price_id=price_id).first()
 
-        elif event["type"] == "customer.subscription.deleted":
-            customer_email = event["data"]["object"].get("customer_email")
-            if customer_email:
-                user_profile = get_object_or_404(UserProfile, user__email=customer_email)
+        # Fetch user profile based on Stripe customer ID
+        user_profile = UserProfile.objects.filter(user__stripe_customer_id=customer_id).first()
 
-                # Mark subscription as cancelled
-                if user_profile.subscription:
-                    user_profile.subscription.status = False
-                    user_profile.subscription.save()
-                    messages.error(request, "Your subscription has been cancelled due to a failed payment.")
+        if user_profile and plan:
+            # Create a new Subscription
+            Subscription.objects.create(
+                user=user_profile.user,
+                subscription_plan=plan,
+                stripe_subscription_id=stripe_subscription_id,
+                start_date=now(),
+                end_date=now() + timedelta(days=30),
+                status=True,
+            )
 
-    except stripe.error.SignatureVerificationError:
-        return HttpResponse(status=400)
+            return JsonResponse({"message": "New subscription created"}, status=200)
 
-    return HttpResponse(status=200)
+    return JsonResponse({"message": "Unhandled event type"}, status=200)
 
 
 def subscription_success(request):

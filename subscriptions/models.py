@@ -13,9 +13,10 @@ class SubscriptionPlan(models.Model):
     """Model for subscription tiers"""
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    max_borrow_per_month = models.IntegerField()  # ✅ Max sets a user can borrow per month
+    max_borrow_per_month = models.IntegerField()  #  Max sets a user can borrow per month
     max_active_borrows = models.IntegerField()  # Max sets a user can have at once
     can_cancel_anytime = models.BooleanField(default=True)
+    stripe_price_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -95,13 +96,16 @@ class UserProfile(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+   
+    stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
     subscription = models.ForeignKey(
-        Subscription,
+        "subscriptions.Subscription",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     borrowed_this_month = models.IntegerField(default=0)
+    stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
