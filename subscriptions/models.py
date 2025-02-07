@@ -140,6 +140,13 @@ class UserProfile(models.Model):
             return random.choice(available_sets)
         return None
 
+    def has_requested_mystery_set(self):
+        """Check if the user has already requested a mystery set this month."""
+        return Borrowing.objects.filter(
+            user=self.user,
+            lego_set__category__name="Mystery",
+            borrowed_on__month=now().month
+        ).exists()
 
 # Create a UserProfile automatically when a new User is created
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

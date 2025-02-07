@@ -1,21 +1,24 @@
 from django.contrib import admin
-from .models import Category, Product, Review
+from .models import Product, Category, Review
 
+class ReviewInline(admin.TabularInline):
+    model = Review
+    extra = 1  # Adds one extra empty row for new reviews
 
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('friendly_name', 'name')
-
-
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('sku', 'name', 'category', 'get_average_rating', 'image', 'is_borrowed')
+    list_display = ('sku', 'name', 'category', 'rating', 'stock', 'is_borrowed')
+    search_fields = ('name', 'description', 'category__name')
+    list_filter = ('category', 'is_borrowed')
+    inlines = [ReviewInline]  # Allows editing reviews directly within the product form
 
-    def get_average_rating(self, obj):
-        return obj.average_rating
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'friendly_name')
+    search_fields = ('name',)
 
-    get_average_rating.admin_order_field = 'rating' 
-    get_average_rating.short_description = 'Avg. Rating'
-
-
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Product, ProductAdmin)
-admin.site.register(Review)
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'rating', 'created_on')
+    list_filter = ('created_on', 'rating')
+    search_fields = ('user__username', 'product__name')

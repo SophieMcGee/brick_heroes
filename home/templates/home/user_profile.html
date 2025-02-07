@@ -85,7 +85,7 @@
 
             <!-- Mystery Subscription Request -->
             {% if subscription and subscription.subscription_plan.name == "Mystery Subscription" %}
-                {% if not mystery_set_requested %}
+                {% if not user_profile.has_requested_mystery_set %}
                     <div class="card bg-light my-3 p-3 border text-dark">
                         <h3 class="text-warning">Request Your Mystery Set for This Month</h3>
                         <p>As part of your Mystery Subscription, you are entitled to a random LEGO set each month. Click below to request your mystery set.</p>
@@ -97,6 +97,7 @@
                     </div>
                 {% endif %}
             {% endif %}
+
 
             <!-- Borrowed Sets -->
             <h3 class="text-warning mt-4">Currently Borrowed</h3>
