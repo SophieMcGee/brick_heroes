@@ -628,6 +628,50 @@ header .btn:hover {
     color: #ffd700;
 }
 
+/* Toast Message Styling */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;  /* Ensures the toasts stay above everything */
+    min-width: 250px;
+}
+
+/* Toast Styling */
+.toast {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0.95;
+}
+
+/* Toast Header */
+.toast-header {
+    font-weight: bold;
+}
+
+/* Toast Cap Colour Coding */
+.toast-cap {
+    height: 4px;
+    width: 100%;
+}
+
+.toast-success .toast-cap {
+    background-color: #28a745; /* Green cap for success */
+}
+
+.toast-error .toast-cap {
+    background-color: #dc3545; /* Red cap for error */
+}
+
+.toast-warning .toast-cap {
+    background-color: #ffc107; /* Yellow cap for warning */
+}
+
+.toast-info .toast-cap {
+    background-color: #17a2b8; /* Blue cap for info */
+}
+
+
 /* Media Queries */
 
 @media (min-width: 1300px) {
