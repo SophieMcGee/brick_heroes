@@ -28,7 +28,7 @@
             <!-- Stock and Borrowing Option -->
             {% if product.stock > 0 %}
                 {% if subscription_valid %}
-                    <a href="{% url 'borrow_product' product.id %}" class="btn btn-success btn-lg">
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-lg">
                         Borrow this set
                     </a>
                 {% else %}
