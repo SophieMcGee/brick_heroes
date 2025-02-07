@@ -19,8 +19,16 @@
                     <h3 class="card-title logo-font">€{{ plan.price }}/Month</h3>
                     <h5 class="card-subtitle mb-3">{{ plan.name }}</h5>
                     <ul class="list-unstyled">
-                        <li>Borrow up to {{ plan.max_borrow_per_month }} set(s) per month</li>
-                        <li>Max {{ plan.max_active_borrows }} active borrow(s) at a time</li>
+                        {% if plan.id == 1 %}
+                            <li>Borrow one set each month</li>
+                            <li>Our heroes will pick your set</li>
+                        {% elif plan.id == 2 %}
+                            <li>Borrow one set at a time</li>
+                            <li>Return to borrow another</li>
+                        {% elif plan.id == 3 %}
+                            <li>Borrow up to two sets at a time</li>
+                            <li>Return to borrow more</li>
+                        {% endif %}
                         <li>Free returns</li>
                         <li>Cancel anytime</li>
                     </ul>
