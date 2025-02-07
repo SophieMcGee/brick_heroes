@@ -230,29 +230,32 @@ def subscription_cancel(request):
     """Display subscription cancellation message."""
     return render(request, "subscriptions/cancel.html")
 
+
 @login_required
 def user_profile(request):
     """User profile page displaying subscriptions, emails, and borrowed sets."""
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    subscription = Subscription.objects.filter(user=request.user).first()
+    user_profile = request.user.userprofile
+    
+    # Check if the user has an active subscription
+    if user_profile.subscription and user_profile.subscription.status:
+        subscription = user_profile.subscription
+        subscription_plan_name = subscription.subscription_plan.name if subscription.subscription_plan else "No Plan"
+    else:
+        subscription = None
+        subscription_plan_name = "No Active Subscription"
+    
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
 
     messages.info(request, "Welcome back! Here is your subscription and borrowing summary.")
 
-    # Check if user has a mystery subscription
-    mystery_subscription = subscription and subscription.subscription_plan.name == "Mystery Subscription"
-    mystery_set_requested = Borrowing.objects.filter(user=request.user, lego_set__category__name='Mystery').filter(borrowed_on__month=now().month).exists()
-
-    context = {
+    # Return the context with subscription details
+    return render(request, 'home/user_profile.html', {
         'user_profile': user_profile,
         'subscription': subscription,
+        'subscription_plan_name': subscription_plan_name,
         'borrowed_sets': borrowed_sets,
         'notifications': notifications,
         'emailaddresses': emailaddresses,
-        'mystery_subscription': mystery_subscription,
-        'mystery_set_requested': mystery_set_requested,
-    }
-
-    return render(request, 'home/user_profile.html', context)
+    })

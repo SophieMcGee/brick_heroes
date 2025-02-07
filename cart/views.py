@@ -115,6 +115,8 @@ def request_mystery_set(request):
     user_profile = request.user.userprofile
     subscription = user_profile.subscription
 
+    print(user_profile.has_requested_mystery_set())
+
     # Ensure the user has the Mystery Subscription
     if not subscription or subscription.subscription_plan.name != "Mystery Subscription":
         messages.error(request, "You must have a Mystery Subscription to request a set.")

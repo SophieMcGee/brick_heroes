@@ -149,7 +149,10 @@ class UserProfile(models.Model):
         ).exists()
 
 # Create a UserProfile automatically when a new User is created
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_user_profile(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Subscription)
+def update_user_profile_with_subscription(sender, instance, created, **kwargs):
+    """Automatically update the UserProfile with the active subscription when a new subscription is created."""
     if created:
-        UserProfile.objects.create(user=instance)
+        user_profile = instance.user.userprofile
+        user_profile.subscription = instance  # Link the UserProfile to the new Subscription
+        user_profile.save()

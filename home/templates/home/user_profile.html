@@ -71,16 +71,16 @@
             <!-- Subscription Details -->
             <h3 class="text-warning mt-4">Subscription Details</h3>
             {% if subscription %}
-            <div class="card bg-warning text-dark my-3 p-3">
-                <h3>Subscription: {{ subscription.subscription_type }}</h3>
-                <p>Start Date: {{ subscription.start_date }}</p>
-                <p>End Date: {{ subscription.end_date }}</p>
-                <p>Status: {% if subscription.status %}Active{% else %}Expired{% endif %}</p>
-            </div>
+                <div class="card bg-warning text-dark my-3 p-3">
+                    <h3>Subscription: {{ subscription_plan_name }}</h3>
+                    <p>Start Date: {{ subscription.start_date }}</p>
+                    <p>End Date: {{ subscription.end_date }}</p>
+                    <p>Status: {% if subscription.status %}Active{% else %}Expired{% endif %}</p>
+                </div>
             {% else %}
-            <p class="text-danger">No active subscription. 
-                <a href="{% url 'subscription_plans' %}" class="btn btn-warning">Subscribe Now</a>
-            </p>
+                <p class="text-danger">No active subscription. 
+                    <a href="{% url 'subscription_plans' %}" class="btn btn-warning">Subscribe Now</a>
+                </p>
             {% endif %}
 
             <!-- Mystery Subscription Request -->
