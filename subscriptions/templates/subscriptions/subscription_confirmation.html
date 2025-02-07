@@ -12,10 +12,15 @@
         <div class="card-body">
             <h3 class="card-title text-uppercase font-weight-bold text-center">{{ plan.name }}</h3>
             <h4 class="card-title mb-3 text-center"><strong>€{{ plan.price }}/MONTH</strong></h4>
-            <ul class="list-unstyled text-center">
-                <li>Maximum borrows per month: {{ plan.max_borrow_per_month }}</li>
-                <li>Active borrows at a time: {{ plan.max_active_borrows }}</li>
-                <li>Cancel anytime: Yes</li>
+            <ul class="list-unstyled">
+                {% if plan.max_active_borrows == 1 %}
+                    <li>Borrow one set at a time</li>
+                {% else %}
+                    <li>Borrow multiple sets but return them before borrowing again</li>
+                {% endif %}
+                <li>Max {{ plan.max_active_borrows }} active borrow(s) at a time</li>
+                <li>Free returns</li>
+                <li>Cancel anytime</li>
             </ul>
         </div>
     </div>

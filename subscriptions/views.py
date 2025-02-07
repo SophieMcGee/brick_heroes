@@ -38,6 +38,7 @@ def subscription_confirmation(request, plan_id):
         {"plan": plan},
     )
 
+
 @login_required
 def subscribe(request, plan_id):
     """Handles Stripe Checkout for subscription plans."""
@@ -63,10 +64,7 @@ def subscribe(request, plan_id):
                 },
                 'quantity': 1,
             }],
-            customer_creation="if_required",  
-            allow_promotion_codes=True, 
-            automatic_tax={'enabled': False},
-            success_url=request.build_absolute_uri(f"/subscriptions/success/?session_id={session.id}"),
+            success_url=request.build_absolute_uri(f"/subscriptions/success/"),
             cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
         )
 
