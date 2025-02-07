@@ -28,6 +28,17 @@ def subscription_plans(request):
 
 
 @login_required
+def subscription_confirmation(request, plan_id):
+    """Displays the confirmation page before proceeding to Stripe checkout."""
+    plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
+
+    return render(
+        request,
+        "subscriptions/subscription_confirmation.html",
+        {"plan": plan},
+    )
+
+@login_required
 def subscribe(request, plan_id):
     """Handles Stripe Checkout for subscription plans."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)

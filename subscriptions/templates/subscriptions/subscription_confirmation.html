@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="text-warning">Confirm Your Subscription</h1>
+    <p class="lead text-white">Review your plan before proceeding to checkout.</p>
+
+    <div class="card bg-warning text-dark shadow mt-4">
+        <div class="card-body">
+            <h3 class="card-title logo-font">{{ plan.name }}</h3>
+            <h4 class="card-subtitle mb-3">€{{ plan.price }}/Month</h4>
+            <ul class="list-unstyled">
+                <li>Maximum borrows per month: {{ plan.max_borrow_per_month }}</li>
+                <li>Active borrows at a time: {{ plan.max_active_borrows }}</li>
+                <li>Cancel anytime: {% if plan.can_cancel_anytime %} Yes{% else %} No{% endif %}</li>
+            </ul>
+        </div>
+    </div>
+
+    <a href="{% url 'subscribe' plan.id %}" class="btn btn-success mt-4">Proceed to Checkout</a>
+    <a href="{% url 'subscription_plans' %}" class="btn btn-danger mt-2">Cancel</a>
+</div>
+{% endblock %}
