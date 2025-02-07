@@ -162,42 +162,45 @@ def stripe_webhook(request):
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
-        # Verify Stripe signature
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except ValueError as e:
-        return JsonResponse({"error": "Invalid payload"}, status=400)
-    except stripe.error.SignatureVerificationError as e:
-        return JsonResponse({"error": "Invalid signature"}, status=400)
+    except (ValueError, stripe.error.SignatureVerificationError) as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
-    # Print Event Type
     logger.info(f"Stripe Webhook Event: {event['type']}")
 
-    # Debugging: Print Webhook Data
     if event["type"] == "customer.subscription.created":
         subscription_data = event["data"]["object"]
         customer_id = subscription_data.get("customer")
         stripe_subscription_id = subscription_data.get("id")
         price_id = subscription_data["items"]["data"][0]["price"]["id"]
 
-        # Print debug info
-        logger.info(f"Received subscription event for Customer ID: {customer_id}")
-        logger.info(f"Stripe Subscription ID: {stripe_subscription_id}")
-        logger.info(f" Stripe Price ID: {price_id}")
+        # Debugging: Print Stripe IDs
+        logger.info(f"Customer ID: {customer_id}")
+        logger.info(f"Subscription ID: {stripe_subscription_id}")
+        logger.info(f"Price ID: {price_id}")
 
-        # Check if we have a matching plan
+        # Ensure we have a matching plan
         plan = SubscriptionPlan.objects.filter(stripe_price_id=price_id).first()
         if not plan:
-            logger.warning(f" No matching SubscriptionPlan for Stripe Price ID: {price_id}")
+            logger.warning(f"No matching SubscriptionPlan for Stripe Price ID: {price_id}")
             return JsonResponse({"error": "No matching plan"}, status=400)
 
-        # Check if we have a matching user
+        # Ensure we have a matching user
         user_profile = UserProfile.objects.filter(stripe_customer_id=customer_id).first()
         if not user_profile:
             logger.warning(f"No matching user for Stripe Customer ID: {customer_id}")
             return JsonResponse({"error": "No matching user"}, status=400)
 
-        # Save the subscription
-        Subscription.objects.create(
+        # Prevent creating duplicate subscriptions
+        existing_subscription = Subscription.objects.filter(
+            user=user_profile.user, status=True
+        ).first()
+        if existing_subscription:
+            logger.info(f"Subscription already exists for {user_profile.user.username}. Skipping creation.")
+            return JsonResponse({"message": "Subscription already exists"}, status=200)
+
+        # Create the subscription
+        subscription = Subscription.objects.create(
             user=user_profile.user,
             subscription_plan=plan,
             stripe_subscription_id=stripe_subscription_id,
@@ -206,11 +209,16 @@ def stripe_webhook(request):
             status=True,
         )
 
-        logger.info(f" Subscription saved for {user_profile.user.username}")
+        # Update user profile with subscription
+        user_profile.subscription = subscription
+        user_profile.save()
+
+        logger.info(f"Subscription saved for {user_profile.user.username}")
 
         return JsonResponse({"message": "New subscription created"}, status=200)
 
     return JsonResponse({"message": "Unhandled event type"}, status=200)
+
 
 
 def subscription_success(request):
