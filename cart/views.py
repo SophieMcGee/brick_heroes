@@ -109,3 +109,38 @@ def checkout(request):
     }
     return render(request, "cart/checkout.html", context)
 
+@login_required
+def request_mystery_set(request):
+    """Allow users with Mystery Subscription to request a set."""
+    user_profile = request.user.userprofile
+    subscription = user_profile.subscription
+
+    # Ensure the user has the Mystery Subscription
+    if not subscription or subscription.subscription_plan.name != "Mystery Subscription":
+        messages.error(request, "You must have a Mystery Subscription to request a set.")
+        return redirect('user_profile')
+
+    # Check if the user has already requested a set this month
+    if CartItem.objects.filter(cart__user=request.user, product__category__name='Mystery').filter(added_on__month=now().month).exists():
+        messages.warning(request, "You have already requested a mystery set for this month.")
+        return redirect('user_profile')
+
+    # Assign a random mystery set from the available sets
+    mystery_set = Product.objects.filter(category__name='Mystery', is_borrowed=False).first()
+    if mystery_set:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=mystery_set)
+
+        if created:
+            messages.success(request, f"{mystery_set.name} has been added to your borrow cart!")
+
+        # Mark the set as borrowed and save the cart item
+        mystery_set.is_borrowed = True
+        mystery_set.save()
+
+        # Redirect user to the delivery details page
+        return redirect('checkout')
+
+    messages.error(request, "No mystery sets available at the moment.")
+    return redirect('user_profile')
+

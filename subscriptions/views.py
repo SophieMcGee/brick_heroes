@@ -241,10 +241,18 @@ def user_profile(request):
 
     messages.info(request, "Welcome back! Here is your subscription and borrowing summary.")
 
-    return render(request, 'home/user_profile.html', {
+    # Check if user has a mystery subscription
+    mystery_subscription = subscription and subscription.subscription_plan.name == "Mystery Subscription"
+    mystery_set_requested = Borrowing.objects.filter(user=request.user, lego_set__category__name='Mystery').filter(borrowed_on__month=now().month).exists()
+
+    context = {
         'user_profile': user_profile,
         'subscription': subscription,
         'borrowed_sets': borrowed_sets,
         'notifications': notifications,
         'emailaddresses': emailaddresses,
-    })
+        'mystery_subscription': mystery_subscription,
+        'mystery_set_requested': mystery_set_requested,
+    }
+
+    return render(request, 'home/user_profile.html', context)
