@@ -39,15 +39,17 @@ def add_to_cart(request, product_id):
     active_borrows = CartItem.objects.filter(cart=cart).count()
 
     if active_borrows >= subscription.subscription_plan.max_active_borrows:
-        messages.warning(
-            request, 
-            f"You have reached your borrowing limit of {subscription.subscription_plan.max_active_borrows} sets."
-        )
+        messages.error(request, f"You have reached your borrowing limit of {subscription.subscription_plan.max_active_borrows} sets.")
         return redirect("shopping_cart")
 
     # Add LEGO set to cart
-    CartItem.objects.get_or_create(cart=cart, product=product)
-    messages.success(request, f"{product.name} has been added to your borrowed list!")
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    
+    if created:
+        messages.success(request, f"{product.name} has been added to your borrow cart!")
+    else:
+        messages.info(request, f"{product.name} is already in your borrow cart.")
+
     return redirect("shopping_cart")
 
 
@@ -57,8 +59,12 @@ def remove_from_cart(request, item_id):
     cart = get_object_or_404(Cart, user=request.user)
     cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
 
-    messages.success(request, f"{cart_item.product.name} has been removed from your borrowed sets.")
-    cart_item.delete()
+    try:
+        cart_item.delete()
+        messages.success(request, f"{cart_item.product.name} has been removed from your borrow cart.")
+    except Exception as e:
+        messages.error(request, f"Error removing item: {str(e)}")
+
     return redirect("shopping_cart")
 
 
@@ -75,27 +81,30 @@ def checkout(request):
     if request.method == "POST":
         form = DeliveryInfoForm(request.POST)
         if form.is_valid():
-            with transaction.atomic():
-                # Create a new BorrowOrder
-                order = form.save(commit=False)
-                order.user = request.user
-                order.save()
+            try:
+                with transaction.atomic():
+                    # Create a new BorrowOrder
+                    order = form.save(commit=False)
+                    order.user = request.user
+                    order.save()
 
-                # Create BorrowOrderItems for each item in the cart
-                for item in cart_items:
-                    BorrowOrderItem.objects.create(
-                        order=order,
-                        product=item.product,
-                        quantity=1
-                    )
+                    # Create BorrowOrderItems for each item in the cart
+                    for item in cart_items:
+                        BorrowOrderItem.objects.create(
+                            order=order,
+                            product=item.product,
+                            quantity=1
+                        )
 
-                # Clear the cart after order is confirmed
-                cart.items.all().delete()
-
-                messages.success(request, "Your borrow order has been placed successfully! Your sets will be shipped soon.")
-                return redirect("user_profile")
+                    # Clear the cart after order is confirmed
+                    cart.items.all().delete()
+                    messages.success(request, "Your borrow order has been placed successfully!")
+                    return redirect("user_profile")
+            except Exception as e:
+                messages.error(request, f"An error occurred while processing your order: {str(e)}")
         else:
-            messages.error(request, "Please correct the errors below.")
+            messages.error(request, "Please correct the errors in your delivery details.")
+
     else:
         form = DeliveryInfoForm()
 
