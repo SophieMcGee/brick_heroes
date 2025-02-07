@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from orders.models import BorrowOrder, BorrowOrderItem
 from .models import Cart, CartItem
 from products.models import Product
 from .forms import DeliveryInfoForm
@@ -83,20 +82,16 @@ def checkout(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    # Create a new BorrowOrder
                     order = form.save(commit=False)
                     order.user = request.user
                     order.save()
 
-                    # Create BorrowOrderItems for each item in the cart
                     for item in cart_items:
-                        BorrowOrderItem.objects.create(
-                            order=order,
-                            product=item.product,
-                            quantity=1
+                        Borrowing.objects.create(
+                            user=request.user,
+                            lego_set=item.product,
+                            is_returned=False
                         )
-
-                    # Clear the cart after order is confirmed
                     cart.items.all().delete()
                     messages.success(request, "Your borrow order has been placed successfully!")
                     return redirect("user_profile")

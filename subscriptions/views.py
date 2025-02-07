@@ -186,6 +186,15 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 
+def subscription_success(request):
+    """Display subscription success message."""
+    return render(request, "subscriptions/success.html")
+
+
+def subscription_cancel(request):
+    """Display subscription cancellation message."""
+    return render(request, "subscriptions/cancel.html")
+
 @login_required
 def user_profile(request):
     """User profile page displaying subscriptions, emails, and borrowed sets."""
@@ -203,5 +212,4 @@ def user_profile(request):
         'borrowed_sets': borrowed_sets,
         'notifications': notifications,
         'emailaddresses': emailaddresses,
-        'orders': orders,
     })
