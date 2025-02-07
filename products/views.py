@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.utils.timezone import now
-from django.contrib.auth.decorators import login_required
 from .models import Product, Category, Review
 from subscriptions.models import UserProfile, Subscription
 
@@ -77,26 +76,22 @@ def product_detail(request, product_id):
     """A view to show individual product details"""
     product = get_object_or_404(Product, id=product_id)
 
-    # Check if user is subscribed & active
+    # Default: No active subscription
     user_subscription = None
+    subscription_valid = False
+
     if request.user.is_authenticated:
         user_profile = UserProfile.objects.filter(user=request.user).first()
-        if user_profile and user_profile.subscription:
-            if (
-                user_profile.subscription.status and
-                user_profile.subscription.end_date > now()
-            ):
-                user_subscription = user_profile.subscription
-            else:
-                messages.warning(
-                    request,
-                    "Your subscription has expired! Renew to borrow."
-                )
-                return redirect('renew_subscription')
+        
+        if user_profile:
+            user_subscription = Subscription.objects.filter(user=request.user, status=True).first()
+            if user_subscription and user_subscription.end_date and user_subscription.end_date > now():
+                subscription_valid = True
 
     return render(request, 'products/product_detail.html', {
         'product': product,
         'user_subscription': user_subscription,
+        'subscription_valid': subscription_valid,
     })
 
 

@@ -6,65 +6,66 @@
     <div class="row mt-5">
         <!-- Product Image -->
         <div class="col-md-6 offset-md-1">
-            <img src="{{ product.image_url }}" class="img-fluid" alt="{{ product.name }}">
+            <img src="{{ product.image_url }}" class="img-fluid rounded shadow" alt="{{ product.name }}">
         </div>
 
         <!-- Product Details -->
         <div class="col-12 col-md-4">
-            <h1 class="display-6">{{ product.name }}</h1>
+            <h1 class="display-6 text-warning">{{ product.name }}</h1>
 
             <!-- Display average rating -->
             {% if product.average_rating %}
-                <p><strong>Rated {{ product.average_rating|floatformat:1 }} out of 5</strong> ({{ product.reviews.count }} reviews)</p>
+                <p><strong>Rated {{ product.average_rating|floatformat:1 }} out of 5</strong> 
+                    ({{ product.reviews.count }} reviews)
+                </p>
             {% else %}
                 <p>No ratings yet</p>
             {% endif %}
+
             <!-- Product description -->
-            <p class="mt-4">{{ product.description }}</p>
+            <p class="mt-4 text-light">{{ product.description }}</p>
 
             <!-- Stock and Borrowing Option -->
             {% if product.stock > 0 %}
-                {% if user_subscription %}
-                    <a href="{% url 'add_to_cart' 'product' product.id %}" class="btn btn-primary btn-lg">
-                        Borrow This Set
+                {% if subscription_valid %}
+                    <a href="{% url 'borrow_product' product.id %}" class="btn btn-success btn-lg">
+                        Borrow this set
                     </a>
-                    <p class="text-muted mt-2">* This set will be sent as part of your subscription</p>
                 {% else %}
-                    <p class="text-warning">You need an active subscription to borrow this set.</p>
                     <a href="{% url 'subscription_plans' %}" class="btn btn-warning btn-lg">
-                        Subscribe Now
+                        Subscribe to Borrow
                     </a>
-                    <br>
                 {% endif %}
             {% else %}
-                <p class="text-danger mt-3">Out of Stock</p>
+                <p class="text-danger mt-3 font-weight-bold">Out of Stock</p>
             {% endif %}
+
             <br>
-             <!-- Display all reviews -->
-             <h2>Reviews:</h2>
-             {% if product.reviews.all %}
-                 {% for review in product.reviews.all %}
-                     <div class="review p-3 border rounded my-2">
-                         <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
-                         <p>{{ review.content }}</p>
-                         <small>Posted on {{ review.created_on }}</small>
- 
-                         <!-- Show delete button only for staff members -->
-                         {% if request.user.is_staff %}
-                             <form action="{% url 'delete_review' review.id %}" method="POST" class="d-inline">
-                                 {% csrf_token %}
-                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                             </form>
-                         {% endif %}
-                     </div>
-                 {% endfor %}
-             {% else %}
-                 <p>No reviews yet.</p>
-             {% endif %}
- 
-             <!-- Button to Add a Review -->
-             <a href="{% url 'add_review' product.id %}" class="btn btn-primary">Write a Review</a>
-         </div>
+
+            <!-- Display all reviews -->
+            <h2 class="mt-4 text-warning">Reviews:</h2>
+            {% if product.reviews.all %}
+                {% for review in product.reviews.all %}
+                    <div class="review p-3 border rounded my-2 bg-dark text-light">
+                        <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
+                        <p>{{ review.content }}</p>
+                        <small>Posted on {{ review.created_on }}</small>
+
+                        <!-- Show delete button only for staff members -->
+                        {% if request.user.is_staff %}
+                            <form action="{% url 'delete_review' review.id %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet.</p>
+            {% endif %}
+
+            <!-- Button to Add a Review -->
+            <a href="{% url 'add_review' product.id %}" class="btn btn-primary mt-3">Write a Review</a>
         </div>
     </div>
 </div>
