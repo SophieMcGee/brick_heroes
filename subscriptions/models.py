@@ -6,6 +6,7 @@ from django.utils.timezone import now, timedelta
 from notifications.models import Notification
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import uuid
 
 
 class SubscriptionPlan(models.Model):
@@ -30,6 +31,7 @@ class Subscription(models.Model):
         SubscriptionPlan,
         on_delete=models.CASCADE,
     )
+    stripe_subscription_id = models.CharField(max_length=255, null=True, blank=True)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = models.BooleanField(default=True)

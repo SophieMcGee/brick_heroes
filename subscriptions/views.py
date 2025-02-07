@@ -10,7 +10,6 @@ from django.contrib import messages
 from notifications.models import Notification
 from allauth.account.models import EmailAddress
 from django.core.mail import send_mail
-from orders.models import BorrowOrder
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -20,8 +19,11 @@ def subscription_plans(request):
     plans = SubscriptionPlan.objects.all()
     return render(
         request,
-        'subscriptions/subscription_plans.html',
-        {'plans': plans},
+        "subscriptions/subscription_plans.html",
+        {
+            "plans": plans,
+            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+        },
     )
 
 
@@ -50,10 +52,14 @@ def subscribe(request, plan_id):
                 },
                 'quantity': 1,
             }],
-            success_url=request.build_absolute_uri('/subscriptions/success/'),
+            customer_creation="if_required",  
+            allow_promotion_codes=True, 
+            automatic_tax={'enabled': False},
+            success_url=request.build_absolute_uri(f"/subscriptions/success/?session_id={session.id}"),
             cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
         )
-        messages.success(request, f"You have successfully subscribed to {plan.name}! Redirecting to Stripe...")
+
+        messages.success(request, f"Redirecting to Stripe for {plan.name} subscription...")
         return redirect(session.url)
 
     except stripe.error.StripeError as e:
@@ -132,31 +138,47 @@ def check_and_update_subscriptions():
 def stripe_webhook(request):
     """Handles Stripe Webhook events (e.g., subscription payments, cancellations)."""
     payload = request.body
-    sig_header = request.headers.get('Stripe-Signature', '')
+    sig_header = request.headers.get("Stripe-Signature", "")
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
 
-        if event['type'] == 'invoice.payment_succeeded':
-            # User successfully paid for a subscription
-            customer_email = event['data']['object']['customer_email']
-            user = get_object_or_404(UserProfile, user__email=customer_email)
+        if event["type"] == "invoice.payment_succeeded":
+            intent = event["data"]["object"]
+            pid = intent["id"]
 
-            # Extend subscription by another month
-            user.subscription.end_date = now() + timedelta(days=30)
-            user.subscription.status = True
-            user.subscription.save()
-            messages.success(request, "Your subscription payment was successful!")
+            # Get the latest charge object (UPDATED)
+            latest_charge_id = intent.get("latest_charge")
+            stripe_charge = stripe.Charge.retrieve(latest_charge_id) if latest_charge_id else None
 
-        elif event['type'] == 'customer.subscription.deleted':
-            customer_email = event['data']['object']['customer_email']
-            user = get_object_or_404(UserProfile, user__email=customer_email)
-            
-            # Mark subscription as cancelled
-            user.subscription.status = False
-            user.subscription.save()
-            messages.error(request, "Your subscription has been cancelled due to a failed payment.")
+            # Extract billing details (UPDATED)
+            billing_details = stripe_charge["billing_details"] if stripe_charge else None
+            shipping_details = intent.get("shipping", {})
+
+            # Extract payment details (UPDATED)
+            grand_total = round(stripe_charge["amount"] / 100, 2) if stripe_charge else 0
+
+            customer_email = billing_details["email"] if billing_details else None
+            if customer_email:
+                user = get_object_or_404(UserProfile, user__email=customer_email)
+
+                # Extend subscription
+                user.subscription.end_date = now() + timedelta(days=30)
+                user.subscription.status = True
+                user.subscription.save()
+
+                messages.success(request, "Your subscription payment was successful!")
+
+        elif event["type"] == "customer.subscription.deleted":
+            customer_email = event["data"]["object"].get("customer_email")
+            if customer_email:
+                user = get_object_or_404(UserProfile, user__email=customer_email)
+
+                # Mark subscription as cancelled
+                user.subscription.status = False
+                user.subscription.save()
+                messages.error(request, "Your subscription has been cancelled due to a failed payment.")
 
     except stripe.error.SignatureVerificationError:
         return HttpResponse(status=400)
@@ -168,7 +190,6 @@ def stripe_webhook(request):
 def user_profile(request):
     """User profile page displaying subscriptions, emails, and borrowed sets."""
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    orders = BorrowOrder.objects.filter(user=request.user).order_by('-created_at')
     subscription = Subscription.objects.filter(user=request.user).first()
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
