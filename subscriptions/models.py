@@ -6,14 +6,13 @@ from django.utils.timezone import now, timedelta
 from notifications.models import Notification
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import uuid
 
 
 class SubscriptionPlan(models.Model):
     """Model for subscription tiers"""
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    max_borrow_per_month = models.IntegerField()  #  Max sets a user can borrow per month
+    max_borrow_per_month = models.IntegerField()
     max_active_borrows = models.IntegerField()  # Max sets a user can have at once
     can_cancel_anytime = models.BooleanField(default=True)
     stripe_price_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
@@ -56,12 +55,12 @@ class Subscription(models.Model):
         self.save()
 
 
-def check_expired_subscriptions():
-    """Deactivate subscriptions that have passed their end date"""
-    expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
-    for sub in expired_subs:
-        sub.status = False
-        sub.save()
+    def check_expired_subscriptions():
+        """Deactivate subscriptions that have passed their end date"""
+        expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
+        for sub in expired_subs:
+            sub.status = False
+            sub.save()
 
 
 class Borrowing(models.Model):
@@ -96,7 +95,7 @@ class UserProfile(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-   
+
     stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
     subscription = models.ForeignKey(
         "subscriptions.Subscription",
@@ -105,7 +104,6 @@ class UserProfile(models.Model):
         blank=True,
     )
     borrowed_this_month = models.IntegerField(default=0)
-    stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.user.username

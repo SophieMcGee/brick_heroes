@@ -45,25 +45,33 @@ def subscription_confirmation(request, plan_id):
 def subscribe(request, plan_id):
     """Handles Stripe Checkout for subscription plans."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
-    
+
+    # Ensure the plan has a Stripe Price ID
+    if not plan.stripe_price_id:
+        messages.error(request, "Subscription plan is missing a Stripe Price ID.")
+        return redirect('subscription_plans')
+
     existing_subscription = Subscription.objects.filter(user=request.user, status=True).first()
     if existing_subscription:
         messages.warning(request, "You already have an active subscription.")
         return redirect('user_profile')
 
     try:
-        # Create Stripe Checkout Session
+        # Fetch or Create Stripe Customer for the User
+        if not request.user.userprofile.stripe_customer_id:
+            customer = stripe.Customer.create(email=request.user.email)
+            request.user.userprofile.stripe_customer_id = customer['id']
+            request.user.userprofile.save()
+        else:
+            customer = stripe.Customer.retrieve(request.user.userprofile.stripe_customer_id)
+
+        # Create Stripe Checkout Session using the existing Price ID
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
-            customer_email=request.user.email,
+            customer=customer.id,
             mode='subscription',
             line_items=[{
-                'price_data': {
-                    'currency': 'eur',
-                    'product_data': {'name': plan.name},
-                    'unit_amount': int(plan.price * 100),
-                    'recurring': {'interval': 'month'},
-                },
+                'price': plan.stripe_price_id,  # ✅ Use existing Stripe Price ID
                 'quantity': 1,
             }],
             success_url=request.build_absolute_uri(f"/subscriptions/success/"),
@@ -157,52 +165,50 @@ def stripe_webhook(request):
         # Verify Stripe signature
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except ValueError as e:
-        # Invalid payload
         return JsonResponse({"error": "Invalid payload"}, status=400)
     except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
         return JsonResponse({"error": "Invalid signature"}, status=400)
 
-    # Process Stripe events
-    if event["type"] == "invoice.payment_succeeded":
-        invoice = event["data"]["object"]
-        customer_id = invoice.get("customer")
+    # Print Event Type
+    logger.info(f"Stripe Webhook Event: {event['type']}")
 
-        # Fetch user profile based on Stripe customer ID
-        user_profile = UserProfile.objects.filter(user__stripe_customer_id=customer_id).first()
-
-        if user_profile and user_profile.subscription:
-            # Extend subscription for another month
-            user_profile.subscription.end_date = now() + timedelta(days=30)
-            user_profile.subscription.status = True
-            user_profile.subscription.save()
-
-            return JsonResponse({"message": "Subscription renewed successfully"}, status=200)
-
-    elif event["type"] == "customer.subscription.created":
+    # Debugging: Print Webhook Data
+    if event["type"] == "customer.subscription.created":
         subscription_data = event["data"]["object"]
         customer_id = subscription_data.get("customer")
         stripe_subscription_id = subscription_data.get("id")
         price_id = subscription_data["items"]["data"][0]["price"]["id"]
 
-        # Find corresponding subscription plan
+        # Print debug info
+        logger.info(f"Received subscription event for Customer ID: {customer_id}")
+        logger.info(f"Stripe Subscription ID: {stripe_subscription_id}")
+        logger.info(f" Stripe Price ID: {price_id}")
+
+        # Check if we have a matching plan
         plan = SubscriptionPlan.objects.filter(stripe_price_id=price_id).first()
+        if not plan:
+            logger.warning(f" No matching SubscriptionPlan for Stripe Price ID: {price_id}")
+            return JsonResponse({"error": "No matching plan"}, status=400)
 
-        # Fetch user profile based on Stripe customer ID
-        user_profile = UserProfile.objects.filter(user__stripe_customer_id=customer_id).first()
+        # Check if we have a matching user
+        user_profile = UserProfile.objects.filter(stripe_customer_id=customer_id).first()
+        if not user_profile:
+            logger.warning(f"No matching user for Stripe Customer ID: {customer_id}")
+            return JsonResponse({"error": "No matching user"}, status=400)
 
-        if user_profile and plan:
-            # Create a new Subscription
-            Subscription.objects.create(
-                user=user_profile.user,
-                subscription_plan=plan,
-                stripe_subscription_id=stripe_subscription_id,
-                start_date=now(),
-                end_date=now() + timedelta(days=30),
-                status=True,
-            )
+        # Save the subscription
+        Subscription.objects.create(
+            user=user_profile.user,
+            subscription_plan=plan,
+            stripe_subscription_id=stripe_subscription_id,
+            start_date=now(),
+            end_date=now() + timedelta(days=30),
+            status=True,
+        )
 
-            return JsonResponse({"message": "New subscription created"}, status=200)
+        logger.info(f" Subscription saved for {user_profile.user.username}")
+
+        return JsonResponse({"message": "New subscription created"}, status=200)
 
     return JsonResponse({"message": "Unhandled event type"}, status=200)
 
