@@ -89,32 +89,6 @@ class Borrowing(models.Model):
     def __str__(self):
         return f"{self.user.username} borrowed {self.lego_set.name}"
 
-    @classmethod
-    def borrow_mystery_set(cls, user, subscription):
-        """Method to handle borrowing a mystery set."""
-        # Ensure the user is on the 'Mystery Subscription'
-        if subscription.subscription_plan.name != "Mystery Subscription":
-            return None  # Not allowed to borrow a mystery set if not on the Mystery Subscription
-
-        # Ensure the user hasn't already requested a mystery set this month
-        if cls.objects.filter(user=user, borrowed_on__month=now().month, lego_set__category__name="Mystery").exists():
-            return None  # Already borrowed a mystery set this month
-
-        # Randomly pick an available LEGO set from non-borrowed products
-        mystery_set = Product.objects.filter(is_borrowed=False, category__name="Mystery").order_by('?').first()
-        if mystery_set:
-            # Delay importing the Subscription model to avoid circular import
-            from subscriptions.models import Subscription  # Import inside the method
-
-            return cls.objects.create(
-                user=user,
-                subscription=subscription,
-                lego_set=mystery_set,
-                is_returned=False
-            )
-        return None  # No available mystery sets
-
-
 
 class UserProfile(models.Model):
     """Extended user profile for subscriptions"""

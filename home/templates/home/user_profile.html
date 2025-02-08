@@ -83,35 +83,27 @@
                 </p>
             {% endif %}
 
-            <!-- Mystery Subscription Request -->
-            {% if subscription and subscription.subscription_plan.name == "Mystery Subscription" %}
-                {% if not user_profile.has_requested_mystery_set %}
-                    <div class="card bg-light my-3 p-3 border text-dark">
-                        <h3 class="text-warning">Request Your Mystery Set for This Month</h3>
-                        <p>As part of your Mystery Subscription, you are entitled to a random LEGO set each month. Click below to request your mystery set.</p>
-                        <a href="{% url 'request_mystery_set' %}" class="btn btn-success">Request Mystery Set</a>
-                    </div>
-                {% else %}
-                    <div class="alert alert-info mt-3">
-                        You have already requested your mystery set for this month.
-                    </div>
-                {% endif %}
-            {% endif %}
-
-
             <!-- Borrowed Sets -->
             <h3 class="text-warning mt-4">Currently Borrowed LEGO Sets</h3>
             {% if borrowed_sets %}
-                <ul class="list-group">
-                    {% for borrowed in borrowed_sets %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center text-dark">
-                            <span>{{ borrowed.lego_set.name }}</span>
-                            <small class="text-muted">Borrowed on: {{ borrowed.borrowed_on|date:"M d, Y" }}</small>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <form method="post" action="{% url 'return_borrowed_sets' %}">
+                    {% csrf_token %}
+                    <ul class="list-group">
+                        {% for borrow in borrowed_sets %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center text-dark">
+                                <div>
+                                    <input type="checkbox" name="return_sets" value="{{ borrow.id }}">
+                                    <strong>{{ borrow.lego_set.name }}</strong> 
+                                    <span class="text-muted">Borrowed on: {{ borrow.borrowed_on|date:"M d, Y" }}</span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+            
+                    <button type="submit" class="btn btn-danger mt-3">Return Selected Sets</button>
+                </form>
             {% else %}
-                <p class="text-muted">You have no borrowed sets.</p>
+                <p>You have no borrowed sets.</p>
             {% endif %}
 
             <!-- Notifications -->

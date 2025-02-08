@@ -291,24 +291,51 @@ def subscription_cancel(request):
 def user_profile(request):
     """User profile page displaying subscriptions, borrowed sets, and notifications."""
     user_profile = request.user.userprofile
-    
-    # Check active subscription
-    subscription = user_profile.subscription
-    subscription_plan_name = subscription.subscription_plan.name if subscription else "No Active Subscription"
 
-    # Fetch borrowed sets (only unreturned ones)
+    # Get the current subscription
+    subscription = user_profile.subscription
+    if subscription and subscription.status:
+        subscription_plan_name = subscription.subscription_plan.name
+    else:
+        subscription_plan_name = "No Active Subscription"
+
+    # Fetch only ACTIVE borrowed sets (not returned)
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
 
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
 
-    messages.info(request, "Welcome back! Here is your subscription and borrowing summary.")
+    messages.info(request, "Welcome back! Here's your borrowing summary.")
 
     return render(request, 'home/user_profile.html', {
         'user_profile': user_profile,
         'subscription': subscription,
         'subscription_plan_name': subscription_plan_name,
-        'borrowed_sets': borrowed_sets,
+        'borrowed_sets': borrowed_sets,  # Now correctly shows active borrowed sets
         'notifications': notifications,
         'emailaddresses': emailaddresses,
     })
+
+@login_required
+def return_borrowed_sets(request):
+    """Allows users to return borrowed LEGO sets."""
+    if request.method == "POST":
+        returned_set_ids = request.POST.getlist('return_sets')
+
+        if returned_set_ids:
+            returned_sets = Borrowing.objects.filter(id__in=returned_set_ids, user=request.user)
+
+            for borrow in returned_sets:
+                borrow.is_returned = True  # Mark as returned
+                borrow.save()
+
+                # Make LEGO set available again
+                borrow.lego_set.is_borrowed = False
+                borrow.lego_set.save()
+
+            messages.success(request, "Selected LEGO set(s) have been returned successfully!")
+
+        else:
+            messages.warning(request, "Please select at least one LEGO set to return.")
+
+    return redirect('user_profile')  # Redirect back to profile after return

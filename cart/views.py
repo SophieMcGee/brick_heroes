@@ -54,27 +54,35 @@ def add_to_cart(request, product_id):
     cart, _ = Cart.objects.get_or_create(user=request.user)
     product = get_object_or_404(Product, id=product_id)
 
-    # Ensure user has an active subscription
+    #  Ensure user has an active subscription
     if not request.user.userprofile.subscription or not request.user.userprofile.subscription.status:
         messages.error(request, "You need an active subscription to borrow LEGO sets.")
         return redirect("subscription_plans")
 
     # Get subscription limits
     subscription = request.user.userprofile.subscription
-    active_borrows = CartItem.objects.filter(cart=cart).count()
+    max_active_borrows = subscription.subscription_plan.max_active_borrows
 
-    if active_borrows >= subscription.subscription_plan.max_active_borrows:
-        messages.error(request, f"You have reached your borrowing limit of {subscription.subscription_plan.max_active_borrows} sets.")
+    # Check how many sets are currently borrowed (not returned)
+    active_borrows = Borrowing.objects.filter(user=request.user, is_returned=False).count()
+
+    # Restrict borrowing based on the tier limit
+    if active_borrows >= max_active_borrows:
+        messages.error(
+            request,
+            f"You have reached your borrowing limit of {max_active_borrows} sets. "
+            f"Return a set to borrow a new one."
+        )
         return redirect("shopping_cart")
 
-    #  Add LEGO set to cart
+    # Add LEGO set to cart if within borrowing limit
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-    
+
     if created:
         messages.success(request, f"{product.name} has been added to your borrow cart!")
     else:
         messages.info(request, f"{product.name} is already in your borrow cart.")
-    
+
     return redirect("shopping_cart")
 
 
@@ -112,24 +120,26 @@ def checkout(request):
                     order.user = request.user
                     order.save()
 
-                    # Create Borrowing records
+                    # Create Borrowing records for each item
                     for item in cart_items:
                         Borrowing.objects.create(
                             user=request.user,
                             lego_set=item.product,
-                            is_returned=False
+                            is_returned=False  # Marked as active borrowed set
                         )
-                        # Mark product as borrowed
                         item.product.is_borrowed = True
                         item.product.save()
 
                     # Clear the cart after checkout
                     cart.items.all().delete()
 
-                    messages.success(request, "Your borrow order has been placed successfully! Your sets will arrive soon.")
-                    return redirect("checkout")
+                    messages.success(
+                        request, 
+                        "Your LEGO set(s) have been successfully borrowed! You can swap them anytime by returning sets."
+                    )
+                    return redirect("checkout")  # Reload to show success message
             except Exception as e:
-                messages.error(request, f"An error occurred while processing your order: {str(e)}")
+                messages.error(request, f"An error occurred: {str(e)}")
         else:
             messages.error(request, "Please correct the errors in your delivery details.")
 
@@ -141,41 +151,3 @@ def checkout(request):
         "cart_items": cart_items,
     }
     return render(request, "cart/checkout.html", context)
-
-
-
-@login_required
-def request_mystery_set(request):
-    """Allow users with Mystery Subscription to request a set."""
-    user_profile = request.user.userprofile
-    subscription = user_profile.subscription
-
-    # Check if the user has the Mystery Subscription
-    if not subscription or subscription.subscription_plan.name != "Mystery Subscription":
-        messages.error(request, "You must have a Mystery Subscription to request a set.")
-        return redirect('user_profile')
-
-    # Check if the user has already requested a set this month
-    if user_profile.has_requested_mystery_set():
-        messages.warning(request, "You have already requested a mystery set for this month.")
-        return redirect('user_profile')
-
-    # Assign a random mystery set from the available sets
-    mystery_set = Product.objects.filter(category__name='Mystery', is_borrowed=False).first()
-    if mystery_set:
-        # Create a Borrowing record instead of adding to the cart
-        Borrowing.objects.create(
-            user=request.user,
-            lego_set=mystery_set,
-            is_returned=False
-        )
-
-        # Mark the set as borrowed and save
-        mystery_set.is_borrowed = True
-        mystery_set.save()
-
-        # Redirect to shopping cart for confirmation
-        return redirect('shopping_cart')
-
-    messages.error(request, "No mystery sets available at the moment.")
-    return redirect('user_profile')
