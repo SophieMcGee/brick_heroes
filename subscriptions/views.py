@@ -110,18 +110,23 @@ def cancel_subscription(request):
         messages.error(request, "No active subscription to cancel.")
         return redirect('user_profile')
 
-    # Cancel Stripe Subscription
     subscription = user_profile.subscription
     try:
         stripe.Subscription.modify(
             subscription.stripe_subscription_id,
             cancel_at_period_end=True  # Prevents auto-renewal
         )
+        # Mark subscription as canceled
         subscription.status = False
         subscription.save()
-        messages.success(request, "Your subscription has been cancelled and will not renew.")
+        
+        # Remove the subscription from user profile
+        user_profile.subscription = None
+        user_profile.save()
+
+        messages.success(request, "Your subscription has been canceled. You can start a new one anytime!")
     except Exception as e:
-        messages.error(request, f"Error cancelling subscription: {str(e)}")
+        messages.error(request, f"Error canceling subscription: {str(e)}")
 
     return redirect('user_profile')
 

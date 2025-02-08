@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from .views import user_profile, return_borrowed_sets
-
+from .views import user_profile, return_borrowed_sets, cancel_subscription
 
 urlpatterns = [
     path('subscription-plans/', views.subscription_plans, name='subscription_plans'),
@@ -12,4 +11,5 @@ urlpatterns = [
     path('cancel/', views.subscription_cancel, name='subscription_cancel'),
     path('stripe-webhook/', views.stripe_webhook, name='stripe_webhook'),
     path("return-borrowed-sets/", return_borrowed_sets, name="return_borrowed_sets"),
+    path('cancel-subscription/', cancel_subscription, name='cancel_subscription'),
 ]

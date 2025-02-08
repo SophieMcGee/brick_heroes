@@ -30,6 +30,8 @@ urlpatterns = [
         EmailVerificationSentView.as_view(template_name="account/verification_sent.html"),
         name="account_email_verification_sent",
     ),
+    path('subscriptions/', include('subscriptions.urls')),
+    path('profile/', include('home.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
