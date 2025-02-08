@@ -44,7 +44,7 @@ def subscription_confirmation(request, plan_id):
 
 @login_required
 def subscribe(request, plan_id):
-    """Handles Stripe Checkout for subscription plans."""
+    """Handles Stripe Checkout for subscription plans with a confirmation step."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
     # Ensure the plan has a Stripe Price ID
@@ -72,29 +72,19 @@ def subscribe(request, plan_id):
             customer=customer.id,
             mode='subscription',
             line_items=[{
-                'price': plan.stripe_price_id,  # Use existing Stripe Price ID
+                'price': plan.stripe_price_id,
                 'quantity': 1,
             }],
             success_url=request.build_absolute_uri(f"/subscriptions/success/"),
             cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
         )
 
-        messages.success(request, f"Redirecting to Stripe for {plan.name} subscription...")
+        # Store session URL in session storage
+        request.session['stripe_checkout_url'] = session.url
+        request.session['selected_plan_id'] = plan_id  # Save selected plan
 
-        subscription = Subscription.objects.create(
-            user=request.user,
-            subscription_plan=plan,
-            stripe_subscription_id=session.id,
-            start_date=now(),
-            end_date=now() + timedelta(days=30),
-            status=True,
-        )
-
-        user_profile = request.user.userprofile
-        user_profile.subscription = subscription  # Link subscription to the UserProfile
-        user_profile.save()
-
-        return redirect(session.url)
+        # Redirect user to the confirmation page
+        return redirect('subscription_confirmation', plan_id=plan.id)
 
     except stripe.error.StripeError as e:
         messages.error(request, f"Stripe error: {str(e)}")
@@ -242,49 +232,42 @@ def stripe_webhook(request):
 
 @login_required
 def subscription_success(request):
-    """Process borrow order only after successful payment"""
+    """Creates a subscription in the database only after successful payment."""
     
-    checkout_details = request.session.get('checkout_details', None)
-    
-    if not checkout_details:
-        messages.error(request, "No delivery details found. Please try again.")
-        return redirect('shopping_cart')  # Redirect if session data is missing
+    plan_id = request.session.get("selected_plan_id")  # Retrieve the selected plan
+    if not plan_id:
+        messages.error(request, "No subscription plan found. Please try again.")
+        return redirect("subscription_plans")
 
-    # Fetch user subscription
-    subscription = request.user.userprofile.subscription
-    if not subscription:
-        messages.error(request, "You need an active subscription to borrow sets.")
-        return redirect('subscription_plans')
+    plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
-    # Create a new Borrow Order
-    borrow_order = BorrowOrder.objects.create(
+    # Check if the user already has a subscription (double-check)
+    existing_subscription = Subscription.objects.filter(user=request.user, status=True).first()
+    if existing_subscription:
+        messages.warning(request, "You already have an active subscription.")
+        return redirect("user_profile")
+
+    # Create the subscription **after** payment success
+    subscription = Subscription.objects.create(
         user=request.user,
-        full_name=checkout_details['full_name'],
-        address_line1=checkout_details['address_line1'],
-        address_line2=checkout_details['address_line2'],
-        city=checkout_details['city'],
-        postal_code=checkout_details['postal_code'],
-        country=checkout_details['country'],
-        status="Processing",
+        subscription_plan=plan,
+        stripe_subscription_id=request.session.get("stripe_checkout_url"),  # Store Stripe ID
+        start_date=now(),
+        end_date=now() + timedelta(days=30),
+        status=True,
     )
 
-    # Add items from the cart to the order
-    cart_items = request.user.cart.items.all()
-    for item in cart_items:
-        borrow_order.items.add(item.product)
+    # Link the subscription to the UserProfile
+    user_profile = request.user.userprofile
+    user_profile.subscription = subscription
+    user_profile.save()
 
-        # Mark items as borrowed
-        item.product.is_borrowed = True
-        item.product.save()
+    # Clean up session data
+    del request.session["selected_plan_id"]
+    del request.session["stripe_checkout_url"]
 
-    # Clear cart after order is placed
-    request.user.cart.items.all().delete()
-
-    # Clear session data
-    del request.session['checkout_details']
-
-    messages.success(request, "Your borrow order has been placed successfully!")
-    return render(request, "subscriptions/success.html", {'borrow_order': borrow_order})
+    messages.success(request, f"Your subscription to {plan.name} is active! 🎉")
+    return redirect("user_profile")
 
 
 def subscription_cancel(request):
