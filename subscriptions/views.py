@@ -92,7 +92,7 @@ def subscribe(request, plan_id):
         user_profile = request.user.userprofile
         user_profile.subscription = subscription  # Link subscription to the UserProfile
         user_profile.save()
-        
+
         return redirect(session.url)
 
     except stripe.error.StripeError as e:
@@ -232,7 +232,6 @@ def stripe_webhook(request):
         return JsonResponse({"message": "New subscription created"}, status=200)
 
     return JsonResponse({"message": "Unhandled event type"}, status=200)
-
 
 
 def subscription_success(request):

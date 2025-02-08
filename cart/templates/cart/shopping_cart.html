@@ -30,10 +30,9 @@
 
         <!-- Checkout Button -->
         <div class="mt-4 text-right">
-            {% if cart.items.filter(subscription__isnull=False).exists %}
-                <a href="{% url 'subscription_checkout' cart.items.filter(subscription__isnull=False).first.subscription.id %}" 
-                   class="btn btn-primary">
-                   Proceed to Subscription Checkout
+            {% if has_subscribed_items %}
+                <a href="{% url 'subscription_checkout' subscribed_items.first.subscription.id %}" class="btn btn-primary">
+                    Proceed to Subscription Checkout
                 </a>
             {% endif %}
         </div>

@@ -23,13 +23,3 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} ({self.email})"
-
-
-class Borrowing(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    lego_set = models.CharField(max_length=255)
-    due_date = models.DateField()
-    is_returned = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.lego_set} (Due: {self.due_date})"
