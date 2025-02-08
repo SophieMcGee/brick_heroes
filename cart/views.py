@@ -14,8 +14,7 @@ def view_cart(request):
     """View for displaying the cart."""
     cart, _ = Cart.objects.get_or_create(user=request.user)
 
-    # Check if any items in the cart have a subscription
-    has_subscribed_items = cart.items.filter(subscription__isnull=False).exists()
+    has_subscribed_items = cart.items.exists()
 
     context = {
         'cart': cart,
@@ -145,7 +144,7 @@ def request_mystery_set(request):
         mystery_set.save()
 
         # Redirect user to the delivery details page
-        return redirect('checkout')
+        return redirect('shopping_cart')
 
     messages.error(request, "No mystery sets available at the moment.")
     return redirect('user_profile')

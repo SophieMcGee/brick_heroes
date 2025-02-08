@@ -101,21 +101,16 @@
 
             <!-- Borrowed Sets -->
             <h3 class="text-warning mt-4">Currently Borrowed</h3>
-            {% if orders %}
+            {% if borrowed_sets %}
                 <ul class="list-group">
-                    {% for order in orders %}
-                        <li class="list-group-item">
-                            Order #{{ order.id }} - {{ order.created_at|date:"M d, Y" }} - Status: {{ order.status }}
-                            <ul>
-                                {% for item in order.borroworderitem_set.all %}
-                                    <li>{{ item.product.name }} (Qty: {{ item.quantity }})</li>
-                                {% endfor %}
-                            </ul>
+                    {% for borrow in borrowed_sets %}
+                        <li class="list-group-item text-dark">
+                            <strong>{{ borrow.lego_set.name }}</strong> - Borrowed on {{ borrow.borrowed_on|date:"M d, Y" }}
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>You have no borrow orders.</p>
+                <p>You have no borrowed sets.</p>
             {% endif %}
 
             <!-- Notifications -->

@@ -7,6 +7,7 @@ from django.utils.timezone import now, timedelta
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import SubscriptionPlan, Subscription, UserProfile, Borrowing
+from cart.models import BorrowOrder
 from django.contrib import messages
 from notifications.models import Notification
 from allauth.account.models import EmailAddress
@@ -264,6 +265,12 @@ def user_profile(request):
     print(f"Subscription Status: {subscription_plan_name}")  # This should show the subscription name or "No Active Subscription"
 
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
+
+    # Debugging: Print the borrowed sets count and details
+    print(f"Borrowed Sets in View: {borrowed_sets.count()}")  # Should match 1
+    for borrow in borrowed_sets:
+        print(f"Profile Page: {borrow.lego_set.name} - Borrowed on {borrow.borrowed_on}")  
+
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
 
