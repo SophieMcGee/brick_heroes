@@ -71,7 +71,7 @@ def subscribe(request, plan_id):
             customer=customer.id,
             mode='subscription',
             line_items=[{
-                'price': plan.stripe_price_id,  # ✅ Use existing Stripe Price ID
+                'price': plan.stripe_price_id,  # Use existing Stripe Price ID
                 'quantity': 1,
             }],
             success_url=request.build_absolute_uri(f"/subscriptions/success/"),
@@ -79,6 +79,20 @@ def subscribe(request, plan_id):
         )
 
         messages.success(request, f"Redirecting to Stripe for {plan.name} subscription...")
+
+        subscription = Subscription.objects.create(
+            user=request.user,
+            subscription_plan=plan,
+            stripe_subscription_id=session.id,
+            start_date=now(),
+            end_date=now() + timedelta(days=30),
+            status=True,
+        )
+
+        user_profile = request.user.userprofile
+        user_profile.subscription = subscription  # Link subscription to the UserProfile
+        user_profile.save()
+        
         return redirect(session.url)
 
     except stripe.error.StripeError as e:
@@ -236,6 +250,9 @@ def user_profile(request):
     """User profile page displaying subscriptions, emails, and borrowed sets."""
     user_profile = request.user.userprofile
     
+    # Debugging line to check if UserProfile is linked correctly and subscription is available
+    print(f"User Profile Subscription: {user_profile.subscription}")  # This should show the subscription object or None
+    
     # Check if the user has an active subscription
     if user_profile.subscription and user_profile.subscription.status:
         subscription = user_profile.subscription
@@ -243,14 +260,20 @@ def user_profile(request):
     else:
         subscription = None
         subscription_plan_name = "No Active Subscription"
-    
+
+    # Debugging line to check subscription and subscription_plan_name values
+    print(f"Subscription Status: {subscription_plan_name}")  # This should show the subscription name or "No Active Subscription"
+
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
 
+    # Debugging line to check the borrowed sets and notifications
+    print(f"Borrowed Sets Count: {borrowed_sets.count()}")  # Check how many sets are currently borrowed
+    print(f"Notifications: {notifications}")  # Check the notifications
+    
     messages.info(request, "Welcome back! Here is your subscription and borrowing summary.")
 
-    # Return the context with subscription details
     return render(request, 'home/user_profile.html', {
         'user_profile': user_profile,
         'subscription': subscription,
