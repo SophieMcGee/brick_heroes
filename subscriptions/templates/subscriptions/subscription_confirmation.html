@@ -8,16 +8,20 @@
 
     <h1 class="text-center text-warning">Confirm Your Subscription</h1>
     <p>You are about to subscribe to <strong>{{ plan.name }}</strong>.</p>
-    
+
     <!-- Show success message before redirecting -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-success">{{ message }}</div>
+            <div class="alert alert-danger">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
     <div class="text-center mt-4">
-        <a href="{{ request.session.stripe_checkout_url }}" class="btn btn-primary">Proceed to Stripe Payment</a>
+        {% if stripe_checkout_url %}
+            <a href="{{ stripe_checkout_url }}" class="btn btn-primary">Proceed to Stripe Payment</a>
+        {% else %}
+            <p class="text-danger">Error: Stripe checkout URL not found. Please try again.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@ class BorrowingInline(admin.TabularInline):
 # Admin for SubscriptionPlan
 @admin.register(SubscriptionPlan)
 class SubscriptionPlanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'max_borrow_per_month', 'max_active_borrows', 'stripe_price_id')
+    list_display = ('name', 'price', 'max_active_borrows', 'stripe_price_id')
     search_fields = ('name', 'stripe_price_id')
     list_filter = ('max_active_borrows',)
 

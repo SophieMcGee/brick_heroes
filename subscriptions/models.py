@@ -13,7 +13,6 @@ class SubscriptionPlan(models.Model):
     """Model for subscription tiers"""
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    max_borrow_per_month = models.IntegerField()
     max_active_borrows = models.IntegerField()  # Max sets a user can have at once
     can_cancel_anytime = models.BooleanField(default=True)
     stripe_price_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
@@ -113,48 +112,14 @@ class UserProfile(models.Model):
         """Check if the user is eligible to borrow on their subscription"""
         if not self.subscription or not self.subscription.status:
             return False
-        active_borrows = (
-            Borrowing.objects
-            .filter(
-                user=self.user,
-                is_returned=False
-            )
-            .count()
-        )
-        return (
-            active_borrows < self.subscription.subscription_plan.max_active_borrows
-        )
+        # Get max sets allowed at the same time
+        max_active_borrows = self.subscription.subscription_plan.max_active_borrows
 
-    def reset_monthly_borrow_count(self):
-        """Reset the borrow count at the start of each month"""
-        self.borrowed_this_month = 0
-        self.save()
+        # Count active borrowed sets
+        active_borrows = Borrowing.objects.filter(user=self.user, is_returned=False).count()
+
+        return active_borrows < max_active_borrows
 
     def get_notifications(self):
         """Fetch the latest notifications for the user"""
         return Notification.objects.filter(user=self.user).order_by('-created_at')[:5]
-
-    def random_lego_set(self):
-        """Get a random LEGO set for the user"""
-        available_sets = Product.objects.filter(is_borrowed=False)
-        if available_sets.exists():
-            return random.choice(available_sets)
-        return None
-
-    def has_requested_mystery_set(self):
-        """Check if the user has already requested a mystery set this month."""
-        return Borrowing.objects.filter(
-            user=self.user,
-            lego_set__category__name="Mystery",
-            borrowed_on__month=now().month
-        ).exists()
-
-@receiver(post_save, sender='subscriptions.Borrowing')
-def update_user_profile_with_borrowed_set(sender, instance, created, **kwargs):
-    """Update borrowed_this_month when a new borrowing is recorded."""
-    if created and not instance.is_returned:
-        from subscriptions.models import UserProfile
-
-        user_profile = instance.user.userprofile
-        user_profile.borrowed_this_month += 1
-        user_profile.save()

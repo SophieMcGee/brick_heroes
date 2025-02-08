@@ -147,6 +147,18 @@ MESSAGE_TAGS = {
     messages.WARNING: "warning",
     messages.ERROR: "error",
 }
+
+# Session Configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  
+SESSION_COOKIE_NAME = 'brick_heroes_session'  
+SESSION_SAVE_EVERY_REQUEST = True  
+SESSION_COOKIE_AGE = 86400  # 1 day  
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = True  
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 

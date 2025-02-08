@@ -20,14 +20,14 @@
                     <h5 class="card-subtitle mb-3">{{ plan.name }}</h5>
                     <ul class="list-unstyled">
                         {% if plan.id == 1 %}
-                            <li>Borrow one set each month</li>
-                            <li>Our heroes will pick your set</li>
+                            <li>Borrow one set at a time.</li>
+                            <li>Return to borrow another.</li>
                         {% elif plan.id == 2 %}
-                            <li>Borrow one set at a time</li>
-                            <li>Return to borrow another</li>
+                            <li>Borrow two sets at a time</li>
+                            <li>Return to borrow more.</li>
                         {% elif plan.id == 3 %}
-                            <li>Borrow up to two sets at a time</li>
-                            <li>Return to borrow more</li>
+                            <li>Borrow up to three sets at a time</li>
+                            <li>Return to borrow again.</li>
                         {% endif %}
                         <li>Free returns</li>
                         <li>Cancel anytime</li>

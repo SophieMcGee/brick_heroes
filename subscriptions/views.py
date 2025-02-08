@@ -35,10 +35,20 @@ def subscription_confirmation(request, plan_id):
     """Displays the confirmation page before proceeding to Stripe checkout."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
+    # Retrieve Stripe Checkout URL
+    stripe_checkout_url = request.session.get('stripe_checkout_url')
+    
+    # Debugging print
+    print("DEBUG: Retrieved Stripe Checkout URL in Confirmation Page:", stripe_checkout_url)
+
+    if not stripe_checkout_url:
+        messages.error(request, "Error: Stripe checkout URL not found. Please try again.")
+        return redirect('subscription_plans')
+
     return render(
         request,
         "subscriptions/subscription_confirmation.html",
-        {"plan": plan},
+        {"plan": plan, "stripe_checkout_url": stripe_checkout_url},
     )
 
 
@@ -77,11 +87,20 @@ def subscribe(request, plan_id):
             }],
             success_url=request.build_absolute_uri(f"/subscriptions/success/"),
             cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
+            metadata={"plan_id": str(plan.id)}
         )
 
         # Store session URL in session storage
         request.session['stripe_checkout_url'] = session.url
+        request.session['stripe_checkout_session_id'] = session.id
         request.session['selected_plan_id'] = plan_id  # Save selected plan
+        request.session.modified = True  # Ensure the session is explicitly saved
+
+        # Debugging prints
+        print("DEBUG: Stored Stripe Checkout URL:", request.session.get('stripe_checkout_url'))
+        print("DEBUG: Stored Stripe Session ID:", request.session.get('stripe_checkout_session_id'))
+        print("DEBUG: Stored session data before redirecting:", request.session.items())
+
 
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
@@ -89,7 +108,6 @@ def subscribe(request, plan_id):
     except stripe.error.StripeError as e:
         messages.error(request, f"Stripe error: {str(e)}")
         return redirect('subscription_plans')
-
 
 @login_required
 def cancel_subscription(request):
@@ -178,56 +196,52 @@ def stripe_webhook(request):
 
     logger.info(f"Stripe Webhook Event: {event['type']}")
 
-    if event["type"] == "customer.subscription.created":
-        subscription_data = event["data"]["object"]
-        customer_id = subscription_data.get("customer")
-        stripe_subscription_id = subscription_data.get("id")
-        price_id = subscription_data["items"]["data"][0]["price"]["id"]
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        customer_id = session.get("customer")
+        stripe_subscription_id = session.get("subscription")
 
-        # Debugging: Print Stripe IDs
-        logger.info(f"Customer ID: {customer_id}")
-        logger.info(f"Subscription ID: {stripe_subscription_id}")
-        logger.info(f"Price ID: {price_id}")
+    # Debugging logs
+    logger.info(f"Webhook: checkout.session.completed for customer {customer_id}")
 
-        # Ensure we have a matching plan
-        plan = SubscriptionPlan.objects.filter(stripe_price_id=price_id).first()
-        if not plan:
-            logger.warning(f"No matching SubscriptionPlan for Stripe Price ID: {price_id}")
-            return JsonResponse({"error": "No matching plan"}, status=400)
+    user_profile = UserProfile.objects.filter(stripe_customer_id=customer_id).first()
+    if not user_profile:
+        logger.error("No matching user found for this checkout session.")
+        return JsonResponse({"error": "No matching user"}, status=400)
 
-        # Ensure we have a matching user
-        user_profile = UserProfile.objects.filter(stripe_customer_id=customer_id).first()
-        if not user_profile:
-            logger.warning(f"No matching user for Stripe Customer ID: {customer_id}")
-            return JsonResponse({"error": "No matching user"}, status=400)
+    # Ensure this session is a subscription and not a one-time payment
+    if not stripe_subscription_id:
+        logger.error("No subscription ID found in checkout session.")
+        return JsonResponse({"error": "No subscription found"}, status=400)
 
-        # Prevent creating duplicate subscriptions
-        existing_subscription = Subscription.objects.filter(
-            user=user_profile.user, status=True
-        ).first()
-        if existing_subscription:
-            logger.info(f"Subscription already exists for {user_profile.user.username}. Skipping creation.")
-            return JsonResponse({"message": "Subscription already exists"}, status=200)
+    # Retrieve the plan from metadata (instead of price_id parsing)
+    plan_id = session.get("metadata", {}).get("plan_id")
+    plan = SubscriptionPlan.objects.filter(id=plan_id).first()
+    if not plan:
+        logger.error("No matching subscription plan found.")
+        return JsonResponse({"error": "No matching plan"}, status=400)
 
-        # Create the subscription
-        subscription = Subscription.objects.create(
-            user=user_profile.user,
-            subscription_plan=plan,
-            stripe_subscription_id=stripe_subscription_id,
-            start_date=now(),
-            end_date=now() + timedelta(days=30),
-            status=True,
-        )
+    # Prevent duplicate subscriptions
+    existing_subscription = Subscription.objects.filter(user=user_profile.user, status=True).first()
+    if existing_subscription:
+        return JsonResponse({"message": "Subscription already exists"}, status=200)
 
-        # Update user profile with subscription
-        user_profile.subscription = subscription
-        user_profile.save()
+    # Create the new subscription
+    subscription = Subscription.objects.create(
+        user=user_profile.user,
+        subscription_plan=plan,
+        stripe_subscription_id=stripe_subscription_id,
+        start_date=now(),
+        end_date=now() + timedelta(days=30),
+        status=True,
+    )
 
-        logger.info(f"Subscription saved for {user_profile.user.username}")
+    # Link subscription to user profile
+    user_profile.subscription = subscription
+    user_profile.save()
 
-        return JsonResponse({"message": "New subscription created"}, status=200)
-
-    return JsonResponse({"message": "Unhandled event type"}, status=200)
+    logger.info(f"Subscription created successfully for {user_profile.user.username}")
+    return JsonResponse({"message": "New subscription created"}, status=200)
 
 
 @login_required
@@ -251,7 +265,7 @@ def subscription_success(request):
     subscription = Subscription.objects.create(
         user=request.user,
         subscription_plan=plan,
-        stripe_subscription_id=request.session.get("stripe_checkout_url"),  # Store Stripe ID
+        stripe_subscription_id=request.session.get("stripe_checkout_session_id"),
         start_date=now(),
         end_date=now() + timedelta(days=30),
         status=True,
@@ -268,6 +282,7 @@ def subscription_success(request):
 
     messages.success(request, f"Your subscription to {plan.name} is active! 🎉")
     return redirect("user_profile")
+
 
 
 def subscription_cancel(request):
