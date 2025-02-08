@@ -14,15 +14,38 @@ def view_cart(request):
     """View for displaying the cart."""
     cart, _ = Cart.objects.get_or_create(user=request.user)
 
-    has_subscribed_items = cart.items.exists()
+    user_profile = request.user.userprofile
+    subscription = user_profile.subscription
+
+    max_active_borrows = 0  # Default if no subscription
+    if subscription and subscription.subscription_plan:
+        max_active_borrows = subscription.subscription_plan.max_active_borrows
 
     context = {
         'cart': cart,
-        'has_subscribed_items': has_subscribed_items,
+        'has_subscribed_items': cart.items.exists(),
+        'max_active_borrows': max_active_borrows,  # Pass to template
     }
 
     return render(request, "cart/shopping_cart.html", context)
 
+
+@login_required
+def process_checkout(request):
+    """Stores delivery details and redirects to Stripe Checkout"""
+    if request.method == "POST":
+        request.session['checkout_details'] = {
+            'full_name': request.POST.get('full_name'),
+            'address_line1': request.POST.get('address_line1'),
+            'address_line2': request.POST.get('address_line2'),
+            'city': request.POST.get('city'),
+            'postal_code': request.POST.get('postal_code'),
+            'country': request.POST.get('country'),
+        }
+
+        # Redirect to Stripe Checkout
+        return redirect('subscription_checkout')
+    return redirect('shopping_cart')
 
 
 @login_required
@@ -45,7 +68,7 @@ def add_to_cart(request, product_id):
         return redirect("shopping_cart")
 
     #  Add LEGO set to cart
-    CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     
     if created:
         messages.success(request, f"{product.name} has been added to your borrow cart!")
@@ -85,17 +108,22 @@ def checkout(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
+                    # Create the Borrow Order
                     order = form.save(commit=False)
                     order.user = request.user
                     order.save()
 
+                    # Move all items from cart to Borrowing records
                     for item in cart_items:
                         Borrowing.objects.create(
                             user=request.user,
                             lego_set=item.product,
                             is_returned=False
                         )
+
+                    # Clear cart after confirming borrow order
                     cart.items.all().delete()
+                    
                     messages.success(request, "Your borrow order has been placed successfully!")
                     return redirect("user_profile")
             except Exception as e:
@@ -143,10 +171,8 @@ def request_mystery_set(request):
         mystery_set.is_borrowed = True
         mystery_set.save()
 
-        # Redirect user to the delivery details page
+        # Redirect to shopping cart for confirmation
         return redirect('shopping_cart')
 
     messages.error(request, "No mystery sets available at the moment.")
     return redirect('user_profile')
-
-

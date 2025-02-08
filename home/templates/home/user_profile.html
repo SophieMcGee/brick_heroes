@@ -100,17 +100,18 @@
 
 
             <!-- Borrowed Sets -->
-            <h3 class="text-warning mt-4">Currently Borrowed</h3>
+            <h3 class="text-warning mt-4">Currently Borrowed LEGO Sets</h3>
             {% if borrowed_sets %}
                 <ul class="list-group">
-                    {% for borrow in borrowed_sets %}
-                        <li class="list-group-item text-dark">
-                            <strong>{{ borrow.lego_set.name }}</strong> - Borrowed on {{ borrow.borrowed_on|date:"M d, Y" }}
+                    {% for borrowed in borrowed_sets %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ borrowed.lego_set.name }}</span>
+                            <small class="text-muted">Borrowed on: {{ borrowed.borrowed_on|date:"M d, Y" }}</small>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>You have no borrowed sets.</p>
+                <p class="text-muted">You have no borrowed sets.</p>
             {% endif %}
 
             <!-- Notifications -->

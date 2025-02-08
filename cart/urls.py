@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import view_cart, checkout, process_checkout
 
 urlpatterns = [
     path('', views.view_cart, name='shopping_cart'),
@@ -7,4 +8,5 @@ urlpatterns = [
     path("remove/<int:item_id>/", views.remove_from_cart, name="remove_from_cart"),
     path('checkout/', views.checkout, name='checkout'),
     path('request-mystery-set/', views.request_mystery_set, name='request_mystery_set'),
+    path('process-checkout/', process_checkout, name='process_checkout'),
 ]

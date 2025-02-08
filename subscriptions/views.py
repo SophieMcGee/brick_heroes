@@ -235,9 +235,51 @@ def stripe_webhook(request):
     return JsonResponse({"message": "Unhandled event type"}, status=200)
 
 
+@login_required
 def subscription_success(request):
-    """Display subscription success message."""
-    return render(request, "subscriptions/success.html")
+    """Process borrow order only after successful payment"""
+    
+    checkout_details = request.session.get('checkout_details', None)
+    
+    if not checkout_details:
+        messages.error(request, "No delivery details found. Please try again.")
+        return redirect('shopping_cart')  # Redirect if session data is missing
+
+    # Fetch user subscription
+    subscription = request.user.userprofile.subscription
+    if not subscription:
+        messages.error(request, "You need an active subscription to borrow sets.")
+        return redirect('subscription_plans')
+
+    # Create a new Borrow Order
+    borrow_order = BorrowOrder.objects.create(
+        user=request.user,
+        full_name=checkout_details['full_name'],
+        address_line1=checkout_details['address_line1'],
+        address_line2=checkout_details['address_line2'],
+        city=checkout_details['city'],
+        postal_code=checkout_details['postal_code'],
+        country=checkout_details['country'],
+        status="Processing",
+    )
+
+    # Add items from the cart to the order
+    cart_items = request.user.cart.items.all()
+    for item in cart_items:
+        borrow_order.items.add(item.product)
+
+        # Mark items as borrowed
+        item.product.is_borrowed = True
+        item.product.save()
+
+    # Clear cart after order is placed
+    request.user.cart.items.all().delete()
+
+    # Clear session data
+    del request.session['checkout_details']
+
+    messages.success(request, "Your borrow order has been placed successfully!")
+    return render(request, "subscriptions/success.html", {'borrow_order': borrow_order})
 
 
 def subscription_cancel(request):
@@ -247,37 +289,19 @@ def subscription_cancel(request):
 
 @login_required
 def user_profile(request):
-    """User profile page displaying subscriptions, emails, and borrowed sets."""
+    """User profile page displaying subscriptions, borrowed sets, and notifications."""
     user_profile = request.user.userprofile
     
-    # Debugging line to check if UserProfile is linked correctly and subscription is available
-    print(f"User Profile Subscription: {user_profile.subscription}")  # This should show the subscription object or None
-    
-    # Check if the user has an active subscription
-    if user_profile.subscription and user_profile.subscription.status:
-        subscription = user_profile.subscription
-        subscription_plan_name = subscription.subscription_plan.name if subscription.subscription_plan else "No Plan"
-    else:
-        subscription = None
-        subscription_plan_name = "No Active Subscription"
+    # Check active subscription
+    subscription = user_profile.subscription
+    subscription_plan_name = subscription.subscription_plan.name if subscription else "No Active Subscription"
 
-    # Debugging line to check subscription and subscription_plan_name values
-    print(f"Subscription Status: {subscription_plan_name}")  # This should show the subscription name or "No Active Subscription"
-
+    # Fetch borrowed sets (only unreturned ones)
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
-
-    # Debugging: Print the borrowed sets count and details
-    print(f"Borrowed Sets in View: {borrowed_sets.count()}")  # Should match 1
-    for borrow in borrowed_sets:
-        print(f"Profile Page: {borrow.lego_set.name} - Borrowed on {borrow.borrowed_on}")  
 
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
 
-    # Debugging line to check the borrowed sets and notifications
-    print(f"Borrowed Sets Count: {borrowed_sets.count()}")  # Check how many sets are currently borrowed
-    print(f"Notifications: {notifications}")  # Check the notifications
-    
     messages.info(request, "Welcome back! Here is your subscription and borrowing summary.")
 
     return render(request, 'home/user_profile.html', {
