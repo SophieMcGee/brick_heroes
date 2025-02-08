@@ -108,24 +108,26 @@ def checkout(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    # Create the Borrow Order
                     order = form.save(commit=False)
                     order.user = request.user
                     order.save()
 
-                    # Move all items from cart to Borrowing records
+                    # Create Borrowing records
                     for item in cart_items:
                         Borrowing.objects.create(
                             user=request.user,
                             lego_set=item.product,
                             is_returned=False
                         )
+                        # Mark product as borrowed
+                        item.product.is_borrowed = True
+                        item.product.save()
 
-                    # Clear cart after confirming borrow order
+                    # Clear the cart after checkout
                     cart.items.all().delete()
-                    
-                    messages.success(request, "Your borrow order has been placed successfully!")
-                    return redirect("user_profile")
+
+                    messages.success(request, "Your borrow order has been placed successfully! Your sets will arrive soon.")
+                    return redirect("checkout")
             except Exception as e:
                 messages.error(request, f"An error occurred while processing your order: {str(e)}")
         else:
@@ -139,6 +141,7 @@ def checkout(request):
         "cart_items": cart_items,
     }
     return render(request, "cart/checkout.html", context)
+
 
 
 @login_required

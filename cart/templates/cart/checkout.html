@@ -6,7 +6,6 @@
     <hr>
 
     <div class="row mt-4">
-        <!-- Borrowed Items Summary -->
         <div class="col-md-6">
             <h4>Your Borrowed Sets:</h4>
             {% if cart_items %}
@@ -22,16 +21,33 @@
                 <p>Your cart is empty.</p>
             {% endif %}
         </div>
-        
-        <!-- Confirmation Message -->
+
+        <!-- Delivery Information Form -->
         <div class="col-md-6">
-            <h4>Success!</h4>
-            <div class="alert alert-success p-4 shadow-sm">
-                <p>Your LEGO set(s) have been successfully borrowed.</p>
-                <p>They will be on their way soon!</p>
-                <p>You can track your borrowed sets in your <a href="{% url 'user_profile' %}" class="text-warning">profile</a>.</p>
+            <h4>Delivery Information</h4>
+            <form method="post" action="{% url 'checkout' %}" novalidate>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success mt-3">Confirm Borrow Order</button>
+            </form>
+        </div>
+    
+        
+        <!-- Confirmation Message (ONLY shows after successful checkout) -->
+        {% if messages %}
+        <div class="row mt-4">
+            <div class="col-md-6">
+                {% for message in messages %}
+                    {% if message.tags == "success" %}
+                        <div class="alert alert-success p-4 shadow-sm">
+                            <p>{{ message }}</p>
+                            <p>You can track your borrowed sets in your <a href="{% url 'user_profile' %}" class="text-warning">profile</a>.</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
