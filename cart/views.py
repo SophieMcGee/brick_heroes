@@ -145,8 +145,12 @@ def checkout(request):
                             lego_set=item.product,
                             is_returned=False  # Marked as active borrowed set
                         )
-                        item.product.is_borrowed = True
-                        item.product.save()
+
+                        # Decrease stock after borrowing
+                        if item.product.stock > 0:
+                            item.product.stock -= 1  # Reduce stock by 1
+                            item.product.is_borrowed = True
+                            item.product.save()
 
                     # Clear the cart after checkout
                     cart.items.all().delete()

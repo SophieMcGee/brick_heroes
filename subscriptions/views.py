@@ -385,8 +385,9 @@ def return_borrowed_sets(request):
                 borrow.is_returned = True  # Mark as returned
                 borrow.save()
 
-                # Make LEGO set available again
-                borrow.lego_set.is_borrowed = False
+                # Increase stock when a set is returned
+                borrow.lego_set.stock += 1  # Add back to stock
+                borrow.lego_set.is_borrowed = False  # Set as available
                 borrow.lego_set.save()
 
             messages.success(request, "Selected LEGO set(s) have been returned successfully!")
@@ -395,3 +396,4 @@ def return_borrowed_sets(request):
             messages.warning(request, "Please select at least one LEGO set to return.")
 
     return redirect('user_profile')  # Redirect back to profile after return
+
