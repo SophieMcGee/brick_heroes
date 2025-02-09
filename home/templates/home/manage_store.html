@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-warning text-center">Manage Store</h1>
+
+    {% if messages %}
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} p-3 shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <ul class="nav nav-tabs mt-4 text-warning">
+        <li class="nav-item"><a class="nav-link active text-warning" data-bs-toggle="tab" href="#legoSets">LEGO Sets</a></li>
+        <li class="nav-item"><a class="nav-link text-warning" data-bs-toggle="tab" href="#subscribers">Subscribers</a></li>
+        <li class="nav-item"><a class="nav-link text-warning" data-bs-toggle="tab" href="#borrowing">Borrowing</a></li>
+    </ul>
+
+    <div class="tab-content mt-4">
+        <div id="legoSets" class="tab-pane fade show active">
+            <h2 class="text-warning">LEGO Sets</h2>
+            {% for product in products %}
+                <div class="bg-light p-3 my-2 text-dark">
+                    {{ product.name }} - <strong>Stock:</strong> {{ product.stock }}
+                    <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

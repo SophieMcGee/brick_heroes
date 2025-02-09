@@ -183,7 +183,7 @@
                                 <div class="dropdown-menu dropdown-menu-right border-0 bg-dark text-white" aria-labelledby="user-options">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
-                                    <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                    <a href="{% url 'manage_store' %}" class="dropdown-item text-white">Manage Store</a>
                                     <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">
                                         Admin Notifications 
                                         <span class="badge badge-danger">{{ admin_notifications_count }}</span>
@@ -255,7 +255,7 @@
                             <div class="dropdown-menu bg-dark border-0" aria-labelledby="accountDropdown">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
-                                    <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                    <a href="{% url 'manage_store' %}" class="dropdown-item text-white">Manage Store</a>
                                     <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">
                                         Admin Notifications 
                                         <span class="badge badge-danger">{{ admin_notifications_count }}</span>

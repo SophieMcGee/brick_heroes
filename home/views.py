@@ -9,8 +9,52 @@ from subscriptions.models import Borrowing, Subscription, UserProfile
 from notifications.models import Notification
 from products.models import Product, Review
 from allauth.account.models import EmailAddress
+from cart.models import BorrowOrder
 import random
+from django.conf import settings
+import stripe
 
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+@staff_member_required
+def manage_store(request):
+    """View to manage LEGO sets, subscribers, and borrowing."""
+    products = Product.objects.all()
+    subscriptions = Subscription.objects.filter(status=True)
+    borrowed_sets = BorrowOrder.objects.filter(status="Pending")  # Active borrowings
+    returned_sets = BorrowOrder.objects.filter(status="Returned")  # Returned sets
+
+    context = {
+        "products": products,
+        "subscriptions": subscriptions,
+        "borrowed_sets": borrowed_sets,
+        "returned_sets": returned_sets,
+    }
+    return render(request, "home/manage_store.html", context)
+
+@staff_member_required
+def delete_product(request, product_id):
+    """Deletes a LEGO set."""
+    product = get_object_or_404(Product, id=product_id)
+    product.delete()
+    messages.success(request, "✅ LEGO set deleted successfully.")
+    return redirect("manage_store")
+
+@staff_member_required
+def cancel_subscription(request, subscription_id):
+    """Cancels a user's subscription and removes it from Stripe."""
+    subscription = get_object_or_404(Subscription, id=subscription_id)
+
+    try:
+        stripe.Subscription.delete(subscription.stripe_subscription_id)
+        subscription.status = False
+        subscription.save()
+        messages.success(request, "✅ Subscription canceled successfully.")
+    except stripe.error.StripeError as e:
+        messages.error(request, f"⚠ Stripe Error: {str(e)}")
+
+    return redirect("manage_store")
 
 def index(request):
     random_products = list(Product.objects.filter(is_borrowed=False).exclude(image=""))
@@ -57,45 +101,6 @@ def my_notifications(request):
         'home/my_notifications.html',
         {'notifications': notifications},
     )
-
-
-@staff_member_required
-def manage_legosets(request):
-    """ A view for superusers to manage Lego sets """
-    legosets = LegoSet.objects.all()
-    return render(request, 'home/manage_legosets.html', {'legosets': legosets})
-
-
-@staff_member_required
-def edit_legoset(request, legoset_id):
-    """ A view to edit a Lego set """
-    legoset = get_object_or_404(LegoSet, id=legoset_id)
-
-    if request.method == 'POST':
-        form = LegoSetForm(request.POST, request.FILES, instance=legoset)
-        if form.is_valid():
-            form.save()
-            return redirect('manage_legosets')
-    else:
-        form = LegoSetForm(instance=legoset)
-
-    return render(
-        request,
-        'home/edit_legoset.html',
-        {
-            'form': form,
-            'legoset': legoset,
-        },
-    )
-
-
-@staff_member_required
-def delete_legoset(request, legoset_id):
-    """ A view to delete a Lego set """
-    legoset = get_object_or_404(LegoSet, id=legoset_id)
-    legoset.delete()
-    return redirect('manage_legosets')
-
 
 @staff_member_required
 def admin_tools(request):
