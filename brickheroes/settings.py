@@ -95,6 +95,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'home.context_processors.global_header_context',
                 'cart.contexts.cart_contents',
+                'home.context_processors.admin_notification_count',
             ],
         },
     },

@@ -122,9 +122,17 @@ def subscribe(request, plan_id):
         print("DEBUG: Stored Stripe Session ID:", request.session.get('stripe_checkout_session_id'))
         print("DEBUG: Stored session data before redirecting:", request.session.items())
 
+        # Create a Subscription Notification for Admin**
+        Notification.objects.create(
+            user=request.user,
+            message=f"{request.user.username} has subscribed to {plan.name}.",
+            category="subscription"
+        )
+        print("DEBUG: Subscription notification created.")  # Debugging log
 
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
+
 
     except stripe.error.StripeError as e:
         print(f"Stripe Error: {e}")
@@ -397,7 +405,7 @@ def user_profile(request):
 
 @login_required
 def return_borrowed_sets(request):
-    """Allows users to return borrowed LEGO sets."""
+    """Allows users to return borrowed LEGO sets and notifies admin."""
     if request.method == "POST":
         returned_set_ids = request.POST.getlist('return_sets')
 
@@ -412,6 +420,14 @@ def return_borrowed_sets(request):
                 borrow.lego_set.stock += 1  # Add back to stock
                 borrow.lego_set.is_borrowed = False  # Set as available
                 borrow.lego_set.save()
+
+                # **Create Notification for Returning a Set**
+                Notification.objects.create(
+                    user=request.user,
+                    message=f"{request.user.username} returned {borrow.lego_set.name}.",
+                    category="borrowing"
+                )
+                print(f"DEBUG: Notification created for returning {borrow.lego_set.name}")
 
             messages.success(request, "Selected LEGO set(s) have been returned successfully!")
 

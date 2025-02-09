@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 p-3 bg-white rounded shadow">
+            <!-- Page Title -->
+            <h1 class="text-warning text-center mb-4">Admin Notifications</h1>
+
+            {% if notifications %}
+                <div class="list-group">
+                    {% for notification in notifications %}
+                        <div class="list-group-item bg-light text-dark p-3 mb-2 rounded shadow-sm">
+                            <p class="mb-1"><strong>{{ notification.message }}</strong></p>
+                            <small class="text-muted">📅 {{ notification.created_at|date:"M d, Y H:i" }}</small>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-between mt-2">
+                                {% if request.user.is_superuser %}
+                                    <form action="{% url 'delete_notification' notification.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">🗑 Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <p>No notifications to display.</p>
+                </div>
+            {% endif %}
+
+            <!-- Back to Dashboard Button -->
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="btn btn-secondary">⬅ Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

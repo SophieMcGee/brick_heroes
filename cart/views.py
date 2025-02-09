@@ -140,7 +140,7 @@ def checkout(request):
 
                     # Create Borrowing records for each item
                     for item in cart_items:
-                        Borrowing.objects.create(
+                        borrowing = Borrowing.objects.create(
                             user=request.user,
                             lego_set=item.product,
                             is_returned=False  # Marked as active borrowed set
@@ -151,6 +151,14 @@ def checkout(request):
                             item.product.stock -= 1  # Reduce stock by 1
                             item.product.is_borrowed = True
                             item.product.save()
+
+                        # **Create Notification for Borrowing**
+                        Notification.objects.create(
+                            user=request.user,
+                            message=f"{request.user.username} borrowed {item.product.name}.",
+                            category="borrowing"
+                        )
+                        print(f"DEBUG: Notification created for borrowing {item.product.name}")
 
                     # Clear the cart after checkout
                     cart.items.all().delete()

@@ -12,31 +12,6 @@
         <!-- Product Details -->
         <div class="col-12 col-md-4">
             <h1 class="display-6 text-warning">{{ product.name }}</h1>
-            
-            <!-- Rating Form-->
-            <form id="rating-form" method="POST" action="{% url 'submit_rating' product.id %}">
-                {% csrf_token %}
-                <label for="rating">Rate this set (1-5):</label>
-                <select name="rating" id="rating">
-                    <option value="1">⭐</option>
-                    <option value="2">⭐⭐</option>
-                    <option value="3">⭐⭐⭐</option>
-                    <option value="4">⭐⭐⭐⭐</option>
-                    <option value="5">⭐⭐⭐⭐⭐</option>
-                </select>
-                <button type="submit">Submit</button>
-            </form>
-            
-            <!-- Display average rating -->
-            {% if product.average_rating %}
-                <p><strong>Rated {{ product.average_rating|floatformat:1 }} out of 5</strong> 
-                    ({{ product.reviews.count }} reviews)
-                </p>
-            {% else %}
-                <p>No ratings yet</p>
-            {% endif %}
-
-            <!-- Product description -->
             <p class="mt-4 text-light">{{ product.description }}</p>
 
             <!-- Stock and Borrowing Option -->
@@ -56,46 +31,124 @@
 
             <br>
 
-            <!-- Display all reviews -->
-            <h2 class="mt-4 text-warning">Reviews:</h2>
-            {% if product.reviews.all %}
-                {% for review in product.reviews.all %}
-                    <div class="review p-3 border rounded my-2 bg-dark text-light">
-                        <strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5
-                        <p>{{ review.content }}</p>
-                        <small>Posted on {{ review.created_on }}</small>
-
-                        <!-- Show delete button only for staff members -->
-                        {% if request.user.is_staff %}
-                            <form action="{% url 'delete_review' review.id %}" method="POST" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        {% endif %}
+             <!-- Ratings Section -->
+             <div class="mt-4">
+                <h3 class="text-warning">Rate This Set</h3>
+                <div class="card bg-light p-3 mb-3">
+                    <h5 class="text-dark">Select a Rating (1-5):</h5>
+                    <form method="POST" action="{% url 'submit_rating' product.id %}" id="rating-form">
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center gap-2">
+                            <select name="rating" class="form-select w-auto" id="rating-select">
+                                <option value="">Select Rating</option>
+                                <option value="1">⭐</option>
+                                <option value="2">⭐⭐</option>
+                                <option value="3">⭐⭐⭐</option>
+                                <option value="4">⭐⭐⭐⭐</option>
+                                <option value="5">⭐⭐⭐⭐⭐</option>
+                            </select>
+                            <button type="submit" class="btn btn-warning">Submit Rating</button>
+                        </div>
+                    </form>
+                    
+                    <!-- Display current rating -->
+                    <div class="mt-3">
+                        <p class="text-dark"><strong>Average Rating:</strong>
+                            <span id="avg-rating">
+                                {% if product.get_average_rating %}
+                                    {% with avg=product.get_average_rating %}
+                                        <span class="stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= avg %}
+                                                    ⭐
+                                                {% else %}
+                                                    ☆
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <span>({{ avg }}/5)</span>
+                                    {% endwith %}
+                                {% else %}
+                                    <span>No ratings yet.</span>
+                                {% endif %}
+                            </span>
+                        </p>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p>No reviews yet.</p>
-            {% endif %}
+                </div>
+            </div>
 
-            <!-- Add a Review -->
-            {% if user.is_authenticated and user.userprofile.subscription %}
-                <form method="POST" action="{% url 'submit_review' product.id %}">
-                    {% csrf_token %}
-                    <label for="review">Write a Review:</label>
-                    <textarea name="content" required></textarea>
-                    <label for="rating">Rating (1-5):</label>
-                    <select name="rating">
-                        <option value="1">⭐</option>
-                        <option value="2">⭐⭐</option>
-                        <option value="3">⭐⭐⭐</option>
-                        <option value="4">⭐⭐⭐⭐</option>
-                        <option value="5">⭐⭐⭐⭐⭐</option>
-                    </select>
-                    <button type="submit">Submit Review</button>
-                </form>
-            {% endif %}
+            <!-- Reviews Section -->
+            <div class="mt-4">
+                <h3 class="text-warning">Write a Review</h3>
+                <div class="card bg-light p-3">
+                    {% if user.is_authenticated and user.userprofile.subscription and user.userprofile.subscription.status %}
+                        <form method="POST" action="{% url 'submit_review' product.id %}" id="review-form">
+                            {% csrf_token %}
+                            <textarea name="review_text" class="form-control mb-2" placeholder="Write your review..." required></textarea>
+                            <button type="submit" class="btn btn-warning">Submit Review</button>
+                        </form>
+                    {% else %}
+                        <p class="text-danger">You must be an active subscriber to leave a review. However, you can still rate this set above!</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Display Approved Reviews -->
+            <div class="mt-4">
+                <h4 class="text-warning">Customer Reviews</h4>
+                {% if product.review_set.all %}
+                    <ul class="list-group" id="review-list">
+                        {% for review in product.review_set.all %}
+                            {% if review.is_approved %}
+                                <li class="list-group-item bg-light text-dark mb-2">
+                                    <strong>{{ review.user.username|default:"Anonymous" }}</strong>
+                                    {% if review.rating %}
+                                        rated: ⭐{{ review.rating }}/5
+                                    {% endif %}
+                                    <p class="mb-1">{{ review.content }}</p>
+                                    <small class="text-muted">Posted on {{ review.created_at|date:"M d, Y" }}</small>
+                                    
+                                    <!-- Admin Delete Option -->
+                                    {% if request.user.is_staff %}
+                                        <form action="{% url 'delete_review' review.id %}" method="POST" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No reviews yet.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("rating-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent full page reload
+
+        let formData = new FormData(this);
+        let productId = "{{ product.id }}"; 
+
+        fetch(`/products/${productId}/submit-rating/`, {
+            method: "POST",
+            body: formData,
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.new_avg_rating) {
+                document.getElementById("average-rating").innerHTML = `⭐ ${data.new_avg_rating}/5`;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+});
+</script>
+
 {% endblock %}

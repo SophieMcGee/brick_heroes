@@ -183,9 +183,12 @@
                                 <div class="dropdown-menu dropdown-menu-right border-0 bg-dark text-white" aria-labelledby="user-options">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
-                                        <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
-                                        <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">Admin Notifications</a>
-                                    {% endif %}
+                                    <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                    <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">
+                                        Admin Notifications 
+                                        <span class="badge badge-danger">{{ admin_notifications_count }}</span>
+                                    </a>
+                                {% endif %}
                                     <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
                                     <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
                                 {% else %}
@@ -252,9 +255,12 @@
                             <div class="dropdown-menu bg-dark border-0" aria-labelledby="accountDropdown">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
-                                        <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
-                                        <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">Admin Notifications</a>
-                                    {% endif %}
+                                    <a href="{% url 'admin:index' %}" class="dropdown-item text-white">Manage Store</a>
+                                    <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">
+                                        Admin Notifications 
+                                        <span class="badge badge-danger">{{ admin_notifications_count }}</span>
+                                    </a>
+                                {% endif %}
                                     <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
                                     <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
                                 {% else %}

@@ -1,5 +1,6 @@
 from subscriptions.models import Borrowing
 from cart.models import CartItem
+from notifications.models import Notification
 
 def global_header_context(request):
     """Add global context variables for the header."""
@@ -14,3 +15,11 @@ def global_header_context(request):
         'total_borrowed': total_borrowed,
         'total_purchased': total_purchased,
     }
+
+def admin_notification_count(request):
+    """Adds the number of unread admin notifications to context for base.html."""
+    if request.user.is_authenticated and request.user.is_superuser:
+        return {
+            'admin_notifications_count': Notification.objects.filter(is_read=False).count()
+        }
+    return {'admin_notifications_count': 0}

@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.utils.timezone import now
 from .models import Product, Rating, Review
 from subscriptions.models import UserProfile, Subscription
+from notifications.models import Notification
 
 
 def all_products(request, category_name=None):
@@ -113,62 +114,48 @@ def products_by_category(request, category_name):
     )
 
 def submit_rating(request, product_id):
-    """Allows users (anyone) to submit a rating."""
-    if request.method == "POST":
-        product = get_object_or_404(Product, id=product_id)
-        rating_value = int(request.POST.get("rating"))
-
-        if rating_value < 1 or rating_value > 5:
-            return JsonResponse({"error": "Invalid rating value."}, status=400)
-
-        Rating.objects.create(product=product, rating=rating_value)
-        product.update_rating()
-        return JsonResponse({"message": "Rating submitted successfully!", "average_rating": product.average_rating})
-
-    return JsonResponse({"error": "Invalid request."}, status=400)
-
-@login_required
-def submit_review(request, product_id):
-    """Allows only subscribed users to submit a review (requires admin approval)."""
+    """Handles rating submission via AJAX and updates average rating dynamically."""
     product = get_object_or_404(Product, id=product_id)
     
-    if not request.user.userprofile.subscription or not request.user.userprofile.subscription.status:
-        messages.error(request, "You need an active subscription to leave a review.")
-        return redirect('product_detail', product_id=product.id)
+    if request.method == "POST":
+        rating_value = request.POST.get("rating")
+        
+        if not rating_value:
+            return JsonResponse({"error": "No rating value provided"}, status=400)
+
+        try:
+            rating_value = int(rating_value)
+            if rating_value < 1 or rating_value > 5:
+                return JsonResponse({"error": "Invalid rating"}, status=400)
+        except ValueError:
+            return JsonResponse({"error": "Invalid rating input"}, status=400)
+
+        # Save the new rating
+        Rating.objects.create(product=product, rating=rating_value)
+
+        # Update average rating
+        avg_rating = product.get_average_rating()
+        
+        return JsonResponse({"message": "Rating submitted successfully", "new_avg_rating": avg_rating})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+def submit_review(request, product_id):
+    """Allows only subscribers to submit reviews for a product, pending admin approval."""
+    product = get_object_or_404(Product, id=product_id)
 
     if request.method == "POST":
-        content = request.POST.get("content")
-        rating = int(request.POST.get("rating"))
+        review_text = request.POST.get("review_text", "").strip()
 
-        if Review.objects.filter(user=request.user, product=product).exists():
-            messages.warning(request, "You have already reviewed this product.")
-            return redirect('product_detail', product_id=product.id)
+        if not request.user.userprofile.subscription or not request.user.userprofile.subscription.status:
+            messages.error(request, "You must be an active subscriber to leave a review.")
+            return redirect("product_detail", product_id=product.id)
 
-        review = Review.objects.create(user=request.user, product=product, content=content, rating=rating)
+        Review.objects.create(
+            user=request.user, product=product, content=review_text, is_approved=False
+        )
+
         messages.success(request, "Your review has been submitted for approval.")
+        return redirect("product_detail", product_id=product.id)
 
-        return redirect('product_detail', product_id=product.id)
-
-
-@staff_member_required
-def admin_notifications(request):
-    """Displays pending reviews for admin approval."""
-    pending_reviews = Review.objects.filter(is_approved=False)
-    return render(request, "admin_notifications.html", {"pending_reviews": pending_reviews})
-
-@staff_member_required
-def approve_review(request, review_id):
-    """Admin action to approve a pending review."""
-    review = get_object_or_404(Review, id=review_id)
-    review.is_approved = True
-    review.save()
-    messages.success(request, "Review approved successfully.")
-    return redirect("admin_notifications")
-
-@staff_member_required
-def delete_review(request, review_id):
-    """Allow only admin/superusers to delete reviews."""
-    review = get_object_or_404(Review, id=review_id)
-    review.delete()
-    messages.success(request, "Review deleted successfully.")
-    return redirect('admin_notifications')
+    return redirect("product_detail", product_id=product.id)

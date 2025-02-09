@@ -43,15 +43,18 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = "Categories"
-        
+
 class Rating(models.Model):
-    """Stores individual ratings for a product."""
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="ratings")
-    rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])  # 1 to 5 stars
+    product = models.ForeignKey(
+        Product, 
+        on_delete=models.CASCADE, 
+        related_name="ratings"
+    )
+    rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Rating: {self.rating} for {self.product.name}"
+        return f"Rating for {self.product.name}: {self.rating}/5"
 
 
 class Review(models.Model):
