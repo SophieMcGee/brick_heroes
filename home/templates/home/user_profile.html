@@ -84,8 +84,14 @@
                         </div>
                         <div class="bg-light p-2 rounded">
                             <strong>Status:</strong>
-                            {% if subscription.status %}
+                            {% if subscription_status == "Active" %}
                                 <span class="badge bg-success">Active</span>
+                            {% elif subscription_status == "Pending Cancellation" %}
+                                <span class="badge bg-warning text-dark">Pending Cancellation</span>
+                                <div class="alert alert-warning p-2 mt-2">
+                                    Your subscription will remain active until <strong>{{ subscription.end_date }}</strong>. 
+                                    After this date, it will be canceled.
+                                </div>
                             {% else %}
                                 <span class="badge bg-danger">Expired</span>
                             {% endif %}
@@ -93,9 +99,11 @@
                     </div>
 
                     <!-- Subscription Actions -->
-                    <div class="mt-3">
-                        <a href="{% url 'cancel_subscription' %}" class="btn btn-danger w-100">Cancel Subscription</a>
-                    </div>
+                    {% if subscription_status == "Active" %}
+                        <div class="mt-3">
+                            <a href="{% url 'cancel_subscription' %}" class="btn btn-danger w-100">Cancel Subscription</a>
+                        </div>
+                    {% endif %}
                 </div>
 
             {% else %}

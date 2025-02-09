@@ -134,7 +134,7 @@ def subscribe(request, plan_id):
 
 @login_required
 def cancel_subscription(request):
-    """Cancels the user's Stripe subscription properly."""
+    """Cancels the user's Stripe subscription properly but keeps it active until expiration."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     if not user_profile.subscription:
@@ -143,7 +143,6 @@ def cancel_subscription(request):
 
     subscription = user_profile.subscription
 
-    # Debugging: Print the stored subscription ID before canceling
     print(f"DEBUG: Attempting to cancel subscription with Stripe ID: {subscription.stripe_subscription_id}")
 
     if not subscription.stripe_subscription_id:
@@ -159,21 +158,20 @@ def cancel_subscription(request):
                 subscription.stripe_subscription_id,
                 cancel_at_period_end=True  # Prevents auto-renewal
             )
-            subscription.status = False  # Mark in DB
+            subscription.status = True  # Keep marked as active
             subscription.save()
-            user_profile.subscription = None
-            user_profile.save()
-            messages.success(request, "Your subscription has been canceled.")
+
+            messages.success(request, "Your subscription will remain active until the cancellation date.")
+
         else:
             messages.info(request, "This subscription was already canceled.")
 
     except stripe.error.InvalidRequestError as e:
         print(f"Stripe API Error: {str(e)}")
         if "No such subscription" in str(e):
-            # Subscription doesn't exist, update database
             subscription.status = False
             subscription.save()
-            user_profile.subscription = None
+            user_profile.subscription = None  # Unlink from profile
             user_profile.save()
             messages.error(request, "Your subscription was already canceled or removed from Stripe.")
 
@@ -204,19 +202,17 @@ def check_and_update_subscriptions():
     expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
 
     for sub in expired_subs:
-        # Only cancel in Stripe if the ID exists
         if sub.stripe_subscription_id:
             try:
-                stripe.Subscription.modify(sub.stripe_subscription_id, cancel_at_period_end=True)
+                stripe_sub = stripe.Subscription.retrieve(sub.stripe_subscription_id)
+                if stripe_sub.status == "canceled":
+                    sub.status = False  # Mark as expired
+                    sub.save()
+                    logger.info(f" Subscription expired: {sub.user.email} (ID: {sub.id})")
+
             except stripe.error.StripeError as e:
-                logger.error(f"Error canceling Stripe subscription {sub.stripe_subscription_id}: {str(e)}")
+                logger.error(f"Error checking Stripe subscription {sub.stripe_subscription_id}: {str(e)}")
 
-        # Mark the subscription as expired
-        sub.status = False
-        sub.save()
-        logger.info(f" Subscription expired: {sub.user.email} (ID: {sub.id})")
-
-    
     # Send renewal reminder emails
     upcoming_renewals = Subscription.objects.filter(
         status=True,
@@ -268,19 +264,23 @@ def stripe_webhook(request):
             logger.error("No matching subscription plan found.")
             return JsonResponse({"error": "No matching plan"}, status=400)
 
-        # Prevent duplicate subscriptions
-        # Check if the user has an existing subscription (active or expired)
+        # Check if the user already has a subscription (including canceled ones)
         existing_subscription = Subscription.objects.filter(user=user_profile.user).order_by('-end_date').first()
 
         if existing_subscription:
-            # Update existing subscription instead of creating a new one
-            existing_subscription.subscription_plan = plan
-            existing_subscription.stripe_subscription_id = stripe_subscription_id
-            existing_subscription.start_date = now()
-            existing_subscription.end_date = now() + timedelta(days=30)
-            existing_subscription.status = True
-            existing_subscription.save()
-            logger.info(f" Subscription updated for {user_profile.user.email} (ID: {existing_subscription.id})")
+            # Only update if it's expired
+            if existing_subscription.status is False:
+                existing_subscription.subscription_plan = plan
+                existing_subscription.stripe_subscription_id = stripe_subscription_id  # Save correct ID!
+                existing_subscription.start_date = now()
+                existing_subscription.end_date = now() + timedelta(days=30)
+                existing_subscription.status = True
+                existing_subscription.save()
+                user_profile.subscription = existing_subscription
+                user_profile.save()
+                logger.info(f" Subscription reactivated for {user_profile.user.email} (ID: {existing_subscription.id})")
+            else:
+                logger.info(f" Subscription already exists for {user_profile.user.email} (ID: {existing_subscription.id})")
         else:
             # Create a new subscription if none exists
             subscription = Subscription.objects.create(
@@ -291,26 +291,12 @@ def stripe_webhook(request):
                 end_date=now() + timedelta(days=30),
                 status=True,
             )
+            user_profile.subscription = subscription
+            user_profile.save()
             logger.info(f"New subscription created for {user_profile.user.email}")
 
-        # Create the new subscription
-        subscription = Subscription.objects.create(
-            user=user_profile.user,
-            subscription_plan=plan,
-            stripe_subscription_id=stripe_subscription_id,
-            start_date=now(),
-            end_date=now() + timedelta(days=30),
-            status=True,
-        )
+        return JsonResponse({"message": "Subscription processed successfully"}, status=200)
 
-        # Link subscription to user profile
-        user_profile.subscription = subscription
-        user_profile.save()
-
-        logger.info(f"Subscription created successfully for {user_profile.user.username}")
-        return JsonResponse({"message": "New subscription created"}, status=200)
-
-    # Handle Subscription Cancellations from Stripe
     elif event["type"] == "customer.subscription.deleted":
         stripe_subscription_id = event["data"]["object"]["id"]
         subscription = Subscription.objects.filter(stripe_subscription_id=stripe_subscription_id).first()
@@ -318,10 +304,9 @@ def stripe_webhook(request):
         if subscription:
             subscription.status = False
             subscription.save()
-            logger.info(f"Subscription {stripe_subscription_id} marked as expired.")
+            logger.info(f" Subscription {stripe_subscription_id} marked as expired.")
 
     return JsonResponse({"message": "Webhook received"}, status=200)
-
 
 
 @login_required
@@ -345,11 +330,12 @@ def subscription_success(request):
     subscription = Subscription.objects.create(
         user=request.user,
         subscription_plan=plan,
-        stripe_subscription_id=request.session.get("stripe_checkout_session_id"),
+        stripe_subscription_id=request.session.get("subscription"),
         start_date=now(),
         end_date=now() + timedelta(days=30),
         status=True,
     )
+    print(f"DEBUG: Retrieved Stripe Subscription ID: {session.get('subscription')}")
 
     # Link the subscription to the UserProfile
     user_profile = request.user.userprofile
@@ -368,27 +354,43 @@ def subscription_success(request):
 def user_profile(request):
     """User profile page displaying subscriptions, borrowed sets, and notifications."""
     user_profile = request.user.userprofile
-
-    # Get the current subscription
     subscription = user_profile.subscription
-    if subscription and subscription.status:
-        subscription_plan_name = subscription.subscription_plan.name
+
+    # Determine subscription status
+    if subscription:
+        # Fetch latest status from Stripe
+        stripe_subscription = None
+        if subscription.stripe_subscription_id:
+            try:
+                stripe_subscription = stripe.Subscription.retrieve(subscription.stripe_subscription_id)
+            except stripe.error.StripeError as e:
+                logger.error(f"Error retrieving subscription from Stripe: {e}")
+
+        # Determine if the subscription is still active or pending cancellation
+        if subscription.status and stripe_subscription:
+            if stripe_subscription.cancel_at_period_end:
+                subscription_status = "Pending Cancellation"
+            else:
+                subscription_status = "Active"
+        elif subscription.end_date and subscription.end_date > now():
+            subscription_status = "Pending Cancellation"
+        else:
+            subscription_status = "Expired"
+
+        # Save the updated status in case the subscription is newly marked
+        subscription.save()
     else:
-        subscription_plan_name = "No Active Subscription"
+        subscription_status = "No Subscription"
 
-    # Fetch only ACTIVE borrowed sets (not returned)
     borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
-
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
     emailaddresses = EmailAddress.objects.filter(user=request.user)
-
-    messages.info(request, "Welcome back! Here's your borrowing summary.")
 
     return render(request, 'home/user_profile.html', {
         'user_profile': user_profile,
         'subscription': subscription,
-        'subscription_plan_name': subscription_plan_name,
-        'borrowed_sets': borrowed_sets,  # Now correctly shows active borrowed sets
+        'subscription_status': subscription_status,
+        'borrowed_sets': borrowed_sets,
         'notifications': notifications,
         'emailaddresses': emailaddresses,
     })
