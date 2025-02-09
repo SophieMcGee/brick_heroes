@@ -130,21 +130,18 @@ class UserProfile(models.Model):
         return self.user.username
 
     def can_borrow(self):
-        """Check if the user is eligible to borrow based on their subscription"""
-        if not self.subscription or not self.subscription.status:
-            return False
+        """Check if the user is eligible to borrow based on their subscription status"""
+        if not self.subscription:
+            return False  # No subscription, cannot borrow
 
-        # Ensure the subscription is not expired
-        if self.subscription.end_date and self.subscription.end_date < now():
-            return False  # Expired subscription
+        # Check if the subscription is active OR pending cancellation but not expired
+        if self.subscription.status or (self.subscription.end_date and self.subscription.end_date > now()):
+            max_active_borrows = self.subscription.subscription_plan.max_active_borrows
+            active_borrows = Borrowing.objects.filter(user=self.user, is_returned=False).count()
 
-        # Get max sets allowed at the same time
-        max_active_borrows = self.subscription.subscription_plan.max_active_borrows
+            return active_borrows < max_active_borrows
 
-        # Count active borrowed sets
-        active_borrows = Borrowing.objects.filter(user=self.user, is_returned=False).count()
-
-        return active_borrows < max_active_borrows
+        return False  # Expired subscription, cannot borrow
 
 
 

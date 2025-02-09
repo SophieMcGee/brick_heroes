@@ -9,26 +9,37 @@ from products.models import Review  # Import reviews from products
 def admin_notifications(request):
     """Displays pending reviews, subscriptions, and borrowing notifications."""
 
+    # Debugging: Print notifications in the console
+    print("DEBUG: Fetching admin notifications...")
+
     # Fetch pending reviews (not yet approved)
     pending_reviews = Review.objects.filter(is_approved=False)
 
     # Fetch subscription notifications
     subscription_notifications = Notification.objects.filter(
-        category="subscription"
+        category="subscription",
+        is_read=False
     ).order_by('-created_at')
 
     # Fetch borrowing and return notifications
     borrowing_notifications = Notification.objects.filter(
-        category="borrowing"
+        category="borrowing",
+        is_read=False
     ).order_by('-created_at')
+
+    # Debugging: Print notification counts
+    print("DEBUG: Pending Reviews:", pending_reviews.count())
+    print("DEBUG: Subscription Notifications:", subscription_notifications.count())
+    print("DEBUG: Borrowing Notifications:", borrowing_notifications.count())
+
+    all_notifications = list(subscription_notifications) + list(borrowing_notifications)
 
     return render(
         request,
-        "notifications/admin_notifications.html",  # Move the template to notifications
+        "notifications/admin_notifications.html",
         {
             "pending_reviews": pending_reviews,
-            "subscription_notifications": subscription_notifications,
-            "borrowing_notifications": borrowing_notifications,
+            "notifications": all_notifications,  # Use a single variable in template
         },
     )
 
@@ -62,3 +73,11 @@ def user_notifications(request):
         'notifications/notifications.html',
         {'notifications': notifications},
     )
+
+@staff_member_required
+def delete_notification(request, notification_id):
+    """Allows admins to delete notifications."""
+    notification = get_object_or_404(Notification, id=notification_id)
+    notification.delete()
+    messages.success(request, "Notification deleted successfully.")
+    return redirect("admin_notifications")

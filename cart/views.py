@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import Cart, CartItem
 from products.models import Product
 from subscriptions.models import Borrowing
+from notifications.models import Notification
 from .forms import DeliveryInfoForm
 from django.db import transaction
 from django.utils.timezone import now
@@ -51,22 +52,21 @@ def process_checkout(request):
 @login_required
 def add_to_cart(request, product_id):
     """Allow users to borrow LEGO sets based on their subscription plan."""
-    cart, _ = Cart.objects.get_or_create(user=request.user)
     product = get_object_or_404(Product, id=product_id)
 
-    #  Ensure user has an active subscription
-    if not request.user.userprofile.subscription or not request.user.userprofile.subscription.status:
+    # 1 Ensure user has an active subscription
+    subscription = request.user.userprofile.subscription
+    if not subscription or not subscription.status:
         messages.error(request, "You need an active subscription to borrow LEGO sets.")
         return redirect("subscription_plans")
 
-    # Get subscription limits
-    subscription = request.user.userprofile.subscription
+    #  Get subscription limits
     max_active_borrows = subscription.subscription_plan.max_active_borrows
 
     # Check how many sets are currently borrowed (not returned)
     active_borrows = Borrowing.objects.filter(user=request.user, is_returned=False).count()
 
-    # Restrict borrowing based on the tier limit
+    # Restrict borrowing if limit reached
     if active_borrows >= max_active_borrows:
         messages.error(
             request,
@@ -75,15 +75,31 @@ def add_to_cart(request, product_id):
         )
         return redirect("shopping_cart")
 
-    # Add LEGO set to cart if within borrowing limit
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    # **Create a Borrowing record** (instead of just adding to cart)
+    borrowing = Borrowing.objects.create(
+        user=request.user,
+        lego_set=product,
+        is_returned=False,
+        subscription=subscription  # Ensure subscription is set
+    )
 
-    if created:
-        messages.success(request, f"{product.name} has been added to your borrow cart!")
-    else:
-        messages.info(request, f"{product.name} is already in your borrow cart.")
+    # Reduce stock for the borrowed set
+    if product.stock > 0:
+        product.stock -= 1
+        product.is_borrowed = True  # Mark it as borrowed
+        product.save()
 
-    return redirect("shopping_cart")
+    # **Create a notification for borrowing**
+    Notification.objects.create(
+        user=request.user,
+        message=f"{request.user.username} borrowed {product.name}.",
+        category="borrowing"
+    )
+
+    # Show success message & redirect
+    messages.success(request, f"{product.name} has been added to your borrowed sets!")
+    return redirect("user_profile")  # Redirect to the profile where borrowed sets are shown
+
 
 
 @login_required
@@ -143,7 +159,8 @@ def checkout(request):
                         borrowing = Borrowing.objects.create(
                             user=request.user,
                             lego_set=item.product,
-                            is_returned=False  # Marked as active borrowed set
+                            is_returned=False,  # Marked as active borrowed set
+                            subscription=request.user.userprofile.subscription
                         )
 
                         # Decrease stock after borrowing

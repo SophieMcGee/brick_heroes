@@ -15,7 +15,7 @@
                             <p class="mb-1"><strong>{{ notification.message }}</strong></p>
                             <small class="text-muted">📅 {{ notification.created_at|date:"M d, Y H:i" }}</small>
 
-                            <!-- Action Buttons -->
+                            <!-- Action Buttons for Notifications -->
                             <div class="d-flex justify-content-between mt-2">
                                 {% if request.user.is_superuser %}
                                     <form action="{% url 'delete_notification' notification.id %}" method="POST">
