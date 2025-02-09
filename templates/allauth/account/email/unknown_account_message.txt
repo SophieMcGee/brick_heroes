@@ -1,10 +1,19 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
 
-{% block content %}{% autoescape off %}{% blocktranslate %}You are receiving this email because you, or someone else, tried to access an account with email {{ email }}. However, we do not have any record of such an account in our database.{% endblocktranslate %}
+{% block content %}{% autoescape off %}
+🦸‍♂️ **Hello, Brick Hero!** 🦸‍♀️  
 
-{% blocktranslate %}This mail can be safely ignored if you did not initiate this action.{% endblocktranslate %}
+We noticed an attempt to log in or reset a password using **{{ email }}**, but we couldn’t find an account with this email in our database.  
 
-{% blocktranslate %}If it was you, you can sign up for an account using the link below.{% endblocktranslate %}
+⚠ **If you didn’t try to log in, you can ignore this email.**  
 
-{{ signup_url }}{% endautoescape %}{% endblock content %}
+🏗 **Want to Join the Adventure?**  
+If you were trying to sign up, you can create your **Brick Heroes** account using the link below:  
+
+👉 **[Sign Up Now]({{ signup_url }})**  
+
+🚀 **Stay awesome, and happy building!**  
+**The Brick Heroes Team**  
+{% endautoescape %}{% endblock content %}
+

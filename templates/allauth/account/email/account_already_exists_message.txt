@@ -1,13 +1,24 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
 
-{% block content %}{% autoescape off %}{% blocktrans %}You are receiving this email because you or someone else tried to signup for an
-account using email address:
+{% block content %}{% autoescape off %}
+{% blocktrans %}
+🦸‍♂️ **Hello, Brick Hero!** 🦸‍♀️
 
-{{ email }}
+It looks like someone (hopefully you!) tried to sign up for a **Brick Heroes** account using this email:
 
-However, an account using that email address already exists.  In case you have
-forgotten about this, please use the password forgotten procedure to recover
-your account:
+📧 **{{ email }}**
 
-{{ password_reset_url }}{% endblocktrans %}{% endautoescape %}{% endblock content %}
+But guess what? A **super account** with this email already exists! 🏗️ 
+
+If you've forgotten your password, no worries! Simply follow the link below to **reset your password** and regain access:
+
+🔑 **[Reset My Password]({{ password_reset_url }})**  
+
+If you didn't request this, you can safely ignore this email.
+
+Stay awesome,  
+🚀 **The Brick Heroes Team**  
+{% endblocktrans %}
+{% endautoescape %}
+{% endblock content %}

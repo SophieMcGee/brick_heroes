@@ -1,2 +1,11 @@
 {% load i18n %}
-{% blocktrans %}Unable to confirm {{email}} because it is already confirmed by a different account.{% endblocktrans %}
+
+⚠ **Email Confirmation Failed**  
+
+{% blocktrans %}The email **{{ email }}** cannot be confirmed because it is already linked to a different **Brick Heroes** account.{% endblocktrans %}  
+
+🔍 **What can you do?**  
+- If you own that account, please **log in with that email** instead.  
+- If you believe this is a mistake, contact our **support team** for help.  
+
+🚀 **Stay awesome, and keep building!**  

@@ -1,7 +1,13 @@
-{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name %}Hello from {{ site_name }}!{% endblocktrans %}
+{% load i18n %}
+{% autoescape off %}
 
-{% block content %}{% endblock content %}
+🦸‍♂️ **Hello from Brick Heroes!** 🦸‍♀️  
 
-{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Thank you for using {{ site_name }}!
-{{ site_domain }}{% endblocktrans %}
+{% block content %}  
+{% endblock content %}  
+
+🏗️ **Thank you for being part of our awesome LEGO community!**  
+🌟 **Brick Heroes Team**  
+🌍 **{{ current_site.domain }}**  
+
 {% endautoescape %}

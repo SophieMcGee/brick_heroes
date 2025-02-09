@@ -2,8 +2,13 @@
 {% load account %}
 {% load allauth %}
 {% user_display user as user_display %}
+
 {% element alert %}
     {% slot message %}
-        <strong>{% blocktranslate %}Note{% endblocktranslate %}:</strong> {% blocktranslate %}You are already logged in as {{ user_display }}.{% endblocktranslate %}
+        ✅ **You're Already Logged In**  
+
+        {% blocktranslate %}You're currently logged in as **{{ user_display }}**.{% endblocktranslate %}  
+
+        🚀 **Keep building with Brick Heroes!**
     {% endslot %}
 {% endelement %}

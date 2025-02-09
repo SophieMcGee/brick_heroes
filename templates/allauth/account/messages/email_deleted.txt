@@ -1,2 +1,11 @@
 {% load i18n %}
-{% blocktrans %}Removed email address {{email}}.{% endblocktrans %}
+
+✅ **Email Address Removed**  
+
+{% blocktrans %}The email address **{{ email }}** has been successfully removed from your **Brick Heroes** account.{% endblocktrans %}  
+
+⚠ **Didn't request this change?**  
+If you didn't remove this email, please check your account security and update your password immediately.  
+
+🚀 **Stay safe, stay super!**  
+

@@ -1,2 +1,9 @@
 {% load i18n %}
-{% blocktrans %}You have signed out.{% endblocktrans %}
+
+👋 **You Have Signed Out**  
+
+{% blocktrans %}You have successfully signed out of your **Brick Heroes** account.{% endblocktrans %}  
+
+🚀 **See you soon, Hero!**
+
+🏗 **Keep building amazing things!**  

@@ -1,2 +1,11 @@
 {% load i18n %}
-{% blocktrans %}Your primary email address must be verified.{% endblocktrans %}
+
+⚠ **Email Verification Required**  
+
+{% blocktrans %}Your primary email address must be verified before you can continue.{% endblocktrans %}  
+
+📬 **What should you do?**  
+- Check your inbox for a verification email from Brick Heroes.  
+- If you didn’t receive it, you can request a new one  
+
+🚀 **Secure your account and continue your adventure!**  

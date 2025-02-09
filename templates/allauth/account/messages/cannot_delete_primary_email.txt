@@ -1,2 +1,9 @@
 {% load i18n %}
-{% blocktrans %}You cannot remove your primary email address ({{email}}).{% endblocktrans %}
+
+⚠ **Action Not Allowed**  
+
+{% blocktrans %}You cannot remove your primary email address (**{{ email }}**) because it is required for your **Brick Heroes** account.{% endblocktrans %}  
+
+To change your primary email, please **add a new email address first** and set it as your primary before removing this one.  
+
+🚀 **Need help?** Contact our support team if you need assistance.  

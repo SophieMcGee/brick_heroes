@@ -1,2 +1,11 @@
 {% load i18n %}
-{% blocktrans %}You have confirmed {{email}}.{% endblocktrans %}
+
+✅ **Email Confirmed!**  
+
+{% blocktrans %}Your email **{{ email }}** has been successfully confirmed!{% endblocktrans %}  
+
+🎉 **You're all set!**  
+You can now **log in** and start your **Brick Heroes** adventure.  
+
+
+🚀 **Welcome to the team, Hero!**  

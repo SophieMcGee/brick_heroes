@@ -1,4 +1,17 @@
 {% extends "account/email/base_notification.txt" %}
 {% load i18n %}
 
-{% block notification_message %}{% blocktrans %}Your email has been changed from {{ from_email }} to {{ to_email }}.{% endblocktrans %}{% endblock notification_message %}
+{% block notification_message %}{% autoescape off %}
+
+🦸‍♂️ **Brick Heroes: Your Email Has Been Updated!** 🦸‍♀️  
+
+This is a confirmation that **your email address has been changed**.  
+
+🔹 **Old Email:** {{ from_email }}  
+🔹 **New Email:** {{ to_email }}  
+
+If **you did not request this change**, please **reset your password immediately** and contact our support team.  
+
+💛 **Brick Heroes Team**  
+
+{% endautoescape %}{% endblock notification_message %}

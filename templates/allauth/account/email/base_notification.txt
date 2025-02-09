@@ -2,13 +2,25 @@
 {% load account %}
 {% load i18n %}
 
-{% block content %}{% autoescape off %}{% blocktrans %}You are receiving this mail because the following change was made to your account:{% endblocktrans %}
+{% block content %}{% autoescape off %}
 
-{% block notification_message %}
-{% endblock notification_message%}
+🦸‍♂️ **Important: A Change Was Made to Your Brick Heroes Account** 🦸‍♀️  
 
-{% blocktrans %}If you do not recognize this change then please take proper security precautions immediately. The change to your account originates from:
+You are receiving this email because **a change was made to your account.**  
 
-- IP address: {{ip}}
-- Browser: {{user_agent}}
-- Date: {{timestamp}}{% endblocktrans %}{% endautoescape %}{% endblock %}
+🔹 **Change Details:**  
+{% block notification_message %}{% endblock notification_message %}
+
+If you **did not** make this change, please take **immediate action** to secure your account.  
+
+🛑 **Security Check:**  
+- **IP Address:** {{ ip }}  
+- **Browser:** {{ user_agent }}  
+- **Date & Time:** {{ timestamp }}  
+
+🔗 **[Reset Your Password Now](https://your-password-reset-url.com)**  
+
+💛 **Brick Heroes Team**  
+
+{% endautoescape %}{% endblock %}
+

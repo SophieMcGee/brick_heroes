@@ -1,4 +1,13 @@
 {% extends "account/email/base_notification.txt" %}
 {% load i18n %}
 
-{% block notification_message %}{% blocktrans %}Email address {{ deleted_email }} has been removed from your account.{% endblocktrans %}{% endblock notification_message %}
+{% block notification_message %}
+🛑 **Email Removed from Your Account**  
+
+{% blocktrans %}The email address **{{ deleted_email }}** has been successfully removed from your **Brick Heroes** account.{% endblocktrans %}
+
+If you did not request this change, please update your security settings immediately.
+
+⚡ **Stay Secure, Stay Super!**  
+**The Brick Heroes Team**  
+{% endblock notification_message %}

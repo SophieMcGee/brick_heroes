@@ -17,7 +17,7 @@ urlpatterns = [
     path(
         'subscription-plans/',
         views.subscription_plans,
-        name='subscription_plans',
+        name='subscriptigion_plans',
     ),
     path('subscriptions/', include('subscriptions.urls')),
     path('cart/', include('cart.urls')),

@@ -1,2 +1,13 @@
 {% load i18n %}
-{% blocktrans %}Confirmation email sent to {{email}}.{% endblocktrans %}
+
+✅ **Confirmation Email Sent!**  
+
+{% blocktrans %}We've sent a confirmation email to **{{ email }}**.{% endblocktrans %}  
+
+📬 **What’s next?**  
+- Check your inbox (and spam folder) for an email from **Brick Heroes**.  
+- Click the confirmation link inside to activate your account.  
+- Didn’t get the email? Wait a few minutes or request another one. 
+
+🚀 **Welcome to Brick Heroes!**  
+
