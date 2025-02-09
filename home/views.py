@@ -22,10 +22,6 @@ def manage_store(request):
     """View to manage LEGO sets, subscribers, and borrowing."""
     products = Product.objects.all()
     categories = Category.objects.all()
-    subscriptions = Subscription.objects.filter(status=True)
-    borrowed_sets = BorrowOrder.objects.filter(status="Pending")  # Active borrowings
-    returned_sets = BorrowOrder.objects.filter(status="Returned")  # Returned sets
-
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)  # Include FILES to handle image upload
         if form.is_valid():
@@ -52,9 +48,6 @@ def manage_store(request):
     context = {
         "products": products,
         "categories": categories,  # Send categories to template
-        "subscriptions": subscriptions,
-        "borrowed_sets": borrowed_sets,
-        "returned_sets": returned_sets,
         "form": form,
     }
     return render(request, "home/manage_store.html", context)
@@ -85,21 +78,6 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
     messages.success(request, "LEGO set deleted successfully.")
-    return redirect("manage_store")
-
-@staff_member_required
-def cancel_subscription(request, subscription_id):
-    """Cancels a user's subscription and removes it from Stripe."""
-    subscription = get_object_or_404(Subscription, id=subscription_id)
-
-    try:
-        stripe.Subscription.delete(subscription.stripe_subscription_id)
-        subscription.status = False
-        subscription.save()
-        messages.success(request, "Subscription cancelled successfully.")
-    except stripe.error.StripeError as e:
-        messages.error(request, f" Stripe Error: {str(e)}")
-
     return redirect("manage_store")
 
 def index(request):

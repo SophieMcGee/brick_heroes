@@ -28,6 +28,5 @@ urlpatterns = [
     path("manage-store/", views.manage_store, name="manage_store"),
     path("edit-product/<int:product_id>/", views.edit_product, name="edit_product"),
     path("delete-product/<int:product_id>/", views.delete_product, name="delete_product"),
-    path("cancel-subscription/<int:subscription_id>/", views.cancel_subscription, name="cancel_subscription"),
 
 ]
