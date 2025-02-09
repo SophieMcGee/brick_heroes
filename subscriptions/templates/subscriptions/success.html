@@ -4,34 +4,7 @@
 <div class="container mt-5 text-center">
     <h1 class="text-success">Subscription Confirmed!</h1>
     <p>Thank you for subscribing to Brick Heroes! Your subscription is now active.</p>
-    
-    <!-- Payment Confirmation -->
-    <div id="payment-message" class="alert alert-info" style="display: none;"></div>
 
     <a href="{% url 'user_profile' %}" class="btn btn-primary">Go to My Profile</a>
 </div>
-{% endblock %}
-
-{% block postloadjs %}
-    {{ block.super }}
-    {{ STRIPE_PUBLIC_KEY|json_script:"id_stripe_public_key" }}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var stripePublicKey = document.getElementById("id_stripe_public_key").textContent;
-            var stripe = Stripe(stripePublicKey);
-            var urlParams = new URLSearchParams(window.location.search);
-            var sessionId = urlParams.get("session_id");
-
-            if (sessionId) {
-                stripe.retrieveCheckoutSession(sessionId).then(function (result) {
-                    if (result.error) {
-                        document.getElementById("payment-message").textContent = result.error.message;
-                    } else {
-                        document.getElementById("payment-message").textContent = "Payment confirmed successfully!";
-                        document.getElementById("payment-message").style.display = "block";
-                    }
-                });
-            }
-        });
-    </script>
 {% endblock %}

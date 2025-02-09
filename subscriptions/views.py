@@ -37,9 +37,10 @@ def subscription_confirmation(request, plan_id):
 
     # Retrieve Stripe Checkout URL
     stripe_checkout_url = request.session.get('stripe_checkout_url')
-    
-    # Debugging print
+
+    # Debugging: Check if session data is retrieved
     print("DEBUG: Retrieved Stripe Checkout URL in Confirmation Page:", stripe_checkout_url)
+    print("DEBUG: Session Data in Confirmation Page:", dict(request.session))
 
     if not stripe_checkout_url:
         messages.error(request, "Error: Stripe checkout URL not found. Please try again.")
@@ -52,8 +53,10 @@ def subscription_confirmation(request, plan_id):
     )
 
 
+
 @login_required
 def subscribe(request, plan_id):
+    print("DEBUG: subscribe() function is being executed")
     """Handles Stripe Checkout for subscription plans with a confirmation step."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
@@ -69,12 +72,13 @@ def subscribe(request, plan_id):
 
     try:
         # Fetch or Create Stripe Customer for the User
-        if not request.user.userprofile.stripe_customer_id:
+        user_profile = request.user.userprofile
+        if not user_profile.stripe_customer_id:
             customer = stripe.Customer.create(email=request.user.email)
-            request.user.userprofile.stripe_customer_id = customer['id']
-            request.user.userprofile.save()
+            user_profile.stripe_customer_id = customer['id']
+            user_profile.save()
         else:
-            customer = stripe.Customer.retrieve(request.user.userprofile.stripe_customer_id)
+            customer = stripe.Customer.retrieve(user_profile.stripe_customer_id)
 
         # Create Stripe Checkout Session using the existing Price ID
         session = stripe.checkout.Session.create(
@@ -106,8 +110,10 @@ def subscribe(request, plan_id):
         return redirect('subscription_confirmation', plan_id=plan.id)
 
     except stripe.error.StripeError as e:
+        print(f"Stripe Error: {e}")
         messages.error(request, f"Stripe error: {str(e)}")
         return redirect('subscription_plans')
+
 
 @login_required
 def cancel_subscription(request):
@@ -277,11 +283,13 @@ def subscription_success(request):
     user_profile.save()
 
     # Clean up session data
-    del request.session["selected_plan_id"]
-    del request.session["stripe_checkout_url"]
+    request.session.pop("selected_plan_id", None)
+    request.session.pop("stripe_checkout_url", None)
+    request.session.pop("stripe_checkout_session_id", None)
 
     messages.success(request, f"Your subscription to {plan.name} is active! 🎉")
     return redirect("user_profile")
+
 
 
 
