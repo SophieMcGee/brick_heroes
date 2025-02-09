@@ -71,14 +71,31 @@ def subscribe(request, plan_id):
         return redirect('user_profile')
 
     try:
-        # Fetch or Create Stripe Customer for the User
+       # Fetch or Create Stripe Customer for the User
         user_profile = request.user.userprofile
+
         if not user_profile.stripe_customer_id:
+            # Always create a new Stripe customer if the old one was deleted
             customer = stripe.Customer.create(email=request.user.email)
             user_profile.stripe_customer_id = customer['id']
             user_profile.save()
         else:
-            customer = stripe.Customer.retrieve(user_profile.stripe_customer_id)
+            try:
+                customer = stripe.Customer.retrieve(user_profile.stripe_customer_id)
+
+                # If customer was deleted, create a new one
+                if customer.get("deleted", False):
+                    print("DEBUG: Old Stripe customer was deleted. Creating a new one.")
+                    customer = stripe.Customer.create(email=request.user.email)
+                    user_profile.stripe_customer_id = customer['id']
+                    user_profile.save()
+
+            except stripe.error.InvalidRequestError:
+                # If Stripe says the customer doesn't exist, create a new one
+                print("DEBUG: Stripe customer not found. Creating a new one.")
+                customer = stripe.Customer.create(email=request.user.email)
+                user_profile.stripe_customer_id = customer['id']
+                user_profile.save()
 
         # Create Stripe Checkout Session using the existing Price ID
         session = stripe.checkout.Session.create(
@@ -117,7 +134,7 @@ def subscribe(request, plan_id):
 
 @login_required
 def cancel_subscription(request):
-    """Cancels the user's Stripe subscription."""
+    """Cancels the user's Stripe subscription properly."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     if not user_profile.subscription:
@@ -125,22 +142,40 @@ def cancel_subscription(request):
         return redirect('user_profile')
 
     subscription = user_profile.subscription
-    try:
-        stripe.Subscription.modify(
-            subscription.stripe_subscription_id,
-            cancel_at_period_end=True  # Prevents auto-renewal
-        )
-        # Mark subscription as canceled
-        subscription.status = False
-        subscription.save()
-        
-        # Remove the subscription from user profile
-        user_profile.subscription = None
-        user_profile.save()
 
-        messages.success(request, "Your subscription has been canceled. You can start a new one anytime!")
-    except Exception as e:
-        messages.error(request, f"Error canceling subscription: {str(e)}")
+    # Debugging: Print the stored subscription ID before canceling
+    print(f"DEBUG: Attempting to cancel subscription with Stripe ID: {subscription.stripe_subscription_id}")
+
+    if not subscription.stripe_subscription_id:
+        messages.error(request, "Error: No valid Stripe subscription ID found.")
+        return redirect('user_profile')
+
+    try:
+        # Retrieve subscription from Stripe
+        stripe_sub = stripe.Subscription.retrieve(subscription.stripe_subscription_id)
+
+        if stripe_sub.status != "canceled":
+            stripe.Subscription.modify(
+                subscription.stripe_subscription_id,
+                cancel_at_period_end=True  # Prevents auto-renewal
+            )
+            subscription.status = False  # Mark in DB
+            subscription.save()
+            user_profile.subscription = None
+            user_profile.save()
+            messages.success(request, "Your subscription has been canceled.")
+        else:
+            messages.info(request, "This subscription was already canceled.")
+
+    except stripe.error.InvalidRequestError as e:
+        print(f"Stripe API Error: {str(e)}")
+        if "No such subscription" in str(e):
+            # Subscription doesn't exist, update database
+            subscription.status = False
+            subscription.save()
+            user_profile.subscription = None
+            user_profile.save()
+            messages.error(request, "Your subscription was already canceled or removed from Stripe.")
 
     return redirect('user_profile')
 
@@ -169,6 +204,15 @@ def check_and_update_subscriptions():
     expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
 
     for sub in expired_subs:
+        # Cancel subscription in Stripe before marking it as inactive
+        try:
+            stripe.Subscription.modify(
+                sub.stripe_subscription_id,
+                cancel_at_period_end=True
+            )
+        except stripe.error.StripeError as e:
+            logger.error(f"Error canceling Stripe subscription {sub.stripe_subscription_id}: {str(e)}")
+        
         sub.status = False
         sub.save()
     
@@ -185,6 +229,7 @@ def check_and_update_subscriptions():
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[sub.user.email],
         )
+
 
 logger = logging.getLogger(__name__)
 
@@ -207,47 +252,55 @@ def stripe_webhook(request):
         customer_id = session.get("customer")
         stripe_subscription_id = session.get("subscription")
 
-    # Debugging logs
-    logger.info(f"Webhook: checkout.session.completed for customer {customer_id}")
+        user_profile = UserProfile.objects.filter(stripe_customer_id=customer_id).first()
+        if not user_profile:
+            logger.error("No matching user found for this checkout session.")
+            return JsonResponse({"error": "No matching user"}, status=400)
 
-    user_profile = UserProfile.objects.filter(stripe_customer_id=customer_id).first()
-    if not user_profile:
-        logger.error("No matching user found for this checkout session.")
-        return JsonResponse({"error": "No matching user"}, status=400)
+        if not stripe_subscription_id:
+            logger.error("No subscription ID found in checkout session.")
+            return JsonResponse({"error": "No subscription found"}, status=400)
 
-    # Ensure this session is a subscription and not a one-time payment
-    if not stripe_subscription_id:
-        logger.error("No subscription ID found in checkout session.")
-        return JsonResponse({"error": "No subscription found"}, status=400)
+        plan_id = session.get("metadata", {}).get("plan_id")
+        plan = SubscriptionPlan.objects.filter(id=plan_id).first()
+        if not plan:
+            logger.error("No matching subscription plan found.")
+            return JsonResponse({"error": "No matching plan"}, status=400)
 
-    # Retrieve the plan from metadata (instead of price_id parsing)
-    plan_id = session.get("metadata", {}).get("plan_id")
-    plan = SubscriptionPlan.objects.filter(id=plan_id).first()
-    if not plan:
-        logger.error("No matching subscription plan found.")
-        return JsonResponse({"error": "No matching plan"}, status=400)
+        # Prevent duplicate subscriptions
+        existing_subscription = Subscription.objects.filter(user=user_profile.user, status=True).first()
+        if existing_subscription:
+            return JsonResponse({"message": "Subscription already exists"}, status=200)
 
-    # Prevent duplicate subscriptions
-    existing_subscription = Subscription.objects.filter(user=user_profile.user, status=True).first()
-    if existing_subscription:
-        return JsonResponse({"message": "Subscription already exists"}, status=200)
+        # Create the new subscription
+        subscription = Subscription.objects.create(
+            user=user_profile.user,
+            subscription_plan=plan,
+            stripe_subscription_id=stripe_subscription_id,
+            start_date=now(),
+            end_date=now() + timedelta(days=30),
+            status=True,
+        )
 
-    # Create the new subscription
-    subscription = Subscription.objects.create(
-        user=user_profile.user,
-        subscription_plan=plan,
-        stripe_subscription_id=stripe_subscription_id,
-        start_date=now(),
-        end_date=now() + timedelta(days=30),
-        status=True,
-    )
+        # Link subscription to user profile
+        user_profile.subscription = subscription
+        user_profile.save()
 
-    # Link subscription to user profile
-    user_profile.subscription = subscription
-    user_profile.save()
+        logger.info(f"Subscription created successfully for {user_profile.user.username}")
+        return JsonResponse({"message": "New subscription created"}, status=200)
 
-    logger.info(f"Subscription created successfully for {user_profile.user.username}")
-    return JsonResponse({"message": "New subscription created"}, status=200)
+    # Handle Subscription Cancellations from Stripe
+    elif event["type"] == "customer.subscription.deleted":
+        stripe_subscription_id = event["data"]["object"]["id"]
+        subscription = Subscription.objects.filter(stripe_subscription_id=stripe_subscription_id).first()
+
+        if subscription:
+            subscription.status = False
+            subscription.save()
+            logger.info(f"Subscription {stripe_subscription_id} marked as expired.")
+
+    return JsonResponse({"message": "Webhook received"}, status=200)
+
 
 
 @login_required
@@ -289,14 +342,6 @@ def subscription_success(request):
 
     messages.success(request, f"Your subscription to {plan.name} is active! 🎉")
     return redirect("user_profile")
-
-
-
-
-def subscription_cancel(request):
-    """Display subscription cancellation message."""
-    return render(request, "subscriptions/cancel.html")
-
 
 @login_required
 def user_profile(request):

@@ -6,6 +6,7 @@ from django.utils.timezone import now, timedelta
 from notifications.models import Notification
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import stripe
 
 
 
@@ -50,17 +51,38 @@ class Subscription(models.Model):
         self.save()
 
     def cancel_subscription(self):
-        """Cancel the subscription and prevent auto-renewal"""
-        self.status = False
-        self.save()
+        """Cancel the subscription in Stripe and update the database"""
+        if not self.stripe_subscription_id:
+            print("DEBUG: No Stripe Subscription ID found, skipping cancellation.")
+            return  # Avoid breaking if no Stripe ID exists
+
+        try:
+            stripe_sub = stripe.Subscription.retrieve(self.stripe_subscription_id)
+
+            if stripe_sub.status != "canceled":
+                stripe.Subscription.modify(
+                    self.stripe_subscription_id,
+                    cancel_at_period_end=True  # Prevents auto-renewal
+                )
+
+                # Mark subscription as canceled in DB
+                self.status = False
+                self.save()
+                print(f"DEBUG: Subscription {self.stripe_subscription_id} canceled successfully in Stripe.")
+            else:
+                print("DEBUG: Subscription is already canceled in Stripe.")
+        except stripe.error.InvalidRequestError as e:
+            print(f"ERROR: Stripe cancellation failed - {e}")
 
 
+    @staticmethod
     def check_expired_subscriptions():
         """Deactivate subscriptions that have passed their end date"""
         expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
         for sub in expired_subs:
             sub.status = False
             sub.save()
+            print(f"DEBUG: Subscription for {sub.user.username} expired.")
 
 
 class Borrowing(models.Model):
@@ -71,13 +93,11 @@ class Borrowing(models.Model):
         related_name='subscriptions_borrowing'
     )
     subscription = models.ForeignKey(
-        'subscriptions.Subscription',  # Use string reference to avoid circular import
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        'subscriptions.Subscription',  # Always requires an active subscription
+        on_delete=models.CASCADE
     )
     lego_set = models.ForeignKey(
-        'products.Product',  # Reference to Product model
+        'products.Product',
         on_delete=models.SET_NULL,
         null=True,
     )
@@ -87,6 +107,7 @@ class Borrowing(models.Model):
 
     def __str__(self):
         return f"{self.user.username} borrowed {self.lego_set.name}"
+
 
 
 class UserProfile(models.Model):
@@ -109,9 +130,14 @@ class UserProfile(models.Model):
         return self.user.username
 
     def can_borrow(self):
-        """Check if the user is eligible to borrow on their subscription"""
+        """Check if the user is eligible to borrow based on their subscription"""
         if not self.subscription or not self.subscription.status:
             return False
+
+        # Ensure the subscription is not expired
+        if self.subscription.end_date and self.subscription.end_date < now():
+            return False  # Expired subscription
+
         # Get max sets allowed at the same time
         max_active_borrows = self.subscription.subscription_plan.max_active_borrows
 
@@ -119,6 +145,8 @@ class UserProfile(models.Model):
         active_borrows = Borrowing.objects.filter(user=self.user, is_returned=False).count()
 
         return active_borrows < max_active_borrows
+
+
 
     def get_notifications(self):
         """Fetch the latest notifications for the user"""
