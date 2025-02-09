@@ -200,21 +200,22 @@ def renew_subscription(request):
 
 
 def check_and_update_subscriptions():
-    """Function to auto-expire subscriptions and send reminders."""
+    """Auto-expire subscriptions and update accordingly."""
     expired_subs = Subscription.objects.filter(status=True, end_date__lt=now())
 
     for sub in expired_subs:
-        # Cancel subscription in Stripe before marking it as inactive
-        try:
-            stripe.Subscription.modify(
-                sub.stripe_subscription_id,
-                cancel_at_period_end=True
-            )
-        except stripe.error.StripeError as e:
-            logger.error(f"Error canceling Stripe subscription {sub.stripe_subscription_id}: {str(e)}")
-        
+        # Only cancel in Stripe if the ID exists
+        if sub.stripe_subscription_id:
+            try:
+                stripe.Subscription.modify(sub.stripe_subscription_id, cancel_at_period_end=True)
+            except stripe.error.StripeError as e:
+                logger.error(f"Error canceling Stripe subscription {sub.stripe_subscription_id}: {str(e)}")
+
+        # Mark the subscription as expired
         sub.status = False
         sub.save()
+        logger.info(f" Subscription expired: {sub.user.email} (ID: {sub.id})")
+
     
     # Send renewal reminder emails
     upcoming_renewals = Subscription.objects.filter(
@@ -268,9 +269,29 @@ def stripe_webhook(request):
             return JsonResponse({"error": "No matching plan"}, status=400)
 
         # Prevent duplicate subscriptions
-        existing_subscription = Subscription.objects.filter(user=user_profile.user, status=True).first()
+        # Check if the user has an existing subscription (active or expired)
+        existing_subscription = Subscription.objects.filter(user=user_profile.user).order_by('-end_date').first()
+
         if existing_subscription:
-            return JsonResponse({"message": "Subscription already exists"}, status=200)
+            # Update existing subscription instead of creating a new one
+            existing_subscription.subscription_plan = plan
+            existing_subscription.stripe_subscription_id = stripe_subscription_id
+            existing_subscription.start_date = now()
+            existing_subscription.end_date = now() + timedelta(days=30)
+            existing_subscription.status = True
+            existing_subscription.save()
+            logger.info(f" Subscription updated for {user_profile.user.email} (ID: {existing_subscription.id})")
+        else:
+            # Create a new subscription if none exists
+            subscription = Subscription.objects.create(
+                user=user_profile.user,
+                subscription_plan=plan,
+                stripe_subscription_id=stripe_subscription_id,
+                start_date=now(),
+                end_date=now() + timedelta(days=30),
+                status=True,
+            )
+            logger.info(f"New subscription created for {user_profile.user.email}")
 
         # Create the new subscription
         subscription = Subscription.objects.create(

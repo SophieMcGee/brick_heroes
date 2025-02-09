@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.utils.timezone import now
-from .models import Product, Category, Review
+from .models import Product, Rating, Review
 from subscriptions.models import UserProfile, Subscription
 
 
@@ -111,58 +112,63 @@ def products_by_category(request, category_name):
         },
     )
 
+def submit_rating(request, product_id):
+    """Allows users (anyone) to submit a rating."""
+    if request.method == "POST":
+        product = get_object_or_404(Product, id=product_id)
+        rating_value = int(request.POST.get("rating"))
+
+        if rating_value < 1 or rating_value > 5:
+            return JsonResponse({"error": "Invalid rating value."}, status=400)
+
+        Rating.objects.create(product=product, rating=rating_value)
+        product.update_rating()
+        return JsonResponse({"message": "Rating submitted successfully!", "average_rating": product.average_rating})
+
+    return JsonResponse({"error": "Invalid request."}, status=400)
 
 @login_required
-def add_review(request, product_id):
-    """ Allow users to leave a review if they have a valid subscription """
+def submit_review(request, product_id):
+    """Allows only subscribed users to submit a review (requires admin approval)."""
     product = get_object_or_404(Product, id=product_id)
-
-    # Check if user has an active subscription
-    user_profile = UserProfile.objects.filter(user=request.user).first()
-    has_subscription = user_profile and user_profile.subscription and user_profile.subscription.status
-    if not has_subscription:
+    
+    if not request.user.userprofile.subscription or not request.user.userprofile.subscription.status:
         messages.error(request, "You need an active subscription to leave a review.")
-        return redirect('subscription_plans')
-
-    # Check if user has already reviewed this LEGO set
-    existing_review = Review.objects.filter(user=request.user, lego_set=product).exists()
-    if existing_review:
-        messages.warning(request, "You have already reviewed this LEGO set.")
         return redirect('product_detail', product_id=product.id)
 
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            review.lego_set = product
-            review.save()
+    if request.method == "POST":
+        content = request.POST.get("content")
+        rating = int(request.POST.get("rating"))
 
-            # Notify admin of new review
-            send_mail(
-                subject="New Review Submitted",
-                message=f"A new review was submitted by {request.user.username} for {product.name}.",
-                from_email="sophiebmcgee@gmail.com",
-                recipient_list=["sophiebmcgee@gmail.com"],
-                fail_silently=True,
-            )
-
-            messages.success(request, "Your review has been posted successfully!")
+        if Review.objects.filter(user=request.user, product=product).exists():
+            messages.warning(request, "You have already reviewed this product.")
             return redirect('product_detail', product_id=product.id)
-        else:
-            messages.error(request, "There was an error in your review submission. Please try again.")
-    else:
-        form = ReviewForm()
 
-    return render(request, 'reviews/add_review.html', {'form': form, 'product': product})
+        review = Review.objects.create(user=request.user, product=product, content=content, rating=rating)
+        messages.success(request, "Your review has been submitted for approval.")
 
+        return redirect('product_detail', product_id=product.id)
+
+
+@staff_member_required
+def admin_notifications(request):
+    """Displays pending reviews for admin approval."""
+    pending_reviews = Review.objects.filter(is_approved=False)
+    return render(request, "admin_notifications.html", {"pending_reviews": pending_reviews})
+
+@staff_member_required
+def approve_review(request, review_id):
+    """Admin action to approve a pending review."""
+    review = get_object_or_404(Review, id=review_id)
+    review.is_approved = True
+    review.save()
+    messages.success(request, "Review approved successfully.")
+    return redirect("admin_notifications")
 
 @staff_member_required
 def delete_review(request, review_id):
     """Allow only admin/superusers to delete reviews."""
     review = get_object_or_404(Review, id=review_id)
-    product_id = review.product.id  # Ensure redirection after deletion
     review.delete()
     messages.success(request, "Review deleted successfully.")
-    return redirect('product_detail', product_id=product_id)
-
+    return redirect('admin_notifications')

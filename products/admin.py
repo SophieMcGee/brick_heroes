@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, Review
+from .models import Product, Category, Review, Rating
 
 class ReviewInline(admin.TabularInline):
     model = Review
@@ -17,8 +17,16 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'friendly_name')
     search_fields = ('name',)
 
-@admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product', 'rating', 'created_on')
-    list_filter = ('created_on', 'rating')
-    search_fields = ('user__username', 'product__name')
+    list_display = ("user", "product", "rating", "is_approved", "created_on")
+    list_filter = ("is_approved",)
+    actions = ["approve_reviews"]
+
+    def approve_reviews(self, request, queryset):
+        queryset.update(is_approved=True)
+        self.message_user(request, "Selected reviews approved.")
+    approve_reviews.short_description = "Approve selected reviews"
+
+
+admin.site.register(Review, ReviewAdmin)
+admin.site.register(Rating)

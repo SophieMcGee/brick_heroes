@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Admin Notifications</h1>
+<h2>Pending Reviews</h2>
+
+{% if pending_reviews %}
+    <ul>
+        {% for review in pending_reviews %}
+            <li>
+                <strong>{{ review.user.username }}</strong> rated {{ review.rating }}/5
+                <p>{{ review.content }}</p>
+                <form method="POST" action="{% url 'approve_review' review.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="POST" action="{% url 'delete_review' review.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No reviews pending approval.</p>
+{% endif %}
+{% endblock %}

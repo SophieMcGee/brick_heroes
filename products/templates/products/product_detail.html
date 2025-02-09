@@ -12,7 +12,21 @@
         <!-- Product Details -->
         <div class="col-12 col-md-4">
             <h1 class="display-6 text-warning">{{ product.name }}</h1>
-
+            
+            <!-- Rating Form-->
+            <form id="rating-form" method="POST" action="{% url 'submit_rating' product.id %}">
+                {% csrf_token %}
+                <label for="rating">Rate this set (1-5):</label>
+                <select name="rating" id="rating">
+                    <option value="1">⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+            
             <!-- Display average rating -->
             {% if product.average_rating %}
                 <p><strong>Rated {{ product.average_rating|floatformat:1 }} out of 5</strong> 
@@ -64,8 +78,23 @@
                 <p>No reviews yet.</p>
             {% endif %}
 
-            <!-- Button to Add a Review -->
-            <a href="{% url 'add_review' product.id %}" class="btn btn-primary mt-3">Write a Review</a>
+            <!-- Add a Review -->
+            {% if user.is_authenticated and user.userprofile.subscription %}
+                <form method="POST" action="{% url 'submit_review' product.id %}">
+                    {% csrf_token %}
+                    <label for="review">Write a Review:</label>
+                    <textarea name="content" required></textarea>
+                    <label for="rating">Rating (1-5):</label>
+                    <select name="rating">
+                        <option value="1">⭐</option>
+                        <option value="2">⭐⭐</option>
+                        <option value="3">⭐⭐⭐</option>
+                        <option value="4">⭐⭐⭐⭐</option>
+                        <option value="5">⭐⭐⭐⭐⭐</option>
+                    </select>
+                    <button type="submit">Submit Review</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>
