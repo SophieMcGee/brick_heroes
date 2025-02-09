@@ -1,6 +1,7 @@
 from subscriptions.models import Borrowing
 from cart.models import CartItem
 from notifications.models import Notification
+from django.conf import settings
 
 def global_header_context(request):
     """Add global context variables for the header."""
@@ -23,3 +24,7 @@ def admin_notification_count(request):
             'admin_notifications_count': Notification.objects.filter(is_read=False).count()
         }
     return {'admin_notifications_count': 0}
+
+def media_url(request):
+    """Make MEDIA_URL available globally in templates"""
+    return {"MEDIA_URL": settings.MEDIA_URL}

@@ -1,11 +1,12 @@
 from django import forms
-from .models import LegoSet, ContactMessage
+from .models import ContactMessage
+from products.models import Product
 
 
-class LegoSetForm(forms.ModelForm):
+class ProductForm(forms.ModelForm):
     class Meta:
-        model = LegoSet
-        fields = ['title', 'description', 'piece_count', 'image', 'availability', 'theme']
+        model = Product
+        fields = ["name", "description", "category", "stock", "rating", "image"]
 
 
 class ContactForm(forms.ModelForm):

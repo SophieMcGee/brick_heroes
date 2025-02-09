@@ -11,13 +11,22 @@ class Product(models.Model):
     description = models.TextField()
     rating = models.FloatField(default=0)
     image_url = models.URLField(max_length=1024, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to="product_images/", blank=True, null=True)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
     difficulty = models.CharField(max_length=50, null=True, blank=True)
     theme = models.CharField(max_length=50, null=True, blank=True)
     is_borrowed = models.BooleanField(default=False)
     stock = models.PositiveIntegerField(default=0)
     total_ratings = models.PositiveIntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        """Ensure image_url is set correctly on save."""
+        if self.image:  # If an image is uploaded
+            if "cloudinary" in str(self.image):
+                self.image_url = str(self.image)  # Full Cloudinary URL
+            else:
+                self.image_url = f"/media/{self.image}"  # Local path for static media
+        super().save(*args, **kwargs)
 
     def get_average_rating(self):
         """Calculate the average rating from all reviews."""

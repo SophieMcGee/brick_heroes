@@ -17,21 +17,122 @@
         </div>
     {% endif %}
 
-    <ul class="nav nav-tabs mt-4 text-warning">
-        <li class="nav-item"><a class="nav-link active text-warning" data-bs-toggle="tab" href="#legoSets">LEGO Sets</a></li>
-        <li class="nav-item"><a class="nav-link text-warning" data-bs-toggle="tab" href="#subscribers">Subscribers</a></li>
-        <li class="nav-item"><a class="nav-link text-warning" data-bs-toggle="tab" href="#borrowing">Borrowing</a></li>
+    <ul class="nav nav-tabs mt-4 text-warning" id="manageStoreTabs">
+        <li class="nav-item">
+            <a class="nav-link active text-warning" data-bs-toggle="tab" href="#legoSets">LEGO Sets</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-warning" data-bs-toggle="tab" href="#subscribers">Subscribers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-warning" data-bs-toggle="tab" href="#borrowing">Borrowing</a>
+        </li>
     </ul>
-
+    
     <div class="tab-content mt-4">
-        <div id="legoSets" class="tab-pane fade show active">
-            <h2 class="text-warning">LEGO Sets</h2>
-            {% for product in products %}
-                <div class="bg-light p-3 my-2 text-dark">
-                    {{ product.name }} - <strong>Stock:</strong> {{ product.stock }}
-                    <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+        <!-- LEGO Sets Section -->
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <h2 class="text-warning">LEGO Sets</h2>
+        
+                <div class="card bg-light p-4 shadow-sm text-dark">
+                    <form method="POST" enctype="multipart/form-data" class="w-100">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" name="name" class="form-control">
+                        </div>
+        
+                        <div class="mb-2">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea name="description" class="form-control"></textarea>
+                        </div>
+        
+                        <div class="mb-2">
+                            <label for="theme" class="form-label">Theme:</label>
+                                <select name="theme" class="form-select">
+                                    {% for category in categories %}
+                                        <option value="{{ category.friendly_name }}">{{ category.friendly_name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+        
+                        <div class="mb-2">
+                            <label for="rating" class="form-label">Rating:</label>
+                            <input type="number" name="rating" class="form-control">
+                        </div>
+        
+                        <div class="mb-2">
+                            <label for="image" class="form-label">Image:</label>
+                            <input type="file" name="image" class="form-control">
+                        </div>
+        
+                        <div class="mb-2">
+                            <label for="stock" class="form-label">Stock:</label>
+                            <input type="number" name="stock" class="form-control">
+                        </div>
+        
+                        <button type="submit" class="btn btn-success w-100">Add New LEGO Set</button>
+                    </form>
                 </div>
-            {% endfor %}
+            </div>
+        
+            <div class="col-12 col-md-6">
+                <h3 class="text-warning">Existing LEGO Sets</h3>
+                {% for product in products %}
+                    <div class="bg-light p-3 my-2 text-dark d-flex align-items-center">
+                        <span class="ms-3">{{ product.name }} - <strong>Stock:</strong> {{ product.stock }}</span>
+                        <div class="ms-auto">
+                            <a href="{% url 'edit_product' product.id %}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <!-- Subscribers Section -->
+        <div id="subscribers" class="tab-pane fade">
+            <h3 class="text-warning">Subscribers</h3>
+            <table class="table table-striped bg-light">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subscription Plan</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subscriptions %}
+                        <tr>
+                            <td>{{ sub.user.username }}</td>
+                            <td>{{ sub.user.email }}</td>
+                            <td>{{ sub.get_plan_display }}</td>
+                            <td>
+                                <a href="{% url 'cancel_subscription' sub.id %}" class="btn btn-danger btn-sm">Cancel Subscription</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4">No active subscribers.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    
+        <!-- Borrowing Section -->
+        <div id="borrowing" class="tab-pane fade">
+            <h3 class="text-warning">Borrowed & Returned Sets</h3>
+            <h5>Currently Borrowed</h5>
+            <ul class="list-group">
+                {% for borrow in borrowed_sets %}
+                    <li class="list-group-item bg-light text-dark">
+                        {{ borrow.user.username }} borrowed {{ borrow.items.all|join:", " }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item bg-light text-dark">No borrowed sets.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </div>

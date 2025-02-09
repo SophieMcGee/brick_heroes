@@ -97,6 +97,7 @@ TEMPLATES = [
                 'home.context_processors.global_header_context',
                 'cart.contexts.cart_contents',
                 'home.context_processors.admin_notification_count',
+                "home.context_processors.media_url",
             ],
         },
     },
@@ -237,6 +238,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # Whitenoise settings
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

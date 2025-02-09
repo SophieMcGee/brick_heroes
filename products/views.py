@@ -140,7 +140,7 @@ def submit_rating(request, product_id):
         # Save the new rating
         Rating.objects.create(product=product, rating=rating_value)
 
-        # ✅ Update product rating immediately
+        #  Update product rating immediately
         product.update_rating()
 
         messages.success(request, "⭐ Rating submitted successfully!")

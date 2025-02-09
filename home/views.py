@@ -3,15 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from .models import LegoSet
-from .forms import LegoSetForm, ContactForm
+from .forms import ContactForm
 from subscriptions.models import Borrowing, Subscription, UserProfile
 from notifications.models import Notification
-from products.models import Product, Review
+from products.models import Product, Review, Category
 from allauth.account.models import EmailAddress
 from cart.models import BorrowOrder
 import random
 from django.conf import settings
+from home.forms import ProductForm
 import stripe
 
 
@@ -21,24 +21,70 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def manage_store(request):
     """View to manage LEGO sets, subscribers, and borrowing."""
     products = Product.objects.all()
+    categories = Category.objects.all()
     subscriptions = Subscription.objects.filter(status=True)
     borrowed_sets = BorrowOrder.objects.filter(status="Pending")  # Active borrowings
     returned_sets = BorrowOrder.objects.filter(status="Returned")  # Returned sets
 
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)  # Include FILES to handle image upload
+        if form.is_valid():
+            new_product = form.save(commit=False)  # Don't save yet, modify first
+
+            category_name = request.POST.get("theme")  # Get selected category from form
+            if category_name:
+                category, created = Category.objects.get_or_create(friendly_name=category_name)
+                new_product.category = category  # Assign category to product
+
+            # Handle image upload
+            if "image" in request.FILES:
+                new_product.image = request.FILES["image"]
+            elif new_product.image:
+                pass  # Keep existing image if no new image is uploaded
+
+            new_product.save()  # Save the new product
+
+            return redirect("manage_store")
+
+    else:
+        form = ProductForm()
+
     context = {
         "products": products,
+        "categories": categories,  # Send categories to template
         "subscriptions": subscriptions,
         "borrowed_sets": borrowed_sets,
         "returned_sets": returned_sets,
+        "form": form,
     }
     return render(request, "home/manage_store.html", context)
+
+
+@staff_member_required
+def edit_product(request, product_id):
+    """Edit an existing LEGO set"""
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "LEGO set updated successfully!")
+            return redirect("manage_store")
+        else:
+            messages.error(request, "Error updating LEGO set.")
+
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, "home/edit_product.html", {"form": form, "product": product})
 
 @staff_member_required
 def delete_product(request, product_id):
     """Deletes a LEGO set."""
     product = get_object_or_404(Product, id=product_id)
     product.delete()
-    messages.success(request, "✅ LEGO set deleted successfully.")
+    messages.success(request, "LEGO set deleted successfully.")
     return redirect("manage_store")
 
 @staff_member_required
@@ -50,9 +96,9 @@ def cancel_subscription(request, subscription_id):
         stripe.Subscription.delete(subscription.stripe_subscription_id)
         subscription.status = False
         subscription.save()
-        messages.success(request, "✅ Subscription canceled successfully.")
+        messages.success(request, "Subscription cancelled successfully.")
     except stripe.error.StripeError as e:
-        messages.error(request, f"⚠ Stripe Error: {str(e)}")
+        messages.error(request, f" Stripe Error: {str(e)}")
 
     return redirect("manage_store")
 
@@ -178,7 +224,7 @@ def contact_view(request):
                 message=f"Hello {contact_message.name},\n\n"
                         "Thank you for reaching out! This website is part of a test project for a learning program, messages are not monitored and you will not receive a reply.\n\n"
                         "Best Regards,\nBrick Heroes Team",
-                from_email="sophiebmcgee@gmail",
+                from_email="brickheroes51@gmail",
                 recipient_list=[contact_message.email],
                 fail_silently=False,
             )
