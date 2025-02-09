@@ -4,6 +4,7 @@ from . import views
 from .views import contact_view, contact_success
 from notifications.views import admin_notifications
 from subscriptions.views import user_profile
+from django.conf.urls import handler404
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -30,3 +31,6 @@ urlpatterns = [
     path("delete-product/<int:product_id>/", views.delete_product, name="delete_product"),
 
 ]
+
+# Custom error handler
+handler404 = 'home.views.custom_404'

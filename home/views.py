@@ -86,6 +86,9 @@ def index(request):
     return render(request, 'home/index.html', {'random_products': random_products[:6]})
 
 
+def custom_404(request, exception):
+    return render(request, '404.html', status=404)
+
 def collections(request):
     return render(request, 'home/collections.html')
 
