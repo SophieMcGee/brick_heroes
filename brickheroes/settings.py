@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'brick-heroes-52ffabb94b76.herokuapp.com',
     'localhost',
+    'testserver',
 ]
 
 CSRF_TRUSTED_ORIGINS = [

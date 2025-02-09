@@ -136,20 +136,6 @@
                 <p>You have no borrowed sets.</p>
             {% endif %}
 
-            <!-- Notifications -->
-            <h3 class="text-warning mt-4">Notifications</h3>
-            {% if notifications %}
-                <ul class="list-group">
-                {% for notification in notifications %}
-                    <li class="list-group-item bg-light text-dark">
-                        {{ notification.message }} <span class="text-muted">{{ notification.created_at }}</span>
-                    </li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted">No new notifications.</p>
-            {% endif %}
-
             <!-- Change Password Link -->
             <div class="text-center mt-4">
                 <a href="{% url 'account_change_password' %}" class="btn btn-danger w-100">

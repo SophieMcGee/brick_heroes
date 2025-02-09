@@ -21,12 +21,12 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ("user", "product", "rating", "is_approved", "created_on")
     list_filter = ("is_approved",)
     actions = ["approve_reviews"]
+    ordering = ["is_approved", "-created_on"]  # Shows unapproved reviews first
 
     def approve_reviews(self, request, queryset):
         queryset.update(is_approved=True)
         self.message_user(request, "Selected reviews approved.")
     approve_reviews.short_description = "Approve selected reviews"
-
 
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Rating)

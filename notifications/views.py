@@ -9,7 +9,6 @@ from products.models import Review  # Import reviews from products
 def admin_notifications(request):
     """Displays pending reviews, subscriptions, and borrowing notifications."""
 
-    # Debugging: Print notifications in the console
     print("DEBUG: Fetching admin notifications...")
 
     # Fetch pending reviews (not yet approved)
@@ -17,23 +16,20 @@ def admin_notifications(request):
 
     # Fetch subscription notifications
     subscription_notifications = Notification.objects.filter(
-        category="subscription",
-        is_read=False
+        category="subscription"
     ).order_by('-created_at')
 
-    # Fetch borrowing and return notifications
+    # ✅ Fix: Ensure borrowing/return notifications are included
     borrowing_notifications = Notification.objects.filter(
-        category="borrowing",
-        is_read=False
+        category="borrowing"
     ).order_by('-created_at')
 
-    # Fetch review notifications (NEW)
     review_notifications = Notification.objects.filter(
-        category="review", is_read=False
+        category="review"
     ).order_by('-created_at')
 
     print(f"DEBUG: Pending Reviews Count: {pending_reviews.count()}")
-    print(f"DEBUG: Review Notifications Count: {review_notifications.count()}")
+    print(f"DEBUG: Borrowing Notifications Count: {borrowing_notifications.count()}")
 
     return render(
         request,
@@ -45,6 +41,7 @@ def admin_notifications(request):
             "review_notifications": review_notifications,
         },
     )
+
 
 @staff_member_required
 def approve_review(request, review_id):

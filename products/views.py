@@ -113,32 +113,41 @@ def products_by_category(request, category_name):
         },
     )
 
+
 def submit_rating(request, product_id):
-    """Handles rating submission via AJAX and updates average rating dynamically."""
+    """Handles rating submission and updates average rating dynamically."""
     product = get_object_or_404(Product, id=product_id)
-    
+
     if request.method == "POST":
         rating_value = request.POST.get("rating")
-        
+
         if not rating_value:
-            return JsonResponse({"error": "No rating value provided"}, status=400)
+            messages.warning(request, "⚠ Please select a rating before submitting.")
+            print("DEBUG: Rating not provided")
+            return redirect("product_detail", product_id=product.id)
 
         try:
             rating_value = int(rating_value)
             if rating_value < 1 or rating_value > 5:
-                return JsonResponse({"error": "Invalid rating"}, status=400)
+                messages.warning(request, "⚠ Invalid rating value.")
+                print("DEBUG: Invalid rating value")
+                return redirect("product_detail", product_id=product.id)
         except ValueError:
-            return JsonResponse({"error": "Invalid rating input"}, status=400)
+            messages.warning(request, "⚠ Invalid rating input.")
+            print("DEBUG: ValueError in rating")
+            return redirect("product_detail", product_id=product.id)
 
         # Save the new rating
         Rating.objects.create(product=product, rating=rating_value)
 
-        # Update average rating
-        avg_rating = product.get_average_rating()
-        
-        return JsonResponse({"message": "Rating submitted successfully", "new_avg_rating": avg_rating})
+        # ✅ Update product rating immediately
+        product.update_rating()
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+        messages.success(request, "⭐ Rating submitted successfully!")
+        print("DEBUG: Success message set")
+
+        return redirect("product_detail", product_id=product.id)
+
 
 def submit_review(request, product_id):
     """Allows only subscribers to submit reviews for a product, pending admin approval."""
@@ -159,3 +168,17 @@ def submit_review(request, product_id):
         return redirect("product_detail", product_id=product.id)
 
     return redirect("product_detail", product_id=product.id)
+
+@staff_member_required
+def approve_review(request, review_id):
+    """Admin action to approve a pending review."""
+    review = get_object_or_404(Review, id=review_id)
+    review.is_approved = True
+    review.save()
+
+    # Ensure the product rating updates when a review is approved
+    product = review.product
+    product.update_rating()
+
+    messages.success(request, "Review approved successfully.")
+    return redirect("admin_notifications")

@@ -6,14 +6,16 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8 p-3 bg-white rounded shadow">
             <!-- Page Title -->
-            <h1 class="text-warning text-center mb-4">Admin Notifications</h1>
+            <h1 class="text-dark text-center mb-4">Admin Notifications</h1>
 
+            <!-- Section: General Notifications -->
             {% if notifications %}
-                <div class="list-group">
+                <h3 class="text-dark">General Notifications</h3>
+                <div class="list-group mb-4">
                     {% for notification in notifications %}
                         <div class="list-group-item bg-light text-dark p-3 mb-2 rounded shadow-sm">
                             <p class="mb-1"><strong>{{ notification.message }}</strong></p>
-                            <small class="text-muted">📅 {{ notification.created_at|date:"M d, Y H:i" }}</small>
+                            <small class="text-dark">📅 {{ notification.created_at|date:"M d, Y H:i" }}</small>
 
                             <!-- Action Buttons for Notifications -->
                             <div class="d-flex justify-content-between mt-2">
@@ -30,6 +32,61 @@
             {% else %}
                 <div class="alert alert-info text-center">
                     <p>No notifications to display.</p>
+                </div>
+            {% endif %}
+
+            <!-- Section: Borrowing & Return Notifications -->
+            {% if borrowing_notifications %}
+            <h3 class="text-warning">Borrowing & Return Notifications</h3>
+            <ul class="list-group">
+                {% for notification in borrowing_notifications %}
+                    <li class="list-group-item bg-light text-dark p-3 mb-2 rounded shadow-sm">
+                        <p class="mb-1"><strong>{{ notification.message }}</strong></p>
+                        <small class="text-muted">📅 {{ notification.created_at|date:"M d, Y H:i" }}</small>
+
+                        <!-- Admin Delete Option -->
+                        {% if request.user.is_superuser %}
+                            <form action="{% url 'delete_notification' notification.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">🗑 Delete</button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No borrowing/return notifications.</p>
+            {% endif %}
+
+
+            <!-- Section: Pending Reviews -->
+            {% if pending_reviews %}
+                <h3 class="text-dark">Pending Reviews</h3>
+                <ul class="list-group mb-4">
+                    {% for review in pending_reviews %}
+                        <li class="list-group-item text-dark">
+                            <strong>{{ review.user.username }}</strong> reviewed
+                            <strong>{{ review.product.name }}</strong>
+                            <p>{{ review.content }}</p>
+                            <small class="text-muted">Submitted on {{ review.created_on|date:"M d, Y H:i" }}</small>
+
+                            <!-- Approve and Delete Buttons -->
+                            <div class="mt-2">
+                                <form action="{% url 'approve_review' review.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm">Approve ✅</button>
+                                </form>
+                                <form action="{% url 'delete_review' review.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete ❌</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <p>No pending reviews.</p>
                 </div>
             {% endif %}
 
