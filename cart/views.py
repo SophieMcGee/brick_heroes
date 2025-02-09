@@ -111,6 +111,24 @@ def checkout(request):
         messages.error(request, "Your cart is empty.")
         return redirect("shopping_cart")
 
+    user_profile = request.user.userprofile
+    subscription = user_profile.subscription
+
+    # Get borrowing limit from subscription
+    max_active_borrows = subscription.subscription_plan.max_active_borrows if subscription else 0
+
+    # Count active borrowed sets
+    active_borrows = Borrowing.objects.filter(user=request.user, is_returned=False).count()
+
+    # Check if the total would exceed the subscription limit
+    if active_borrows + cart_items.count() > max_active_borrows:
+        messages.error(
+            request,
+            f"You can only borrow up to {max_active_borrows} sets at a time. "
+            "Please return some sets before borrowing more."
+        )
+        return redirect("shopping_cart")
+
     if request.method == "POST":
         form = DeliveryInfoForm(request.POST)
         if form.is_valid():
@@ -135,9 +153,10 @@ def checkout(request):
 
                     messages.success(
                         request, 
-                        "Your LEGO set(s) have been successfully borrowed! You can swap them anytime by returning sets."
+                        "Your LEGO set(s) have been successfully borrowed! "
+                        "You can swap them anytime by returning sets."
                     )
-                    return redirect("checkout")  # Reload to show success message
+                    return redirect("user_profile")  # Redirect to profile after success
             except Exception as e:
                 messages.error(request, f"An error occurred: {str(e)}")
         else:
