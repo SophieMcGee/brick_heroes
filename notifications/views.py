@@ -27,19 +27,22 @@ def admin_notifications(request):
         is_read=False
     ).order_by('-created_at')
 
-    # Debugging: Print notification counts
-    print("DEBUG: Pending Reviews:", pending_reviews.count())
-    print("DEBUG: Subscription Notifications:", subscription_notifications.count())
-    print("DEBUG: Borrowing Notifications:", borrowing_notifications.count())
+    # Fetch review notifications (NEW)
+    review_notifications = Notification.objects.filter(
+        category="review", is_read=False
+    ).order_by('-created_at')
 
-    all_notifications = list(subscription_notifications) + list(borrowing_notifications)
+    print(f"DEBUG: Pending Reviews Count: {pending_reviews.count()}")
+    print(f"DEBUG: Review Notifications Count: {review_notifications.count()}")
 
     return render(
         request,
         "notifications/admin_notifications.html",
         {
             "pending_reviews": pending_reviews,
-            "notifications": all_notifications,  # Use a single variable in template
+            "subscription_notifications": subscription_notifications,
+            "borrowing_notifications": borrowing_notifications,
+            "review_notifications": review_notifications,
         },
     )
 

@@ -9,7 +9,7 @@ class Product(models.Model):
     sku = models.CharField(max_length=254, unique=True)
     name = models.CharField(max_length=254)
     description = models.TextField()
-    rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    rating = models.FloatField(default=0)
     image_url = models.URLField(max_length=1024, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
@@ -18,7 +18,11 @@ class Product(models.Model):
     is_borrowed = models.BooleanField(default=False)
     stock = models.PositiveIntegerField(default=0)
     total_ratings = models.PositiveIntegerField(default=0)
-    average_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+
+    def get_average_rating(self):
+        """Calculate the average rating from all reviews."""
+        avg_rating = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return round(avg_rating, 1) if avg_rating else 0
 
     def update_rating(self):
         """Updates the average rating based on user ratings."""
