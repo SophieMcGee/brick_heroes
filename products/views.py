@@ -9,6 +9,7 @@ from django.utils.timezone import now
 from .models import Product, Rating, Review
 from subscriptions.models import UserProfile, Subscription
 from notifications.models import Notification
+from .forms import ReviewForm
 
 
 def all_products(request, category_name=None):
@@ -90,10 +91,13 @@ def product_detail(request, product_id):
             if user_subscription and user_subscription.end_date and user_subscription.end_date > now():
                 subscription_valid = True
 
+    approved_reviews = product.reviews.filter(is_approved=True)
+
     return render(request, 'products/product_detail.html', {
         'product': product,
         'user_subscription': user_subscription,
         'subscription_valid': subscription_valid,
+        'approved_reviews': approved_reviews,
     })
 
 
@@ -160,14 +164,73 @@ def submit_review(request, product_id):
             messages.error(request, "You must be an active subscriber to leave a review.")
             return redirect("product_detail", product_id=product.id)
 
+        # Check if a pending review exists to avoid duplication
+        existing_review = Review.objects.filter(
+            user=request.user, product=product, is_approved=False
+        ).first()
+
+        if existing_review:
+            messages.warning(request, "You already have a pending review for this product.")
+            return redirect("product_detail", product_id=product.id)
+
+        # Create the review if no pending review exists
         Review.objects.create(
             user=request.user, product=product, content=review_text, is_approved=False
         )
+
+        # Avoid duplicate notifications by checking existing ones
+        if not Notification.objects.filter(user=request.user, content__icontains="review submitted").exists():
+            Notification.objects.create(
+                user=request.user,
+                content=f"Your review for {product.name} has been submitted for approval.",
+                link=f"/products/{product.id}/"
+            )
 
         messages.success(request, "Your review has been submitted for approval.")
         return redirect("product_detail", product_id=product.id)
 
     return redirect("product_detail", product_id=product.id)
+
+
+@login_required
+def edit_review(request, product_id, review_id):
+    """Allows users to edit their own approved reviews."""
+    review = get_object_or_404(Review, id=review_id, product_id=product_id, user=request.user)
+
+    if request.method == "POST":
+        review_text = request.POST.get("review_text", "").strip()
+        
+        if review_text:
+            review.content = review_text  # Update review text
+            review.save()
+            messages.success(request, "Your review has been updated successfully!")
+        else:
+            messages.error(request, "Review content cannot be empty.")
+
+        return redirect("product_detail", product_id=product_id)
+
+    return redirect("product_detail", product_id=product_id)
+
+@login_required
+def delete_review(request, review_id):
+    """Allows users to delete their own reviews."""
+    review = get_object_or_404(Review, id=review_id)
+
+    # Ensure only the review's owner can delete it
+    if review.user != request.user:
+        messages.error(request, "You are not authorized to delete this review.")
+        return redirect("product_detail", product_id=review.product.id)
+
+    if request.method == "POST":  # Only allow DELETE via POST
+        product_id = review.product.id  # Save product_id before deletion
+        review.delete()
+        messages.success(request, "Your review has been deleted successfully.")
+        return redirect("product_detail", product_id=product_id)
+
+    messages.error(request, "Invalid request.")
+    return redirect("product_detail", product_id=review.product.id)
+
+
 
 @staff_member_required
 def approve_review(request, review_id):

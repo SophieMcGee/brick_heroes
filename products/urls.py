@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from cart import views as cart_views
-from .views import submit_review, product_detail, submit_rating
+from .views import submit_review, product_detail, submit_rating, delete_review
 
 urlpatterns = [
     path('', views.all_products, name='all_products'),
@@ -10,4 +10,7 @@ urlpatterns = [
     path('submit_review/<int:product_id>/', submit_review, name='submit_review'),
     path('add/<int:product_id>/', cart_views.add_to_cart, name='add_to_cart'),
     path('<int:product_id>/submit-rating/', submit_rating, name='submit_rating'),
+    path("edit_review/<int:product_id>/<int:review_id>/", views.edit_review, name="edit_review"),
+    path("review/delete/<int:review_id>/", views.delete_review, name="delete_review"),
+
 ]

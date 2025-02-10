@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /subscriptions/
+Disallow: /notifications/
+Allow: /

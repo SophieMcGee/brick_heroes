@@ -112,29 +112,53 @@
                 </div>
             </div>
 
-            <!-- Display Approved Reviews -->
+            <!-- Display Approved Reviews with Edit & Delete Buttons -->
             <div class="mt-4">
                 <h4 class="text-warning">Customer Reviews</h4>
-                {% with approved_reviews=product.reviews.all|dictsortreversed:"created_on" %}
                     {% if approved_reviews %}
                         <ul class="list-group" id="review-list">
                             {% for review in approved_reviews %}
-                                {% if review.is_approved %}
-                                    <li class="list-group-item bg-light text-dark mb-2">
-                                        <strong>{{ review.user.username|default:"Anonymous" }}</strong>
-                                        <p class="mb-1">{{ review.content }}</p> <!-- Only show review text -->
-                                        <small class="text-muted">Posted on {{ review.created_on|date:"M d, Y" }}</small>
-                                    </li>
-                                {% endif %}
+                                <div class="review">
+                                    <p><strong>{{ review.user.username }}</strong></p>
+                                    <p>{{ review.content }}</p>
+                                    <small class="text-muted">Posted on {{ review.created_on|date:"M d, Y" }}</small>
+
+                                    {% if request.user == review.user %}
+                                        <!-- Show Edit & Delete Buttons -->
+                                        <a href="#" class="btn btn-warning btn-sm" onclick="toggleEditForm({{ review.id }})">Edit</a>
+                                        <form method="POST" action="{% url 'delete_review' review.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+
+                                        <!-- Hidden Edit Form (Appears when Edit is Clicked) -->
+                                        <form method="POST" action="{% url 'edit_review' product.id review.id %}" id="edit-form-{{ review.id }}" class="d-none mt-2">
+                                            {% csrf_token %}
+                                            <textarea name="review_text" class="form-control mb-2">{{ review.content }}</textarea>
+                                            <button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+                                            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm({{ review.id }})">Cancel</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
                             {% endfor %}
                         </ul>
                     {% else %}
                         <p class="text-muted">No reviews yet.</p>
                     {% endif %}
-                {% endwith %}
             </div>
+
         </div>
     </div>
 </div>
+<script>
+    function toggleEditForm(reviewId) {
+        var form = document.getElementById("edit-form-" + reviewId);
+        if (form.classList.contains("d-none")) {
+            form.classList.remove("d-none");
+        } else {
+            form.classList.add("d-none");
+        }
+    }
+</script>
 
 {% endblock %}

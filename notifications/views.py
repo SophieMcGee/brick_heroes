@@ -52,13 +52,6 @@ def approve_review(request, review_id):
     messages.success(request, "Review approved successfully.")
     return redirect("admin_notifications")
 
-@staff_member_required
-def delete_review(request, review_id):
-    """Allow only admin/superusers to delete reviews."""
-    review = get_object_or_404(Review, id=review_id)
-    review.delete()
-    messages.success(request, "Review deleted successfully.")
-    return redirect('admin_notifications')
 
 @login_required
 def user_notifications(request):

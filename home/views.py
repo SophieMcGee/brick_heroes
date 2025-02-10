@@ -80,6 +80,7 @@ def delete_product(request, product_id):
     messages.success(request, "LEGO set deleted successfully.")
     return redirect("manage_store")
 
+
 def index(request):
     random_products = list(Product.objects.filter(is_borrowed=False).exclude(image=""))
     random.shuffle(random_products)
@@ -88,6 +89,7 @@ def index(request):
 
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
+
 
 def collections(request):
     return render(request, 'home/collections.html')
@@ -217,3 +219,4 @@ def contact_view(request):
 
 def contact_success(request):
     return render(request, 'home/contact_success.html')
+
