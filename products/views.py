@@ -85,7 +85,6 @@ def product_detail(request, product_id):
 
     if request.user.is_authenticated:
         user_profile = UserProfile.objects.filter(user=request.user).first()
-        
         if user_profile:
             user_subscription = Subscription.objects.filter(user=request.user, status=True).first()
             if user_subscription and user_subscription.end_date and user_subscription.end_date > now():
@@ -199,7 +198,6 @@ def edit_review(request, product_id, review_id):
 
     if request.method == "POST":
         review_text = request.POST.get("review_text", "").strip()
-        
         if review_text:
             review.content = review_text  # Update review text
             review.save()
@@ -210,6 +208,7 @@ def edit_review(request, product_id, review_id):
         return redirect("product_detail", product_id=product_id)
 
     return redirect("product_detail", product_id=product_id)
+
 
 @login_required
 def delete_review(request, review_id):
@@ -229,7 +228,6 @@ def delete_review(request, review_id):
 
     messages.error(request, "Invalid request.")
     return redirect("product_detail", product_id=review.product.id)
-
 
 
 @staff_member_required

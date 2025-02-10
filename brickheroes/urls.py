@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static, serve
 from allauth.account.views import EmailVerificationSentView
+from django.conf.urls import handler404
 
 
 urlpatterns = [
@@ -34,6 +35,8 @@ urlpatterns = [
     path('subscriptions/', include('subscriptions.urls')),
     path('sitemap.xml', serve, {'document_root': settings.BASE_DIR, 'path': 'sitemap.xml'}, name='sitemap'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'home.views.custom_404'
 
 
 # Serve media files during development

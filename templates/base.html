@@ -108,9 +108,9 @@
                     <div class="col-12 col-lg-5 my-auto py-1 py-lg-0 d-flex justify-content-start">
                         <form method="GET" action="{% url 'all_products' %}">
                             <div class="input-group w-100">
-                                <input class="form-control border border-black rounded-0" type="text" name="q" placeholder="Search Lego sets">
+                                <input class="form-control border border-black rounded-0" type="text" name="q" placeholder="Search Lego sets" aria-label="Search Lego sets">
                                 <div class="input-group-append">
-                                    <button class="form-control btn btn-black border border-black rounded-0" type="submit">
+                                    <button class="form-control btn btn-black border border-black rounded-0" type="submit" aria-label="Submit search">
                                         <span class="icon">
                                             <i class="fas fa-search"></i>
                                         </span>
@@ -126,31 +126,31 @@
                         <ul class="list-inline list-unstyled d-flex text-center my-0">
                             <!-- Browse Lego Sets -->
                             <li class="list-inline-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link text-white dropdown-toggle" href="#" id="categoriesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Browse Lego sets">
                                     <div class="text-center">
-                                        <div><i class="fas fa-th-large fa-lg"></i></div>
+                                        <div><i class="fas fa-th-large fa-lg" aria-hidden="true"></i></div>
                                         <p class="my-0">Browse</p>
                                     </div>
                                 </a>
                                 <div class="dropdown-menu bg-dark border-0" aria-labelledby="categoriesDropdown">
-                                    <a class="dropdown-item text-white" href="{% url 'all_products' %}">All Products</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}">Disney</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'marvel' %}">Marvel</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'minecraft' %}">Minecraft</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'ninjago' %}">NINJAGO</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'speed_champions' %}">Speed Champions</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'star_wars' %}">Star Wars</a>
-                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'technic' %}">Technic</a>
+                                    <a class="dropdown-item text-white" href="{% url 'all_products' %}" aria-label="All Products">All Products</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}" aria-label="Disney">Disney</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}" aria-label="Harry Potter">Harry Potter</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}" aria-label="Flowers">Flowers</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'marvel' %}" aria-label="Marvel">Marvel</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'minecraft' %}" aria-label="Minecraft">Minecraft</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'ninjago' %}" aria-label="NINJAGO">NINJAGO</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'speed_champions' %}" aria-label="Speed Champions">Speed Champions</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'star_wars' %}" aria-label="Star Wars">Star Wars</a>
+                                    <a class="dropdown-item text-white" href="{% url 'products_by_category' 'technic' %}" aria-label="Technic">Technic</a>
                                 </div>
                             </li>
 
                             <!-- Subscription Plans -->
                             <li class="list-inline-item">
-                                <a class="nav-link text-white" href="{% url 'subscription_plans' %}">
+                                <a class="nav-link text-white" href="{% url 'subscription_plans' %}" aria-label="Subscription Plans">
                                     <div class="text-center">
-                                        <div><i class="fas fa-crown fa-lg"></i></div>
+                                        <div><i class="fas fa-crown fa-lg" aria-hidden="true"></i></div>
                                         <p class="my-0">Subscriptions</p>
                                     </div>
                                 </a>
@@ -158,9 +158,9 @@
 
                             <!-- Borrow Cart -->
                             <li class="list-inline-item">
-                                <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
+                                <a class="nav-link text-white" href="{% url 'shopping_cart' %}" aria-label="Shopping Cart">
                                     <div class="text-center">
-                                        <div><i class="fas fa-shopping-bag fa-lg"></i></div>
+                                        <div><i class="fas fa-shopping-bag fa-lg" aria-hidden="true"></i></div>
                                         <p class="my-0">
                                             {% if cart_item_count %}
                                                 <span class="badge badge-danger">{{ cart_item_count }}</span> Borrow
@@ -174,26 +174,26 @@
                     
                             <!-- My Account -->
                             <li class="list-inline-item dropdown">
-                                <a class="text-white nav-link dropdown-toggle" href="#" id="user-options" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="text-white nav-link dropdown-toggle" href="#" id="user-options" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="My Account">
                                     <div class="text-center">
-                                        <div><i class="fas fa-user fa-lg"></i></div>
+                                        <div><i class="fas fa-user fa-lg" aria-hidden="true"></i></div>
                                         <p class="my-0">My Account</p>
                                     </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right border-0 bg-dark text-white" aria-labelledby="user-options">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
-                                    <a href="{% url 'manage_store' %}" class="dropdown-item text-white">Manage Store</a>
-                                    <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">
+                                    <a href="{% url 'manage_store' %}" class="dropdown-item text-white" aria-label="Manage Store">Manage Store</a>
+                                    <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white" aria-label="Admin Notifications">
                                         Admin Notifications 
                                         <span class="badge badge-danger">{{ admin_notifications_count }}</span>
                                     </a>
                                 {% endif %}
-                                    <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
-                                    <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
+                                    <a href="{% url 'user_profile' %}" class="dropdown-item text-white" aria-label="My Profile">My Profile</a>
+                                    <a href="{% url 'account_logout' %}" class="dropdown-item text-white" aria-label="Logout">Logout</a>
                                 {% else %}
-                                    <a href="{% url 'account_signup' %}" class="dropdown-item text-white">Register</a>
-                                    <a href="{% url 'account_login' %}" class="dropdown-item text-white">Login</a>
+                                    <a href="{% url 'account_signup' %}" class="dropdown-item text-white" aria-label="Register">Register</a>
+                                    <a href="{% url 'account_login' %}" class="dropdown-item text-white" aria-label="Login">Login</a>
                                 {% endif %}
                             </div>
                             </li>
@@ -217,27 +217,27 @@
                                 Browse Lego Sets
                             </a>
                             <div class="dropdown-menu bg-dark border-0" aria-labelledby="categoriesDropdown">
-                                <a class="dropdown-item text-white" href="{% url 'all_products' %}">All Products</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}">Disney</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}">Harry Potter</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}">Flowers</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'marvel' %}">Marvel</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'minecraft' %}">Minecraft</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'ninjago' %}">NINJAGO</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'speed_champions' %}">Speed Champions</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'star_wars' %}">Star Wars</a>
-                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'technic' %}">Technic</a>
+                                <a class="dropdown-item text-white" href="{% url 'all_products' %}" aria-label="All Products">All Products</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'disney' %}" aria-label="Disney">Disney</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'harry_potter' %}" aria-label="Harry Potter">Harry Potter</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'flowers' %}" aria-label="Flowers">Flowers</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'marvel' %}" aria-label="Marvel">Marvel</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'minecraft' %}" aria-label="Minecraft">Minecraft</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'ninjago' %}" aria-label="NINJAGO">NINJAGO</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'speed_champions' %}" aria-label="Speed Champions">Speed Champions</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'star_wars' %}" aria-label="Star Wars">Star Wars</a>
+                                <a class="dropdown-item text-white" href="{% url 'products_by_category' 'technic' %}" aria-label="Technic">Technic</a>
                             </div>
                         </li>
 
                         <!-- Subscription Plans -->
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'subscription_plans' %}">Subscription Plans</a>
+                            <a class="nav-link text-white" href="{% url 'subscription_plans' %}" aria-label="Subscription Plans">Subscription Plans</a>
                         </li>
 
                         <!-- Borrow Cart -->
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'shopping_cart' %}">
+                            <a class="nav-link text-white" href="{% url 'shopping_cart' %}" aria-label="Shopping Cart">
                                 Borrow Cart
                                 {% if cart_item_count %}
                                     (<span class="badge badge-danger">{{ cart_item_count }}</span>)
@@ -249,33 +249,34 @@
 
                         <!-- My Account -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="My Account">
                                 My Account
                             </a>
                             <div class="dropdown-menu bg-dark border-0" aria-labelledby="accountDropdown">
                                 {% if request.user.is_authenticated %}
                                     {% if request.user.is_superuser %}
-                                    <a href="{% url 'manage_store' %}" class="dropdown-item text-white">Manage Store</a>
-                                    <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white">
+                                    <a href="{% url 'manage_store' %}" class="dropdown-item text-white" aria-label="Manage Store">Manage Store</a>
+                                    <a href="{% url 'admin_notifications' %}" class="dropdown-item text-white" aria-label="Admin Notifications">
                                         Admin Notifications 
                                         <span class="badge badge-danger">{{ admin_notifications_count }}</span>
                                     </a>
                                 {% endif %}
-                                    <a href="{% url 'user_profile' %}" class="dropdown-item text-white">My Profile</a>
-                                    <a href="{% url 'account_logout' %}" class="dropdown-item text-white">Logout</a>
+                                    <a href="{% url 'user_profile' %}" class="dropdown-item text-white" aria-label="My Profile">My Profile</a>
+                                    <a href="{% url 'account_logout' %}" class="dropdown-item text-white" aria-label="Logout">Logout</a>
                                 {% else %}
-                                    <a href="{% url 'account_signup' %}" class="dropdown-item text-white">Register</a>
-                                    <a href="{% url 'account_login' %}" class="dropdown-item text-white">Login</a>
+                                    <a href="{% url 'account_signup' %}" class="dropdown-item text-white" aria-label="Register">Register</a>
+                                    <a href="{% url 'account_login' %}" class="dropdown-item text-white" aria-label="Login">Login</a>
                                 {% endif %}
                             </div>
-                        </li>
+                            </li>
                     </ul>
                 </div>
             </div>
         </div>        
     </header>
 
-<!-- Messages -->
+
+<!-- Messages
 <div class="message-container">
     {% if messages %}
         {% for message in messages %}
@@ -287,7 +288,7 @@
             </div>
         {% endfor %}
     {% endif %}
-</div>
+</div> -->
 
 <!-- Main Content -->
 {% block content %}

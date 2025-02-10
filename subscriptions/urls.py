@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import user_profile, return_borrowed_sets, cancel_subscription
+from .views import return_borrowed_sets, cancel_subscription
 
 urlpatterns = [
     path('subscription-plans/', views.subscription_plans, name='subscription_plans'),

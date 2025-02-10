@@ -91,6 +91,7 @@ def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
 
+
 @staff_member_required
 def admin_tools(request):
     """ A view for superusers to access admin tools """
@@ -164,5 +165,3 @@ from django.shortcuts import render
 
 def privacy_policy(request):
     return render(request, 'home/privacy_policy.html')
-
-

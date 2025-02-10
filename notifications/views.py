@@ -19,7 +19,7 @@ def admin_notifications(request):
         category="subscription"
     ).order_by('-created_at')
 
-    # ✅ Fix: Ensure borrowing/return notifications are included
+    # Fix: Ensure borrowing/return notifications are included
     borrowing_notifications = Notification.objects.filter(
         category="borrowing"
     ).order_by('-created_at')

@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -152,13 +152,13 @@ MESSAGE_TAGS = {
 }
 
 # Session Configuration
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  
-SESSION_COOKIE_NAME = 'brick_heroes_session'  
-SESSION_SAVE_EVERY_REQUEST = True  
-SESSION_COOKIE_AGE = 86400  # 1 day  
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False  
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'brick_heroes_session'
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 86400  # 1 day
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_HTTPONLY = True  
+SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 
