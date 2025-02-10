@@ -25,7 +25,8 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} (Borrowed by {self.cart.user.username})"
-    
+
+
 class BorrowOrder(models.Model):
     """Model to track each borrow order with delivery info."""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -36,7 +37,6 @@ class BorrowOrder(models.Model):
     postal_code = models.CharField(max_length=20)
     country = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    # Optionally, track status of the order (e.g., pending, delivered, returned, etc.)
     status = models.CharField(max_length=20, default="Pending")
 
     # Many-to-many relationship with borrowed LEGO sets

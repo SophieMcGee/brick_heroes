@@ -11,8 +11,12 @@ class Product(models.Model):
     description = models.TextField()
     rating = models.FloatField(default=0)
     image_url = models.URLField(max_length=1024, null=True, blank=True)
-    image = models.ImageField(upload_to="product_images/", blank=True, null=True)
-    category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
+    image = models.ImageField(
+        upload_to="product_images/", blank=True, null=True
+    )
+    category = models.ForeignKey(
+        'Category', null=True, blank=True, on_delete=models.SET_NULL
+    )
     difficulty = models.CharField(max_length=50, null=True, blank=True)
     theme = models.CharField(max_length=50, null=True, blank=True)
     is_borrowed = models.BooleanField(default=False)
@@ -25,7 +29,7 @@ class Product(models.Model):
             if "cloudinary" in str(self.image):
                 self.image_url = str(self.image)  # Full Cloudinary URL
             else:
-                self.image_url = f"/media/{self.image}"  # Local path for static media
+                self.image_url = f"/media/{self.image}"
         super().save(*args, **kwargs)
 
     def get_average_rating(self):
@@ -57,6 +61,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
 
+
 class Rating(models.Model):
     product = models.ForeignKey(
         Product,
@@ -73,7 +78,9 @@ class Rating(models.Model):
 class Review(models.Model):
     """Stores written reviews for LEGO sets (requires approval)."""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="reviews"
+    )
     content = models.TextField()
     rating = models.PositiveIntegerField(default=1)
     created_on = models.DateTimeField(auto_now_add=True)

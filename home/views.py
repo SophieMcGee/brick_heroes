@@ -17,19 +17,22 @@ import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 @staff_member_required
 def manage_store(request):
     """View to manage LEGO sets, subscribers, and borrowing."""
     products = Product.objects.all()
     categories = Category.objects.all()
     if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)  # Include FILES to handle image upload
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            new_product = form.save(commit=False)  # Don't save yet, modify first
+            new_product = form.save(commit=False)
 
-            category_name = request.POST.get("theme")  # Get selected category from form
+            category_name = request.POST.get("theme")
             if category_name:
-                category, created = Category.objects.get_or_create(friendly_name=category_name)
+                category, created = Category.objects.get_or_create(
+                    friendly_name=category_name
+                )
                 new_product.category = category  # Assign category to product
 
             # Handle image upload
@@ -72,6 +75,7 @@ def edit_product(request, product_id):
 
     return render(request, "home/edit_product.html", {"form": form, "product": product})
 
+
 @staff_member_required
 def delete_product(request, product_id):
     """Deletes a LEGO set."""
@@ -89,7 +93,6 @@ def index(request):
 
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
-
 
 
 @staff_member_required
@@ -161,7 +164,6 @@ def contact_view(request):
 def contact_success(request):
     return render(request, 'home/contact_success.html')
 
-from django.shortcuts import render
 
 def privacy_policy(request):
     return render(request, 'home/privacy_policy.html')

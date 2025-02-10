@@ -1,5 +1,6 @@
 from .models import Cart
 
+
 def cart_contents(request):
     """Make cart item count available in templates (only borrowed LEGO sets)"""
     if request.user.is_authenticated:

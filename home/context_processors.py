@@ -3,6 +3,7 @@ from cart.models import CartItem
 from notifications.models import Notification
 from django.conf import settings
 
+
 def global_header_context(request):
     """Add global context variables for the header."""
     if request.user.is_authenticated:
@@ -17,13 +18,15 @@ def global_header_context(request):
         'total_purchased': total_purchased,
     }
 
+
 def admin_notification_count(request):
-    """Adds the number of unread admin notifications to context for base.html."""
+    """Adds the number of unread admin notifications to context."""
     if request.user.is_authenticated and request.user.is_superuser:
         return {
             'admin_notifications_count': Notification.objects.filter(is_read=False).count()
         }
     return {'admin_notifications_count': 0}
+
 
 def media_url(request):
     """Make MEDIA_URL available globally in templates"""

@@ -45,9 +45,18 @@
                                 <form method="post" action="{% url 'account_email' %}" class="d-flex flex-wrap gap-2">
                                     {% csrf_token %}
                                     <input type="hidden" name="email" value="{{ emailaddress.email }}">
-                                    <button type="submit" name="action_primary" class="btn btn-sm btn-primary w-100">Make Primary</button>
-                                    <button type="submit" name="action_send" class="btn btn-sm btn-secondary w-100">Re-send Verification</button>
-                                    <button type="submit" name="action_remove" class="btn btn-sm btn-danger w-100">Remove</button>
+                                    <button type="submit" name="action_primary" class="btn btn-sm btn-primary w-100"
+                                            aria-label="Make this email address the primary one">
+                                        Make Primary
+                                    </button>
+                                    <button type="submit" name="action_send" class="btn btn-sm btn-secondary w-100"
+                                            aria-label="Resend verification email">
+                                        Re-send Verification
+                                    </button>
+                                    <button type="submit" name="action_remove" class="btn btn-sm btn-danger w-100"
+                                            aria-label="Remove this email address from your account">
+                                        Remove
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -85,15 +94,17 @@
                         <div class="bg-light p-2 rounded">
                             <strong>Status:</strong>
                             {% if subscription_status == "Active" %}
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success" aria-label="Subscription is active">Active</span>
                             {% elif subscription_status == "Pending Cancellation" %}
-                                <span class="badge bg-warning text-dark">Pending Cancellation</span>
+                                <span class="badge bg-warning text-dark" aria-label="Subscription is pending cancellation">
+                                    Pending Cancellation
+                                </span>
                                 <div class="alert alert-warning p-2 mt-2">
                                     Your subscription will remain active until <strong>{{ subscription.end_date }}</strong>. 
                                     After this date, it will be canceled.
                                 </div>
                             {% else %}
-                                <span class="badge bg-danger">Expired</span>
+                                <span class="badge bg-danger" aria-label="Subscription has expired">Expired</span>
                             {% endif %}
                         </div>
                     </div>
@@ -138,9 +149,10 @@
 
             <!-- Change Password Link -->
             <div class="text-center mt-4">
-                <a href="{% url 'account_change_password' %}" class="btn btn-danger w-100">
+                <a href="{% url 'account_change_password' %}" class="btn btn-danger w-100"
+                    aria-label="Change your account password">
                     <i class="fas fa-key"></i> Change Password
-                </a>
+                </a>  
             </div>
         </div>
     </div>

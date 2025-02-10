@@ -126,18 +126,15 @@ def submit_rating(request, product_id):
 
         if not rating_value:
             messages.warning(request, "⚠ Please select a rating before submitting.")
-            print("DEBUG: Rating not provided")
             return redirect("product_detail", product_id=product.id)
 
         try:
             rating_value = int(rating_value)
             if rating_value < 1 or rating_value > 5:
                 messages.warning(request, "⚠ Invalid rating value.")
-                print("DEBUG: Invalid rating value")
                 return redirect("product_detail", product_id=product.id)
         except ValueError:
             messages.warning(request, "⚠ Invalid rating input.")
-            print("DEBUG: ValueError in rating")
             return redirect("product_detail", product_id=product.id)
 
         # Save the new rating
@@ -147,7 +144,6 @@ def submit_rating(request, product_id):
         product.update_rating()
 
         messages.success(request, "⭐ Rating submitted successfully!")
-        print("DEBUG: Success message set")
 
         return redirect("product_detail", product_id=product.id)
 

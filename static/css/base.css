@@ -602,7 +602,6 @@ header .btn:hover {
     color: #FE0000;
 }
 
-
 /* Buttons for Images */
 .image-button {
     display: inline-block;
@@ -716,7 +715,6 @@ header .btn:hover {
         max-width: 50%;
     }
 }
-
 
 /* Adjust for smaller mobile screens */
 @media (max-width: 768px) {

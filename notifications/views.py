@@ -5,11 +5,10 @@ from django.contrib import messages
 from .models import Notification
 from products.models import Review  # Import reviews from products
 
+
 @staff_member_required
 def admin_notifications(request):
     """Displays pending reviews, subscriptions, and borrowing notifications."""
-
-    print("DEBUG: Fetching admin notifications...")
 
     # Fetch pending reviews (not yet approved)
     pending_reviews = Review.objects.filter(is_approved=False)
@@ -27,9 +26,6 @@ def admin_notifications(request):
     review_notifications = Notification.objects.filter(
         category="review"
     ).order_by('-created_at')
-
-    print(f"DEBUG: Pending Reviews Count: {pending_reviews.count()}")
-    print(f"DEBUG: Borrowing Notifications Count: {borrowing_notifications.count()}")
 
     return render(
         request,
@@ -66,6 +62,7 @@ def user_notifications(request):
         'notifications/notifications.html',
         {'notifications': notifications},
     )
+
 
 @staff_member_required
 def delete_notification(request, notification_id):

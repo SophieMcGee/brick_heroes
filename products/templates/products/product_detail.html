@@ -7,9 +7,11 @@
         <!-- Product Image -->
         <div class="col-md-6 offset-md-1">
             {% if product.image_url %}
-                <img src="{{ product.image_url }}" class="img-fluid rounded shadow" alt="{{ product.name }}">
+                <img src="{{ product.image_url }}" class="img-fluid rounded shadow"
+                    alt="LEGO Set: {{ product.name }} - Product Image">
             {% else %}
-                <img src="{% static 'media/default-image.jpg' %}" class="img-fluid rounded shadow" alt="No image available">
+                <img src="{% static 'media/default-image.jpg' %}" class="img-fluid rounded shadow" 
+                    alt="No image available">
             {% endif %}
         </div>
 
@@ -36,20 +38,13 @@
             <br>
 
             <!-- Ratings Section -->
-            <!-- Success Message for Ratings & Reviews -->
-            {% if messages %}
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    {% for message in messages %}
-                        {% if message.tags == "success" %}
-                            <div class="alert alert-success p-4 shadow-sm">
-                                <p>{{ message }}</p>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
+            {% for message in messages %}
+                {% if "success" in message.tags %}
+                    <div class="alert alert-success p-4 shadow-sm" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
             
             <div class="mt-4">
                 <h3 class="text-warning">Rate This Set</h3>
@@ -125,7 +120,7 @@
 
                                     {% if request.user == review.user %}
                                         <!-- Show Edit & Delete Buttons -->
-                                        <a href="#" class="btn btn-warning btn-sm" onclick="toggleEditForm({{ review.id }})">Edit</a>
+                                        <a href="#" class="btn btn-warning btn-sm" onclick="toggleEditForm('{{ review.id }}')">Edit</a>
                                         <form method="POST" action="{% url 'delete_review' review.id %}" class="d-inline">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -136,7 +131,8 @@
                                             {% csrf_token %}
                                             <textarea name="review_text" class="form-control mb-2">{{ review.content }}</textarea>
                                             <button type="submit" class="btn btn-success btn-sm">Save Changes</button>
-                                            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm({{ review.id }})">Cancel</button>
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                onclick="toggleEditForm('{{ review.id }}')">Cancel</button>
                                         </form>
                                     {% endif %}
                                 </div>
@@ -146,7 +142,6 @@
                         <p class="text-muted">No reviews yet.</p>
                     {% endif %}
             </div>
-
         </div>
     </div>
 </div>

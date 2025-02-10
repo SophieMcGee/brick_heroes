@@ -28,7 +28,7 @@
             <form method="post" action="{% url 'checkout' %}" novalidate>
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-success mt-3">Confirm Borrow Order</button>
+                <button type="submit" class="btn btn-success mt-3" aria-label="Confirm borrowing order">Confirm Borrow Order</button>
             </form>
         </div>
     
@@ -37,14 +37,16 @@
         {% if messages %}
         <div class="row mt-4">
             <div class="col-md-6">
-                {% for message in messages %}
-                    {% if message.tags == "success" %}
-                        <div class="alert alert-success p-4 shadow-sm">
-                            <p>{{ message }}</p>
-                            <p>You can track your borrowed sets in your <a href="{% url 'user_profile' %}" class="text-warning">profile</a>.</p>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                <div aria-live="polite"></div>
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <div class="alert alert-success p-4 shadow-sm">
+                                <p>{{ message }}</p>
+                                <p>You can track your borrowed sets in your <a href="{% url 'user_profile' %}" class="text-warning">profile</a>.</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
         {% endif %}
