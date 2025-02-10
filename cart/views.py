@@ -101,7 +101,6 @@ def add_to_cart(request, product_id):
     return redirect("user_profile")  # Redirect to the profile where borrowed sets are shown
 
 
-
 @login_required
 def remove_from_cart(request, item_id):
     """Remove a borrowed LEGO set from the cart."""
@@ -181,7 +180,7 @@ def checkout(request):
                     cart.items.all().delete()
 
                     messages.success(
-                        request, 
+                        request,
                         "Your LEGO set(s) have been successfully borrowed! "
                         "You can swap them anytime by returning sets."
                     )

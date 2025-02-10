@@ -8,39 +8,50 @@
 {% endblock head_title %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" role="main">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5">
             <div class="card shadow-lg p-4">
                 <div class="card-body">
-                    <h1 class="logo-font text-primary text-center">{% trans "Confirm Email Address" %}</h1>
+                    <!-- Page Heading -->
+                    <h1 class="logo-font text-primary text-center" id="confirm-email-heading">
+                        {% trans "Confirm Email Address" %}
+                    </h1>
 
                     {% if confirmation %}
                         {% user_display confirmation.email_address.user as user_display %}
                         {% if can_confirm %}
-                            <p class="text-muted text-center">
+                            <!-- Confirmation Message -->
+                            <p class="text-muted text-center" role="alert" aria-labelledby="confirm-email-heading">
                                 {% blocktrans with confirmation.email_address.email as email %}
                                     Please confirm that <strong>{{ email }}</strong> belongs to {{ user_display }}.
                                 {% endblocktrans %}
                             </p>
+
+                            <!-- Confirm Email Form -->
                             <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
                                 {% csrf_token %}
                                 {{ redirect_field }}
-                                <button type="submit" class="btn btn-warning btn-block">
-                                    <i class="fas fa-check-circle"></i> {% trans 'Confirm Email' %}
+
+                                <button type="submit" class="btn btn-warning btn-block"
+                                        aria-label="{% trans 'Confirm this email address' %}">
+                                    <i class="fas fa-check-circle" aria-hidden="true"></i> {% trans 'Confirm Email' %}
                                 </button>
                             </form>
                         {% else %}
-                            <p class="text-danger text-center">
+                            <p class="text-danger text-center" role="alert">
                                 {% trans "This email address has already been confirmed by a different account." %}
                             </p>
                         {% endif %}
                     {% else %}
-                        <p class="text-muted text-center">
+                        <p class="text-muted text-center" role="alert">
                             {% trans "This email confirmation link expired or is invalid." %}
                         </p>
+
+                        <!-- Request New Confirmation Button -->
                         <p class="text-center">
-                            <a href="{% url 'account_email' %}" class="btn btn-outline-secondary">
+                            <a href="{% url 'account_email' %}" class="btn btn-outline-secondary"
+                               aria-label="{% trans 'Request a new email confirmation' %}">
                                 {% trans "Request a New Email Confirmation" %}
                             </a>
                         </p>

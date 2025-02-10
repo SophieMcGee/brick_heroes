@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% load allauth i18n %}
+
 {% block title %}Email Management - Brick Heroes{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-5">
+<div class="container mt-5 pt-5" role="main">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-lg p-4 bg-light rounded">
-                <h1 class="text-center text-warning">{% trans "Email Addresses" %}</h1>
+                <h1 class="text-center text-warning" id="email-management-heading">
+                    {% trans "Email Addresses" %}
+                </h1>
                 <hr class="bg-warning">
 
                 {% if emailaddresses %}
@@ -17,9 +20,9 @@
                         <table class="table table-striped table-bordered text-center">
                             <thead class="bg-dark text-white">
                                 <tr>
-                                    <th>{% trans "Email Address" %}</th>
-                                    <th>{% trans "Status" %}</th>
-                                    <th>{% trans "Actions" %}</th>
+                                    <th scope="col">{% trans "Email Address" %}</th>
+                                    <th scope="col">{% trans "Status" %}</th>
+                                    <th scope="col">{% trans "Actions" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,19 +45,28 @@
                                                 <form method="post" action="{% url 'account_email' %}">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="email" value="{{ emailaddress.email }}">
-                                                    <button type="submit" name="action_primary" class="btn btn-warning btn-sm w-100">{% trans 'Make Primary' %}</button>
+                                                    <button type="submit" name="action_primary" class="btn btn-warning btn-sm w-100"
+                                                            aria-label="{% trans 'Make this email primary' %}">
+                                                        {% trans 'Make Primary' %}
+                                                    </button>
                                                 </form>
 
                                                 <form method="post" action="{% url 'account_email' %}">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="email" value="{{ emailaddress.email }}">
-                                                    <button type="submit" name="action_send" class="btn btn-primary btn-sm w-100">{% trans 'Re-send Verification' %}</button>
+                                                    <button type="submit" name="action_send" class="btn btn-primary btn-sm w-100"
+                                                            aria-label="{% trans 'Re-send verification email' %}">
+                                                        {% trans 'Re-send Verification' %}
+                                                    </button>
                                                 </form>
 
                                                 <form method="post" action="{% url 'account_email' %}">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="email" value="{{ emailaddress.email }}">
-                                                    <button type="submit" name="action_remove" class="btn btn-danger btn-sm w-100">{% trans 'Remove' %}</button>
+                                                    <button type="submit" name="action_remove" class="btn btn-danger btn-sm w-100 remove-email-btn"
+                                                            aria-label="{% trans 'Remove this email address' %}">
+                                                        {% trans 'Remove' %}
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>
@@ -65,7 +77,7 @@
                         </table>
                     </div>
                 {% else %}
-                    <div class="alert alert-warning text-center">
+                    <div class="alert alert-warning text-center" role="alert">
                         {% trans "No email addresses are associated with your account." %}
                     </div>
                 {% endif %}
@@ -75,15 +87,23 @@
                         <h2 class="text-center text-warning">{% trans "Add Email Address" %}</h2>
                         <form method="post" action="{% url 'account_email' %}" class="d-flex justify-content-center gap-2">
                             {% csrf_token %}
-                            <input type="email" name="email" class="form-control" placeholder="{% trans 'Enter new email' %}" required>
-                            <button type="submit" name="action_add" class="btn btn-warning">{% trans "Add Email" %}</button>
+                            <input type="email" name="email" class="form-control" 
+                                   placeholder="{% trans 'Enter new email' %}" 
+                                   aria-label="{% trans 'Enter a new email address' %}" required>
+                            <button type="submit" name="action_add" class="btn btn-warning"
+                                    aria-label="{% trans 'Add new email address' %}">
+                                {% trans "Add Email" %}
+                            </button>
                         </form>
                     </div>
                 {% endif %}
 
                 <!-- Back to Profile Button -->
                 <div class="text-center mt-4">
-                    <a href="{% url 'user_profile' %}" class="btn btn-dark">{% trans "Back to Profile" %}</a>
+                    <a href="{% url 'user_profile' %}" class="btn btn-dark"
+                       aria-label="{% trans 'Go back to profile' %}">
+                        {% trans "Back to Profile" %}
+                    </a>
                 </div>
             </div>
         </div>
@@ -94,9 +114,11 @@
 {% block extrajs %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("[name='action_remove']").forEach(button => {
+        document.querySelectorAll(".remove-email-btn").forEach(button => {
             button.addEventListener("click", function(e) {
-                if (!confirm("{% trans 'Do you really want to remove the selected email address?' %}")) {
+                const email = this.closest("form").querySelector("[name='email']").value;
+                const confirmationMessage = `{% trans 'Do you really want to remove the email address: ' %} ` + email + `?`;
+                if (!confirm(confirmationMessage)) {
                     e.preventDefault();
                 }
             });

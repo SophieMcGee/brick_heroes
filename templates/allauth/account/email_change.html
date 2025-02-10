@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block head_title %}{% trans "Email Address" %}{% endblock head_title %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" role="main">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
                 <div class="card-header bg-dark text-white text-center">
-                    <h2 class="logo-font">{% trans "Manage Email Address" %}</h2>
+                    <h2 class="logo-font" id="manage-email-heading">{% trans "Manage Email Address" %}</h2>
                 </div>
                 <div class="card-body">
                     
@@ -16,13 +17,15 @@
                         {% include "account/snippets/warn_no_email.html" %}
                     {% endif %}
 
-                    <form method="post" action="{% url 'account_email' %}" class="needs-validation">
+                    <form method="post" action="{% url 'account_email' %}" class="needs-validation" aria-labelledby="manage-email-heading">
                         {% csrf_token %}
 
                         {% if current_emailaddress %}
                             <div class="form-group">
                                 <label for="current_email" class="font-weight-bold">{% trans "Current Email" %}:</label>
-                                <input type="email" class="form-control" id="current_email" value="{{ current_emailaddress.email }}" disabled>
+                                <input type="email" class="form-control" id="current_email" 
+                                       value="{{ current_emailaddress.email }}" disabled 
+                                       aria-label="{% trans 'Current email address' %}">
                             </div>
                         {% endif %}
 
@@ -35,33 +38,46 @@
                                         {% trans "Changing to" %}
                                     {% endif %}
                                 </label>
-                                <input type="email" class="form-control" id="new_email" value="{{ new_emailaddress.email }}" disabled>
+                                <input type="email" class="form-control" id="new_email" 
+                                       value="{{ new_emailaddress.email }}" disabled 
+                                       aria-label="{% trans 'Pending verification email address' %}">
 
-                                <small class="text-muted d-block mt-2">
+                                <small class="text-muted d-block mt-2" id="pending-email-info">
                                     {% blocktranslate %}Your email address is still pending verification.{% endblocktranslate %}
                                 </small>
 
                                 <div class="mt-2">
-                                    <button type="submit" name="action_send" class="btn btn-secondary btn-sm">{% trans 'Re-send Verification' %}</button>
+                                    <button type="submit" name="action_send" class="btn btn-secondary btn-sm"
+                                            aria-label="{% trans 'Resend verification email' %}">
+                                        {% trans 'Re-send Verification' %}
+                                    </button>
                                     {% if current_emailaddress %}
-                                        <button type="submit" name="action_remove" class="btn btn-danger btn-sm">{% trans 'Cancel Change' %}</button>
+                                        <button type="submit" name="action_remove" class="btn btn-danger btn-sm"
+                                                aria-label="{% trans 'Cancel email change' %}">
+                                            {% trans 'Cancel Change' %}
+                                        </button>
                                     {% endif %}
                                 </div>
                             </div>
                         {% endif %}
 
                         <div class="form-group">
-                            <label for="{{ form.email.auto_id }}" class="font-weight-bold">{% trans "Change to" %}:</label>
-                            <input type="email" name="email" id="{{ form.email.auto_id }}" class="form-control" value="{{ form.email.value }}">
+                            <label for="id_email" class="font-weight-bold">{% trans "Change to" %}:</label>
+                            <input type="email" name="email" id="id_email" class="form-control"
+                                   value="{{ form.email.value }}" autocomplete="email" required
+                                   aria-label="{% trans 'Enter new email address' %}">
                             {% if form.email.errors %}
-                                <div class="text-danger mt-1">
+                                <div class="text-danger mt-1" role="alert">
                                     {{ form.email.errors }}
                                 </div>
                             {% endif %}
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" name="action_add" class="btn btn-primary btn-lg">{% trans "Change Email" %}</button>
+                            <button type="submit" name="action_add" class="btn btn-primary btn-lg"
+                                    aria-label="{% trans 'Submit email change request' %}">
+                                {% trans "Change Email" %}
+                            </button>
                         </div>
                     </form>
                 </div>

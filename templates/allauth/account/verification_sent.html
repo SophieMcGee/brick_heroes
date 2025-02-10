@@ -4,18 +4,25 @@
 {% block head_title %}{% trans "Verify Your Email" %}{% endblock head_title %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" role="main">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
             <div class="card shadow-lg p-4">
                 <div class="card-body text-center">
-                    <h1 class="logo-font text-primary">{% trans "Verify Your Email" %}</h1>
-                    <p class="text-muted">
+                    <!-- Page Heading -->
+                    <h1 class="logo-font text-primary" id="verify-email-heading">
+                        {% trans "Verify Your Email" %}
+                    </h1>
+
+                    <!-- Verification Instructions -->
+                    <p class="text-muted" role="alert" aria-labelledby="verify-email-heading">
                         {% trans "We've sent a confirmation email to your inbox. Please check your email and click the verification link to activate your account." %}
                     </p>
+
                     <p class="text-muted">
                         {% trans "If you haven't received the email, check your spam folder or" %}
-                        <a href="{% url 'account_email' %}" class="text-primary font-weight-bold">
+                        <a href="{% url 'account_email' %}" class="text-primary font-weight-bold"
+                           aria-label="{% trans 'Resend verification email' %}">
                             {% trans "resend verification email" %}
                         </a>.
                     </p>

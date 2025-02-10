@@ -59,8 +59,8 @@ class Category(models.Model):
 
 class Rating(models.Model):
     product = models.ForeignKey(
-        Product, 
-        on_delete=models.CASCADE, 
+        Product,
+        on_delete=models.CASCADE,
         related_name="ratings"
     )
     rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])

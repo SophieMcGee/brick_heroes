@@ -7,48 +7,68 @@
 {% endblock head_title %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" role="main">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5">
             <div class="card shadow-lg p-4">
                 <div class="card-body">
-                    <h1 class="logo-font text-primary text-center">{% trans "Sign Up" %}</h1>
-                    <p class="text-muted text-center">{% trans "Create your account to start borrowing LEGO sets!" %}</p>
+                    <!-- Page Heading -->
+                    <h1 class="logo-font text-primary text-center" id="signup-heading">
+                        {% trans "Sign Up" %}
+                    </h1>
+                    <p class="text-muted text-center">
+                        {% trans "Create your account to start borrowing LEGO sets!" %}
+                    </p>
 
                     <p class="text-center">
                         {% blocktranslate %}Already have an account?  
-                            <a href="{{ login_url }}" class="text-primary font-weight-bold">Sign in</a>.
+                            <a href="{{ login_url }}" class="text-primary font-weight-bold" 
+                               aria-label="{% trans 'Sign in to your account' %}">
+                                {% trans "Sign in" %}
+                            </a>.
                         {% endblocktranslate %}
                     </p>
 
-                    <!-- ✅ Django Allauth Signup Form -->
-                    <form method="post" action="{% url 'account_signup' %}">
+                    <!-- Django Allauth Signup Form -->
+                    <form method="post" action="{% url 'account_signup' %}" aria-labelledby="signup-heading">
                         {% csrf_token %}
-                        
+
                         <!-- Email -->
                         <div class="form-group">
                             <label for="id_email">{% trans "Email" %}</label>
-                            <input type="email" name="email" id="id_email" class="form-control" placeholder="Enter your email">
+                            <input type="email" name="email" id="id_email" class="form-control"
+                                   placeholder="{% trans 'Enter your email' %}" 
+                                   aria-label="{% trans 'Enter your email address' %}" 
+                                   autocomplete="email" required>
                         </div>
 
-                        <!-- Confirm Email (if required) -->
+                        <!-- Confirm Email -->
                         {% if form.email2 %}
                         <div class="form-group">
                             <label for="id_email2">{% trans "Email (again)" %}</label>
-                            <input type="email" name="email2" id="id_email2" class="form-control" placeholder="Confirm your email">
+                            <input type="email" name="email2" id="id_email2" class="form-control"
+                                   placeholder="{% trans 'Confirm your email' %}" 
+                                   aria-label="{% trans 'Re-enter your email for confirmation' %}" 
+                                   autocomplete="email" required>
                         </div>
                         {% endif %}
 
                         <!-- Username -->
                         <div class="form-group">
                             <label for="id_username">{% trans "Username" %}</label>
-                            <input type="text" name="username" id="id_username" class="form-control" placeholder="Choose a username">
+                            <input type="text" name="username" id="id_username" class="form-control"
+                                   placeholder="{% trans 'Choose a username' %}" 
+                                   aria-label="{% trans 'Enter a username' %}" 
+                                   autocomplete="username" required>
                         </div>
 
                         <!-- Password -->
                         <div class="form-group">
                             <label for="id_password1">{% trans "Password" %}</label>
-                            <input type="password" name="password1" id="id_password1" class="form-control" placeholder="Create a password">
+                            <input type="password" name="password1" id="id_password1" class="form-control"
+                                   placeholder="{% trans 'Create a password' %}" 
+                                   aria-label="{% trans 'Enter your password' %}" 
+                                   autocomplete="new-password" required>
                             {% if form.password1.help_text %}
                                 <small class="form-text text-muted">{{ form.password1.help_text }}</small>
                             {% endif %}
@@ -57,12 +77,15 @@
                         <!-- Confirm Password -->
                         <div class="form-group">
                             <label for="id_password2">{% trans "Confirm Password" %}</label>
-                            <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm password">
+                            <input type="password" name="password2" id="id_password2" class="form-control"
+                                   placeholder="{% trans 'Confirm password' %}" 
+                                   aria-label="{% trans 'Re-enter your password for confirmation' %}" 
+                                   autocomplete="new-password" required>
                         </div>
 
                         <!-- Display Errors -->
                         {% if form.errors %}
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger" role="alert">
                                 <ul class="mb-0">
                                     {% for field, errors in form.errors.items %}
                                         {% for error in errors %}
@@ -73,8 +96,10 @@
                             </div>
                         {% endif %}
 
-                        <button type="submit" class="btn btn-warning btn-block">
-                            <i class="fas fa-user-plus"></i> {% trans "Sign Up" %}
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-warning btn-block" 
+                                aria-label="{% trans 'Submit signup form' %}">
+                            <i class="fas fa-user-plus" aria-hidden="true"></i> {% trans "Sign Up" %}
                         </button>
                     </form>
                 </div>

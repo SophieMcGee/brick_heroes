@@ -3,12 +3,35 @@
 {% load allauth %}
 {% user_display user as user_display %}
 
-{% element alert %}
-    {% slot message %}
-        ✅ **You're Already Logged In**  
+<div class="container mt-5" role="main">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-info text-center" role="alert">
+                <h1 class="text-primary" id="already-logged-in-heading">
+                    ✅ {% trans "You're Already Logged In" %}
+                </h1>
 
-        {% blocktranslate %}You're currently logged in as **{{ user_display }}**.{% endblocktranslate %}  
+                <p class="lead">
+                    {% blocktranslate %}You're currently logged in as <strong>{{ user_display }}</strong>.{% endblocktranslate %}
+                </p>
 
-        🚀 **Keep building with Brick Heroes!**
-    {% endslot %}
-{% endelement %}
+                <p class="font-weight-bold">
+                    🚀 {% trans "Keep building with Brick Heroes!" %}
+                </p>
+
+                <!-- Back to Dashboard or Home -->
+                <div class="mt-3">
+                    <a href="{% url 'user_profile' %}" class="btn btn-warning"
+                       aria-label="{% trans 'Go to your profile' %}">
+                        {% trans "Go to Profile" %}
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary"
+                       aria-label="{% trans 'Return to homepage' %}">
+                        {% trans "Return to Homepage" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
