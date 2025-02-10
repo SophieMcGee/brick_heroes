@@ -21,13 +21,13 @@
                     </p>
 
                     <p class="text-center">
-                        {% blocktranslate %}Already have an account?  
-                            <a href="{{ login_url }}" class="text-primary font-weight-bold" 
-                               aria-label="{% trans 'Sign in to your account' %}">
-                                {% trans "Sign in" %}
+                        {% blocktranslate with login_url=login_url %}Already have an account?  
+                            <a href="{{ login_url }}" class="text-primary font-weight-bold">
+                                Sign in
                             </a>.
                         {% endblocktranslate %}
                     </p>
+                    
 
                     <!-- Django Allauth Signup Form -->
                     <form method="post" action="{% url 'account_signup' %}" aria-labelledby="signup-heading">

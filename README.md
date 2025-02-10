@@ -1,6 +1,12 @@
 # **_Brick Heroes - Project Portfolio 5_**
 
-INSERT INTRO AND LINK TO LIVE SITE HERE
+Welcome to Brick Heroes, a vibrant, comic-book-inspired subscription service designed for LEGO enthusiasts of all ages! This innovative platform offers users the ability to borrow LEGO sets instead of purchasing them, making high-quality LEGO building more affordable, accessible, and sustainable.
+
+Traditional LEGO collections can be expensive and take up space over time. With Brick Heroes, users can subscribe to a monthly plan, choose sets they want to build, borrow them for as long as they need, and return them to borrow new ones. This cycle allows for continuous creativity while reducing costs and waste.
+
+The live site is available to view via this link: <a href="https://brick-heroes-52ffabb94b76.herokuapp.com/" target="_blank" rel="noopener">Brick Heroes</a>
+
+![Brick Heroes responsive design](docs\readme_images\responsive-view.jpg)
 
 # Contents
 
@@ -33,27 +39,23 @@ INSERT INTRO AND LINK TO LIVE SITE HERE
 
 # Website Objectives
 
-The Brick Heroes website is designed to provide a comprehensive platform for users to explore, borrow, and purchase Lego sets through a subscription-based model. The primary goal is to create an engaging, user-friendly space that empowers builders of all ages to access a wide variety of Lego sets affordably, while also promoting sustainability through the reuse of sets. The site integrates borrowing functionality, e-commerce options, and subscription management, ensuring a seamless experience for users.
+The Brick Heroes website is designed to provide a comprehensive platform for users to explore and purchase Lego sets through a subscription-based model. The primary goal is to create an engaging, user-friendly space that empowers builders of all ages to access a wide variety of Lego sets affordably, while also promoting sustainability through the reuse of sets. The site integrates borrowing functionality and e-commerce subscription management, ensuring a seamless experience for users.
 
-Additionally, Brick Heroes aims to foster a creative community of Lego enthusiasts by offering features like a blog with building tips, user galleries for sharing creations, and the ability to leave reviews and feedback on borrowed sets. The website's design reflects a vibrant, comic-book-inspired theme to make the browsing and interaction experience fun and memorable.
+Additionally, Brick Heroes aims to foster a creative community of Lego enthusiasts by offering features such as a Facebook page where customers can share building tips, share creations, and the ability to leave reviews and feedback on borrowed sets. The website's design reflects a vibrant, comic-book-inspired theme to make the browsing and interaction experience fun and memorable.
 
 
 **Key objectives:**
 1. **Subscription Management**
-  - Enable users to view, select, and manage subscription plans, including monthly and annual options, with clear pricing and benefits.
+  - Enable users to view, select, and manage subscription plans, including monthly options, with clear pricing and benefits.
   - Provide flexible management tools for upgrading, downgrading, or cancelling subscriptions.
 
 2. **Borrowing and Returning Sets**
   - Offer a seamless borrowing system where users can browse and filter sets by theme, difficulty, and availability.
-  - Allow users to track borrowed sets, return them easily, and join waitlists for unavailable items.
+  - Allow users to borrow sets and return them easily, with clear stock availability.
 
-3. **E-Commerce Functionality**
-  - Include the option for users to purchase Lego sets outright, along with other products like gift cards.
-  - Provide a secure checkout process for transactions and gift card redemption.
-
-4. **Creative Engagement**
-  - Foster community interaction through features like user reviews, ratings, and a gallery for sharing builds.
-  - Maintain an inspiring blog with tips, set reviews, and Lego news.
+3. **Creative Engagement**
+  - Foster community interaction through features like user reviews and ratings.
+  - Create a social media platform for users to share tips, reviews, and Lego news.
 
 5. **Accessibility and Usability**
   - Ensure the site is fully responsive and accessible, providing a smooth experience across devices, including mobile, tablet, and desktop.
@@ -63,11 +65,11 @@ Additionally, Brick Heroes aims to foster a creative community of Lego enthusias
   - Promote eco-friendly practices by encouraging the reuse of Lego sets, reducing waste, and minimising the environmental impact of toy consumption.
 
 7. **Administrator Tools**
-  - Provide a robust admin interface for managing Lego sets, monitoring user activity, and moderating reviews and gallery submissions.
-  - Include analytics tools to track subscriptions, borrowing trends, and overall site engagement.
+  - Provide a robust admin interface for managing Lego sets, monitoring user activity, and moderating reviews.
+  - Include tools to track subscriptions, reviews and borrowing.
 
 8. **Notifications and Feedback**
-  - Keep users informed with timely notifications for due dates, waitlist availability, and subscription renewals.
+  - Keep users informed with timely notifications such as subscription renewals.
   - Encourage user feedback to continuously improve the service and offerings.
 
 By focusing on these objectives, Brick Heroes aims to become the go-to platform for affordable and creative Lego set access while building a supportive and enthusiastic community of builders.
@@ -91,7 +93,7 @@ The development process was broken into multiple milestones, each representing a
   - Examples of milestones included:
       - Setting up the user authentication system.
       - Developing the borrowing and returning workflows.
-      - Implementing e-commerce functionality for gift cards and set purchases.
+      - Implementing e-commerce functionality for subscriptions and potential future ecommerce options.
 
 This iterative structure ensured steady progress while maintaining the flexibility to pivot when necessary.
 
@@ -103,7 +105,7 @@ User stories were at the heart of the development process, capturing features an
   - Prioritisation followed the MoSCoW framework:
       - Must Have: Core functionality like account registration, borrowing Lego sets, and subscription management.
       - Should Have: Features enhancing usability, such as filtering Lego sets by theme or difficulty.
-      - Could Have: Community features like sharing Lego creations or commenting on blog posts.
+      - Could Have: Community features like buying gift cards and sets, a blog for sharing Lego creations or commenting on blog posts.
   - User stories provided clear acceptance criteria to guide development and testing, ensuring that each feature met user expectations.
 
 3. **GitHub Project Board**
@@ -153,8 +155,8 @@ To maintain a robust and reliable codebase, continuous integration principles we
 The MoSCoW method was used to prioritize user stories and features systematically:
 
   - Must Have: User registration, borrowing and returning Lego sets, subscription payments.
-  - Should Have: User reviews and ratings for Lego sets, waitlist notifications for unavailable sets.
-  -	Could Have: A gallery for users to share their builds, gamified rewards for frequent borrowers.
+  - Should Have: User reviews and ratings for Lego sets, notifications.
+  -	Could Have: A gallery for users to share their builds, blog area, purchasing of sets and giftcards.
   - Won’t Have: Features planned for future phases, like multi-language support or advanced analytics for users.
 
 This approach ensured that critical functionality was delivered first while leaving room for enhancements later in the project lifecycle.
@@ -164,12 +166,12 @@ This approach ensured that critical functionality was delivered first while leav
 
 ## Client Background and Goals
 
-The Brick Heroes platform is designed to provide a seamless and engaging space for Lego enthusiasts to access a subscription-based service for borrowing and purchasing Lego sets. As the developer and someone passionate about creativity and sustainability, I recognised the need for a platform that simplifies access to high-quality Lego sets while promoting reuse and reducing waste. The goals for this website include:
+The Brick Heroes platform is designed to provide a seamless and engaging space for Lego enthusiasts to access a subscription-based service for borrowing Lego sets. As the developer and someone passionate about creativity and sustainability, I recognised the need for a platform that simplifies access to high-quality Lego sets while promoting reuse and reducing waste. The goals for this website include:
 
 * **Catering to a wide user base:** – The platform is designed for a diverse audience, from casual hobbyists to avid builders and parents looking for fun, cost-effective activities for their children.
 * **Ease of use and accessiblity** – A clean, intuitive interface ensures users can browse Lego sets, manage subscriptions, and complete transactions effortlessly on any device.
-* **Fostering creativity and community** – The platform promotes user engagement by providing tools to review and rate sets, share builds, and interact with other users through a blog and gallery.
-* **Clear pathways for action** – Strategically placed calls-to-action (CTAs) guide users to subscribe, borrow, purchase, or participate in community activities, ensuring a smooth user journey.
+* **Fostering creativity and community** – The platform promotes user engagement by providing tools to review and rate sets, with links to a newsletter and social media.
+* **Clear pathways for action** – Strategically placed calls-to-action (CTAs) guide users to subscribe, borrow, purchase, ensuring a smooth user journey.
 * **Sustainability and value** – By encouraging borrowing and reuse, the site offers a cost-effective and environmentally friendly way to enjoy Lego sets.
 
 [Back to top](#contents)
@@ -188,13 +190,13 @@ Based on research into the Lego community and subscription services, Brick Heroe
     - Hobbyists looking for exclusive or themed sets that might not be available for purchase elsewhere.
 
 * **3.	Gift Shoppers:**
-    - Individuals searching for creative gift options, such as gift cards or annual subscriptions.
+    - Individuals searching for creative gift options, such as subscriptions.
 
 * **4.	Sustainability-conscious users::**
     - Individuals who value eco-friendly alternatives to toy consumption and appreciate the platform's focus on reuse and sharing.
 
 * **5.	Community-oriented Lego fans:**
-    - Builders who enjoy sharing their creations, leaving reviews, and engaging with blog content about Lego themes and techniques.
+    - Builders who enjoy sharing their creations, leaving reviews, and engaging with news about Lego themes and techniques.
 
 [Back to top](#contents)
 
