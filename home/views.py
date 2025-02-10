@@ -160,3 +160,9 @@ def contact_view(request):
 def contact_success(request):
     return render(request, 'home/contact_success.html')
 
+from django.shortcuts import render
+
+def privacy_policy(request):
+    return render(request, 'home/privacy_policy.html')
+
+

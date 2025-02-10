@@ -20,6 +20,7 @@ urlpatterns = [
     path('contact/success/', contact_success, name='contact_success'),
     path("admin/notifications/", admin_notifications, name="admin_notifications"),
     path("manage-store/", views.manage_store, name="manage_store"),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
 ]
 
 # Custom error handler
