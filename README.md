@@ -6,7 +6,7 @@ Traditional LEGO collections can be expensive and take up space over time. With 
 
 The live site is available to view via this link: <a href="https://brick-heroes-52ffabb94b76.herokuapp.com/" target="_blank" rel="noopener">Brick Heroes</a>
 
-![Brick Heroes responsive design](docs\readme_images\responsive-view.jpg)
+![Responsive View](docs/readme_images/responsive-view.jpg)
 
 # Contents
 
@@ -204,4 +204,414 @@ Based on research into the Lego community and subscription services, Brick Heroe
 
 **User Stories Summary**
 
-Below is a table summarising the milestones/epics for the Brick Heroes platform. Each milestone represents a key area of focus during the development process and includes user stories designed to achieve specific goals.
+Below is a table summarising the milestones/epics for the Brick Heroes platform. Each milestone represents a key area of focus during the development process and includes user stories designed to achieve specific goals. Doe to time constaints and the fact this is a project that is submitted as part of my course, these will be fully developed as my coding knowledge and abilities develop. As explained above, areas within these user stories will focus on must have, should have and could have, with some developments saved for future implementation that are not essential to the core objectives of the app.
+
+| **Milestone**                     | **Summary**                                                                                          |
+|------------------------------------|------------------------------------------------------------------------------------------------------|
+| **Frontend Design**                | Focuses on visual and functional aspects of the site, including the favicon, layout consistency, subscription pricing details, and responsiveness across devices. |
+| **User Account and Authentication** | Handles core user management features such as account registration, login/logout, email verification, password reset, and profile updates. |
+| **Subscription Management**        | Implements subscription workflows, including selecting, upgrading, downgrading, and canceling plans, as well as sending renewal reminders. |
+| **Borrowing and Returning Lego Sets** | Manages the core functionality of borrowing and returning Lego sets, including waitlists for unavailable sets and filtering options for browsing. |
+| **E-Commerce Features**            | Provides e-commerce functionality for purchasing Lego sets and gift cards, as well as redeeming gift cards during checkout. |
+| **Blog and Community Interaction**  | Encourages engagement by allowing users to read blog posts, share Lego creations in a gallery, and participate in community-driven features. |
+| **Administrator Tools**            | Focuses on administrative functionality, such as managing Lego sets, moderating user reviews, and viewing subscription and order analytics. |
+| **Notifications and Feedback**      | Ensures users receive confirmation emails for actions such as subscriptions, purchases, and borrowing to provide clear communication and feedback. |
+| **Testing and Documentation**      | Covers writing and running automated tests for key features and creating comprehensive user and developer documentation, including deployment instructions. |
+
+[Back to top](#contents)
+
+Each user story within the milestones is categorised and tracked through the GitHub Project Board, ensuring iterative development and task completion. Below is a breakdown of user stories associated with each milestone.
+
+## **Detailed User Stories**
+
+### **Frontend Design**
+
+<details><summary><b>User Story: View the site favicon</b></summary>
+
+* **Issue**: As a user, I can see a recognisable favicon in the browser tab so that I can easily identify Brick Heroes when multiple tabs are open.
+
+#### **Acceptance Criteria:**
+- A favicon related to the site's branding is displayed in all browsers.
+- The favicon is clear and visible across different devices.
+
+* **Label**: Could Have  
+* **Milestone**: Frontend Design  
+</details><hr>
+
+<details><summary><b>User Story: See a consistent theme across the site</b></summary>
+
+* **Issue**: As a user, I can experience a consistent comic-book-inspired design across all pages so that I enjoy a cohesive and fun browsing experience.
+
+#### **Acceptance Criteria:**
+- Header, footer, and colour schemes are consistent.
+- The comic-book theme is applied through bold fonts, colourful highlights, and speech-bubble-style buttons.
+- All pages are responsive and adapt to different devices.
+
+* **Label**: Must Have  
+* **Milestone**: Frontend Design  
+</details><hr>
+
+<details><summary><b>User Story: View subscription pricing details</b></summary>
+
+* **Issue**: As a user, I can view subscription plans with clear pricing and features so that I can make an informed decision.
+
+#### **Acceptance Criteria:**
+- The homepage includes a pricing table with subscription tiers.
+- Each tier displays the price, borrowing limits, and unique benefits.
+- A clear call-to-action button for each plan is available.
+
+* **Label**: Must Have  
+* **Milestone**: Frontend Design  
+</details><hr>
+
+### **User Account and Authentication**
+
+<details><summary><b>User Story: Register an account</b></summary>
+
+* **Issue**: As a new user, I can create an account so that I can start borrowing sets and managing subscriptions.
+
+#### **Acceptance Criteria:**
+- The registration form includes fields for name, email, and password.
+- A success message confirms the account creation.
+- Users are redirected to their dashboard after signing up.
+
+* **Label**: Must Have  
+* **Milestone**: User Account and Authentication  
+</details><hr>
+
+<details><summary><b>User Story: Receive email verification</b></summary>
+
+* **Issue**: As a user, I can verify my email address so that I can activate my account securely.
+
+#### **Acceptance Criteria:**
+- After registration, a verification email is sent automatically.
+- Clicking the link activates the user account.
+- A notification displays if the email is successfully verified.
+
+* **Label**: Must Have  
+* **Milestone**: User Account and Authentication  
+</details><hr>
+
+<details><summary><b>User Story: Log in to my account</b></summary>
+
+* **Issue**: As a user, I can log in to my account so that I can manage my subscriptions and borrow sets.
+
+#### **Acceptance Criteria:**
+- Login form with email and password fields.
+- Incorrect login attempts display an error message.
+- Successful login redirects to the dashboard.
+
+* **Label**: Must Have  
+* **Milestone**: User Account and Authentication  
+</details><hr>
+
+<details><summary><b>User Story: Reset my password</b></summary>
+
+* **Issue**: As a user, I can reset my password if I forget it so that I can regain access to my account.
+
+#### **Acceptance Criteria:**
+- A password reset link is sent to the user's email.
+- Users can securely create a new password.
+
+* **Label**: Must Have  
+* **Milestone**: User Account and Authentication  
+</details><hr>
+
+<details><summary><b>User Story: Update my profile</b></summary>
+
+* **Issue**: As a user, I can update my account details so that my information stays current.
+
+#### **Acceptance Criteria:**
+- Editable fields for name, email, and password.
+- Changes are saved and confirmed.
+
+* **Label**: Should Have  
+* **Milestone**: User Account and Authentication  
+</details><hr>
+
+### **Subscription Management**
+
+<details><summary><b>User Story: Select a subscription plan</b></summary>
+
+* **Issue**: As a user, I can choose a subscription plan so that I can start borrowing Lego sets.
+
+#### **Acceptance Criteria:**
+- Subscription options are listed during registration or on the homepage.
+- Users can pick a monthly or annual plan.
+- Payment processing confirms the selected plan.
+
+* **Label**: Must Have  
+* **Milestone**: Subscription Management  
+</details><hr>
+
+<details><summary><b>User Story: Upgrade or downgrade my subscription</b></summary>
+
+* **Issue**: As a user, I can adjust my subscription plan so that I can find the one that best fits my needs.
+
+#### **Acceptance Criteria:**
+- Users can view their current plan in the account dashboard.
+- Options to upgrade or downgrade are available.
+- Plan changes take effect on the next billing cycle.
+
+* **Label**: Should Have  
+* **Milestone**: Subscription Management  
+</details><hr>
+
+<details><summary><b>User Story: Cancel my subscription</b></summary>
+
+* **Issue**: As a user, I can cancel my subscription so that I am no longer charged.
+
+#### **Acceptance Criteria:**
+- A cancel button is accessible in the account dashboard.
+- Users receive a confirmation email after cancellation.
+- Account access remains, but borrowing privileges are suspended.
+
+* **Label**: Should Have  
+* **Milestone**: Subscription Management  
+</details><hr>
+
+<details><summary><b>User Story: Receive subscription renewal reminders</b></summary>
+
+* **Issue**: As a user, I can get email reminders about upcoming subscription renewals so that I stay informed.
+
+#### **Acceptance Criteria:**
+- Reminder email sent 7 days before renewal.
+- Email includes subscription details and a link to manage the subscription.
+
+* **Label**: Should Have  
+* **Milestone**: Subscription Management  
+</details><hr>
+
+### **Borrowing and Returning Lego Sets**
+
+<details><summary><b>User Story: Browse available Lego sets</b></summary>
+
+* **Issue**: As a user, I can browse all available Lego sets so that I can choose one to borrow.
+
+#### **Acceptance Criteria:**
+- Lego sets are displayed in a grid format.
+- Filters allow sorting by theme, difficulty, and availability.
+- Clicking a set displays detailed information.
+
+* **Label**: Must Have  
+* **Milestone**: Borrowing and Returning Lego Sets  
+</details><hr>
+
+<details><summary><b>User Story: Borrow a Lego set</b></summary>
+
+* **Issue**: As a user, I can borrow a Lego set so that I can start building.
+
+#### **Acceptance Criteria:**
+- Users can add an available set to their "Borrowed Items."
+- Borrowed sets are marked as unavailable to other users.
+- A confirmation email is sent upon successful borrowing.
+
+* **Label**: Must Have  
+* **Milestone**: Borrowing and Returning Lego Sets  
+</details><hr>
+
+<details><summary><b>User Story: Return a Lego set</b></summary>
+
+* **Issue**: As a user, I can return a borrowed set so that I can borrow a new one.
+
+#### **Acceptance Criteria:**
+- Users can mark sets as returned in their dashboard.
+- The set's availability is updated in the database.
+- A confirmation message appears upon successful return.
+
+* **Label**: Must Have  
+* **Milestone**: Borrowing and Returning Lego Sets  
+</details><hr>
+
+<details><summary><b>User Story: Join a waitlist for unavailable Lego sets</b></summary>
+
+* **Issue**: As a user, I can join a waitlist for a Lego set so that I’m notified when it becomes available.
+
+#### **Acceptance Criteria:**
+- Waitlist button appears for unavailable sets.
+- Notification sent when the set becomes available.
+
+* **Label**: Could Have  
+* **Milestone**: Borrowing and Returning Lego Sets  
+</details><hr>
+
+---
+
+### **E-Commerce Features**
+
+<details><summary><b>User Story: Purchase a Lego set</b></summary>
+
+* **Issue**: As a user, I can buy a Lego set outright so that I can own my favourite builds.
+
+#### **Acceptance Criteria:**
+- Lego sets for sale are clearly marked.
+- The checkout process includes payment confirmation.
+- Purchased sets are excluded from the borrowing pool.
+
+* **Label**: Could Have  
+* **Milestone**: E-Commerce Features  
+</details><hr>
+
+<details><summary><b>User Story: Buy a gift card</b></summary>
+
+* **Issue**: As a user, I can purchase a gift card so that I can share the Brick Heroes experience with someone else.
+
+#### **Acceptance Criteria:**
+- Gift cards have multiple denominations available.
+- A confirmation email with a unique gift card code is sent.
+- Gift card codes can be redeemed during checkout.
+
+* **Label**: Could Have  
+* **Milestone**: E-Commerce Features  
+</details><hr>
+
+<details><summary><b>User Story: Redeem a gift card</b></summary>
+
+* **Issue**: As a user, I can redeem a gift card code during checkout so that I can use its value toward my purchase.
+
+#### **Acceptance Criteria:**
+- Gift card field is present in the checkout form.
+- Gift card value is applied to the total.
+
+* **Label**: Could Have  
+* **Milestone**: E-Commerce Features  
+</details><hr>
+
+---
+
+### **Blog and Community Interaction**
+
+<details><summary><b>User Story: View blog articles</b></summary>
+
+* **Issue**: As a user, I can read blog posts about Lego tips and news so that I stay inspired.
+
+#### **Acceptance Criteria:**
+- Blog page displays a list of posts with thumbnails and snippets.
+- Clicking a post opens the full article.
+
+* **Label**: Should Have  
+* **Milestone**: Blog and Community Interaction  
+</details><hr>
+
+<details><summary><b>User Story: Submit Lego creations to the gallery</b></summary>
+
+* **Issue**: As a user, I can share my Lego builds in a gallery so that I inspire others.
+
+#### **Acceptance Criteria:**
+- Users can upload images and captions.
+- Creations are reviewed before being displayed.
+
+* **Label**: Could Have  
+* **Milestone**: Blog and Community Interaction  
+</details><hr>
+
+---
+
+### **Administrator Tools**
+
+<details><summary><b>User Story: Manage Lego sets</b></summary>
+
+* **Issue**: As an admin, I can add, edit, or delete Lego sets so that the catalogue stays up to date.
+
+#### **Acceptance Criteria:**
+- Admin panel includes controls for Lego set management.
+- Changes reflect immediately on the site.
+
+* **Label**: Must Have  
+* **Milestone**: Administrator Tools  
+</details><hr>
+
+<details><summary><b>User Story: Moderate reviews and comments</b></summary>
+
+* **Issue**: As an admin, I can approve or delete user reviews and comments so that the site maintains a positive environment.
+
+#### **Acceptance Criteria:**
+- Admins see flagged or pending comments in the dashboard.
+- Options to approve or delete are available.
+
+* **Label**: Should Have  
+* **Milestone**: Administrator Tools  
+</details><hr>
+
+<details><summary><b>User Story: View subscription analytics</b></summary>
+
+* **Issue**: As an admin, I can view subscription statistics so that I understand user engagement.
+
+#### **Acceptance Criteria:**
+- Reports include active subscriptions, cancellations, and revenue.
+- Filters for monthly and yearly views are available.
+
+* **Label**: Could Have  
+* **Milestone**: Administrator Tools  
+</details><hr>
+
+<details><summary><b>User Story: View order history</b></summary>
+
+* **Issue**: As an admin, I can view user order histories so that I can resolve disputes or answer questions.
+
+#### **Acceptance Criteria:**
+- Order details are displayed in the admin panel.
+- Orders can be filtered by user or date.
+
+* **Label**: Should Have  
+* **Milestone**: Administrator Tools  
+</details><hr>
+
+---
+
+### **Notifications and Feedback**
+
+<details><summary><b>User Story: Receive confirmation emails</b></summary>
+
+* **Issue**: As a user, I can get confirmation emails for subscriptions, purchases, and borrowing so that I know my actions were successful.
+
+#### **Acceptance Criteria:**
+- Email includes details of the action.
+- Email is sent promptly after the action.
+
+* **Label**: Must Have  
+* **Milestone**: Notifications and Feedback  
+</details><hr>
+
+---
+
+### **Testing and Documentation**
+
+<details><summary><b>User Story: Run automated tests</b></summary>
+
+* **Issue**: As a developer, I can write and run automated tests so that I ensure the site works as intended.
+
+#### **Acceptance Criteria:**
+- Test scripts cover key functionalities like login, checkout, and subscriptions.
+- Tests pass consistently without errors.
+
+* **Label**: Must Have  
+* **Milestone**: Testing and Documentation  
+</details><hr>
+
+<details><summary><b>User Story: Write user documentation</b></summary>
+
+* **Issue**: As a developer, I can write documentation for the site so that users understand how to use its features.
+
+#### **Acceptance Criteria:**
+- Documentation includes step-by-step guides for subscriptions, borrowing, and purchases.
+- Available as a help section on the site.
+
+* **Label**: Must Have  
+* **Milestone**: Testing and Documentation  
+</details><hr>
+
+<details><summary><b>User Story: Write deployment instructions</b></summary>
+
+* **Issue**: As a developer, I can document deployment steps so that the site can be redeployed easily.
+
+#### **Acceptance Criteria:**
+- Instructions cover setting up the database, environment variables, and dependencies.
+- Deployment is successfully replicated using the documentation.
+
+* **Label**: Should Have  
+* **Milestone**: Testing and Documentation  
+</details><hr>
+
+
+There are several areas within the Brick Heroes GitHub Projects that remain open and are marked as 'To Do' or 'In Progress', reserved for future development to further enhance the platform's functionality and user experience. These features are part of the platform's long-term vision to remain innovative, user-centric, and scalable, although these future developments are not essential to the main core functionality now.
