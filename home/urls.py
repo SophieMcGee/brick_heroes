@@ -9,11 +9,6 @@ from django.conf.urls import handler404
 urlpatterns = [
     path('', views.index, name='home'),
     path('profile/', user_profile, name='user_profile'),
-    path('my-borrowings/', views.my_borrowings, name='my_borrowings'),
-    path('my-reviews/', views.my_reviews, name='my_reviews'),
-    path('my-notifications/', views.my_notifications, name='my_notifications'),
-    path('filter-by-rating/', views.filter_by_rating, name='filter_by_rating'),
-    path('filter-by-theme/', views.filter_by_theme, name='filter_by_theme'),
     path(
         'subscription-plans/',
         views.subscription_plans,

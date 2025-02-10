@@ -91,46 +91,6 @@ def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
 
-def collections(request):
-    return render(request, 'home/collections.html')
-
-
-@login_required
-def my_borrowings(request):
-    """View for tracking all LEGO sets a user has borrowed."""
-    borrowings = (
-        Borrowing.objects
-        .filter(user=request.user)
-        .order_by('-borrowed_on')
-    )
-
-    return render(
-        request,
-        'users/my_borrowings.html',
-        {'borrowings': borrowings},
-    )
-
-
-@login_required
-def my_reviews(request):
-    """ A view to show the user's reviews """
-    reviews = Review.objects.filter(user=request.user)
-    return render(request, 'home/my_reviews.html', {'reviews': reviews})
-
-
-@login_required
-def my_notifications(request):
-    """ A view to show the user's notifications """
-    notifications = Notification.objects.filter(
-        user=request.user,
-        is_read=False,
-    )
-    return render(
-        request,
-        'home/my_notifications.html',
-        {'notifications': notifications},
-    )
-
 @staff_member_required
 def admin_tools(request):
     """ A view for superusers to access admin tools """
@@ -168,26 +128,6 @@ def borrow_cart(request):
         'borrowings': borrowings,
         'total_borrowed': total_borrowed,
     })
-
-
-def all_products(request):
-    """A view to display all Lego sets."""
-    return render(request, 'home/all-products.html')
-
-
-def filter_by_price(request):
-    """A view to display Lego sets filtered by price."""
-    return render(request, 'home/filter_by_price.html')
-
-
-def filter_by_rating(request):
-    """A view to display Lego sets filtered by rating."""
-    return render(request, 'home/filter_by_rating.html')
-
-
-def filter_by_theme(request):
-    """A view to display Lego sets filtered by theme."""
-    return render(request, 'home/filter_by_theme.html')
 
 
 def subscription_plans(request):
