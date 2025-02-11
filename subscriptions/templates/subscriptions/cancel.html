@@ -1,8 +1,10 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
 <div class="container mt-5 text-center">
-    <h1 class="text-danger">Subscription Cancelled</h1>
-    <p>Your subscription process was cancelled. No charges were made.</p>
-    <a href="{% url 'subscription_plans' %}" class="btn btn-warning">View Subscription Plans</a>
+    <h1 class="text-success">Subscription Confirmed!</h1>
+    <p>Thank you for subscribing to Brick Heroes! Your subscription is now active.</p>
+
+    <a href="{% url 'user_profile' %}" class="btn btn-primary">Go to My Profile</a>
 </div>
 {% endblock %}
