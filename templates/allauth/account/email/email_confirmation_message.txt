@@ -10,8 +10,8 @@ You're receiving this email because **{{ user.username }}** used this email to s
 🔗 **Verify Your Account:**  
 Click the link below to confirm your email and activate your account:
 
-👉 [Verify My Account]({{ activate_url }})
-{% endif %}
+[Verify My Account](https://brick-heroes-52ffabb94b76.herokuapp.com/accounts/confirm-email/{{ key }}/)
+
 
 If you didn't sign up, you can safely ignore this email.
 

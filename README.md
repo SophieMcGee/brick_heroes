@@ -2304,3 +2304,7 @@ To fork the repository and make changes without affecting the original project:
 3. GitHub will create a copy of the repository under your account, which you can clone and modify freely.
 
 The Brick Heroes platform is successfully deployed using Heroku with a PostgreSQL database and Cloudinary for media storage. By following these steps, you can either clone the project for local development or deploy your own version on Heroku.
+
+# Testing
+
+Extensive testing was completed both during the development and post development phase with detailed results available to view [here](/testing.md)

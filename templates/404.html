@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container text-center mt-5" role="main" aria-labelledby="error-heading">
+<div class="container text-center mt-5 pt-4" role="main" aria-labelledby="error-heading">
     <!-- Heading for the Error Page -->
     <h1 class="display-4" id="error-heading" aria-label="Page not found">🧱 Oops! Page Not Found</h1>
     <!-- Informational Text for the User -->
-    <p class="lead" aria-label="This page might have been moved or doesn't exist">The page you're looking for doesn't exist or may have been moved.</p>
+    <p class="lead">The page you're looking for doesn't exist or may have been moved.</p>
 
     <!-- Button to Return to Home Page -->
     <a href="{% url 'home' %}" class="btn btn-primary btn-lg mt-3" aria-label="Return to the homepage">🏠 Return to Home</a>

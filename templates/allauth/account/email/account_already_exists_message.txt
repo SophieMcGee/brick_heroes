@@ -13,7 +13,7 @@ But guess what? A **super account** with this email already exists! 🏗️
 
 If you've forgotten your password, no worries! Simply follow the link below to **reset your password** and regain access:
 
-🔑 **[Reset My Password]({{ password_reset_url }})**  
+[Reset My Password](https://brick-heroes-52ffabb94b76.herokuapp.com/accounts/password/reset/)
 
 If you didn't request this, you can safely ignore this email.
 

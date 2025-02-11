@@ -21,7 +21,6 @@
                     </p>
 
                     {% if not SOCIALACCOUNT_ONLY %}
-                        <p class="text-center">
                             <p class="text-center">
                                 {% blocktranslate with signup_url=signup_url %}
                                     If you have not created an account yet, then please 
@@ -31,7 +30,6 @@
                                     </a> first.
                                 {% endblocktranslate %}
                             </p>                            
-                        </p>
 
                         {% url 'account_login' as login_url %}
                         <form method="post" action="{{ login_url }}" aria-labelledby="signin-heading">
