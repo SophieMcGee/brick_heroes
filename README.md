@@ -839,6 +839,142 @@ The Brick Heroes logo encapsulates the platform’s fun and creative nature whil
 
 # Data Model
 
-The data model for Brick Heroes has been designed with flexibility, scalability, and clarity in mind. It consists of multiple interconnected models that enable seamless functionality for user subscriptions, Lego set borrowing, community interactions, e-commerce features, and administrator tools. Below is a detailed breakdown of the database schema based on the discussed features and functionality:
+The data model for Brick Heroes has been designed with flexibility, scalability, and clarity in mind. It consists of multiple interconnected models that enable seamless functionality for user subscriptions, Lego set borrowing, subscriptions, notifcations and the products. Below is a detailed breakdown of the database schema based on the discussed features and functionality:
 
 ![Database Schema](docs/readme_images/database-schema.png)
+
+# **Database Schema Breakdown**
+
+## **UserProfile**
+- **Fields**:
+  - `user`: A `OneToOneField` linking to Django's built-in `User` model, allowing for extended attributes.
+  - `receive_notifications`: A `BooleanField` determining whether the user wants to receive notifications.
+  - `subscription`: A `ForeignKey` linking to `Subscription`, allowing users to have an active subscription.
+
+- **Relationships**:
+  - Each user has **one** profile.
+  - A profile may be linked to **one** active subscription.
+
+---
+
+## **User**
+- **Fields**:
+  - `user_id`: Primary key, an auto-incrementing ID.
+  - `username`, `email`, `password`: Standard authentication fields from Django’s built-in `User` model.
+
+- **Relationships**:
+  - A user can have **one** `UserProfile`.
+  - A user can have **many** `Notifications`, `Borrowing` records, `Reviews`, and `Orders`.
+
+---
+
+## **SubscriptionPlan**
+- **Fields**:
+  - `plan_id`: Primary key for the subscription plan.
+  - `name`: A `CharField` representing the name of the plan (e.g., "Tier 1").
+  - `price`: A `DecimalField` storing the monthly cost of the plan.
+  - `max_active_borrows`: An `IntegerField` defining how many LEGO sets can be borrowed at a time.
+  - `stripe_price_id`: A `CharField` storing the Stripe price ID for billing.
+
+- **Relationships**:
+  - A `SubscriptionPlan` can be linked to **many** `Subscription` records.
+
+---
+
+## **Subscription**
+- **Fields**:
+  - `subscription_id`: Primary key for each subscription.
+  - `user`: A `ForeignKey` linking the subscription to a specific user.
+  - `subscription_plan`: A `ForeignKey` linking to `SubscriptionPlan`.
+  - `start_date`, `end_date`: Date fields tracking the subscription period.
+  - `status`: A `BooleanField` indicating whether the subscription is active.
+
+- **Relationships**:
+  - A user can have **one** active subscription.
+  - A subscription is linked to **one** subscription plan.
+
+---
+
+## **Borrowing**
+- **Fields**:
+  - `borrowing_id`: Primary key for each borrowing record.
+  - `user`: A `ForeignKey` linking to the user who borrowed the LEGO set.
+  - `lego_set`: A `ForeignKey` linking to the borrowed LEGO set.
+  - `borrow_date`, `due_date`: `DateTimeField` values storing when the set was borrowed and its return deadline.
+  - `is_returned`: A `BooleanField` tracking whether the set has been returned.
+  - `subscription`: A `ForeignKey` linking the borrowing record to the user's active subscription.
+
+- **Relationships**:
+  - A user can have **multiple** borrowing records.
+  - A borrowing record is linked to **one** `LegoSet`.
+
+---
+
+## **LegoSet**
+- **Fields**:
+  - `set_id`: Primary key for each LEGO set.
+  - `title`: A `CharField` storing the name of the LEGO set.
+  - `description`: A `TextField` providing details about the set.
+  - `image`: A `CloudinaryField` storing the set's image.
+  - `stock`: An `IntegerField` tracking available sets.
+  - `theme`: A `CharField` categorizing the set (e.g., "Star Wars").
+  - `is_borrowed`: A `BooleanField` indicating whether the set is currently borrowed.
+
+- **Relationships**:
+  - A LEGO set can have **multiple** borrowing records.
+  - A LEGO set can have **multiple** reviews.
+
+---
+
+## **Cart**
+- **Fields**:
+  - `cart_id`: Primary key for the cart.
+  - `user`: A `ForeignKey` linking the cart to a specific user.
+  - `items`: A `BooleanField` indicating whether items are present in the cart.
+
+- **Relationships**:
+  - A user can have **one** cart.
+
+---
+
+## **Order**
+- **Fields**:
+  - `order_id`: Primary key for each order.
+  - `user`: A `ForeignKey` linking the order to the user.
+  - `subscription`: A `ForeignKey` linking the order to the subscription.
+  - `order_date`: A `DateTimeField` marking when the order was placed.
+  - `status`: A `CharField` tracking order status (e.g., "Pending", "Completed").
+
+- **Relationships**:
+  - A user can have **multiple** orders.
+
+---
+
+## **Review**
+- **Fields**:
+  - `review_id`: Primary key for each review.
+  - `lego_set`: A `ForeignKey` linking the review to a specific LEGO set.
+  - `user`: A `ForeignKey` linking the review to the user who wrote it.
+  - `content`: A `TextField` storing the review's text.
+  - `rating`: An `IntegerField` storing the user's rating (e.g., 1–5 stars).
+  - `created_on`: A `DateTimeField` tracking when the review was posted.
+
+- **Relationships**:
+  - A LEGO set can have **many** reviews.
+
+---
+
+## **Notification**
+- **Fields**:
+  - `notification_id`: Primary key for each notification.
+  - `user`: A `ForeignKey` linking the notification to a specific user.
+  - `message`: A `TextField` storing the notification text.
+  - `is_read`: A `BooleanField` indicating whether the notification has been read.
+  - `created_at`: A `DateTimeField` storing when the notification was created.
+
+- **Relationships**:
+  - A user can have **many** notifications.
+
+---
+
+This structure allows seamless interaction between users, Lego sets, subscriptions, borrowing activities, and community features. It also ensures administrators can efficiently manage the platform. The relationships between the models enable robust querying, user engagement tracking, and data scalability for future growth.
