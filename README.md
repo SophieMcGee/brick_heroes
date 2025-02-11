@@ -804,7 +804,7 @@ The combination of these fonts ensures the site reflects its creative and engagi
 
 The colour scheme for Brick Heroes is vibrant, bold, and reflective of its comic-book inspiration. The palette uses primary colours and strong contrasts to create a fun, energetic, and visually appealing platform. This ensures key elements like buttons, CTAs, and headings stand out while maintaining harmony across the design.
 
-![Website Colour Scheme](docs/readme_images/website-colour-scheme.png)
+![Website Colour Scheme](docs/readme_images/website-colour-scheme.jpg)
 
 1. **FE0000 (Red):**:
    - Used for CTAs, buttons, and key accent areas to draw attention to important actions. o	This energetic red enhances the comic-book theme and guides user focus.
@@ -978,3 +978,302 @@ The data model for Brick Heroes has been designed with flexibility, scalability,
 ---
 
 This structure allows seamless interaction between users, Lego sets, subscriptions, borrowing activities, and community features. It also ensures administrators can efficiently manage the platform. The relationships between the models enable robust querying, user engagement tracking, and data scalability for future growth.
+
+## General Features
+
+### **Frameworks and Tools**
+The **Brick Heroes** platform is developed using the **Django framework**, which provides a robust backend for managing user authentication, subscriptions, borrowing functionality, and database interactions. 
+
+#### **Backend Technologies**
+- **Django (Python Framework)** – Handles core functionalities, including:
+  - User authentication (login, logout, registration)
+  - Subscription management (Stripe integration for payments)
+  - Borrowing system for LEGO sets
+  - Database management using Django’s ORM
+- **PostgreSQL** – Used as the relational database for efficient data handling.
+- **Django Allauth** – Handles user authentication with features like:
+  - Email-based login and registration
+  - Email verification before borrowing
+  - Password reset and recovery system
+- **Stripe API** – Integrated for:
+  - Secure subscription payments
+  - Automatic recurring billing
+  - Cancellation and refund management
+- **Cloudinary** – Stores and manages images for LEGO sets efficiently.
+
+#### **Frontend Technologies**
+- **Bootstrap 5** – Provides a responsive and visually appealing design.
+- **Custom CSS** – Enhances styling beyond Bootstrap’s default components.
+- **JavaScript & jQuery** – Used for interactive elements such as:
+  - Cart updates
+  - Subscription plan selection
+  - AJAX requests for real-time data updates
+
+## **UI & Navigation Features**
+
+### **Header & Navigation Bar**
+The **navigation bar** is dynamic and adapts based on user authentication status:
+- **Logged-out users** see links for:
+  - Home
+  - Subscription Plans
+  - Login / Register
+- **Logged-in users** gain access to:
+  - Profile
+  - Borrowing Cart (with item count)
+  - Logout
+
+**Additional Navigation Features:**
+- **Burger Menu for Mobile View**: The menu collapses into a hamburger icon on smaller screens, ensuring smooth navigation on mobile devices.
+- **Icons for Quick Access**:
+  - **Cart Icon**: Displays the number of LEGO sets in the borrowing cart.
+  - **Profile Icon**: Directs the user to their profile page.
+  - **Logout Icon**: Allows users to log out easily.
+- **Active Link Highlighting**: The navbar visually indicates the current page, helping users navigate the site more intuitively.
+
+### **Footer**
+The footer is **consistently displayed on all pages**, offering essential links:
+- **Contact Form:** Users can submit inquiries directly from the footer.
+- **Newsletter Signup Link:** A link to join the newsletter for updates on new LEGO sets and features.
+- **Privacy Policy & Terms of Use:** Ensures transparency regarding user data and site policies.
+- **Social Media Links:** Directs users to Brick Heroes’ active **Facebook page** for updates.
+- **Quick Navigation Links:** Links to key pages such as **Subscription Plans, FAQs, and Support**.
+
+---
+
+## **Core Platform Features**
+
+### **Home Page**
+- **Hero Section**: 
+  - Large banner image showcasing LEGO borrowing services.
+  - Overlay text with a call-to-action encouraging subscriptions.
+  - "Get Started" button leading to subscription plans.
+- **Subscription Plan Overview**:
+  - Three tiers displayed with pricing and benefits.
+  - Clear comparison to help users choose the best plan.
+- **How It Works Section**:
+  - Step-by-step explanation of the borrowing process.
+  - Visual icons making the process easy to understand.
+- **Featured LEGO Sets**:
+  - Displays top-rated or most popular sets dynamically.
+  - Includes stock availability indicators.
+- **Call-to-Action Buttons**:
+  - Encourages users to sign up or browse LEGO sets.
+
+---
+
+## **Subscription Features**
+
+### **Subscription Plans**
+Users can choose from three **subscription tiers**:
+1. **Tier 1 (€9.99/month):** One random LEGO set per month.
+2. **Tier 2 (€14.99/month):** One set at a time, unlimited swaps.
+3. **Tier 3 (€19.99/month):** Two sets at a time, unlimited swaps.
+
+Each plan includes:
+- **Recurring Payments via Stripe**
+- **Auto-renewal (with cancellation option)**
+- **Access to a larger collection based on plan tier**
+- **Email notification 7 days before renewal**
+
+### **Subscription Checkout**
+- **Stripe Checkout Integration**:
+  - Secure payment processing with tokenized transactions.
+  - Automatically assigns a Stripe customer ID to each user.
+- **Automatic Database Update**:
+  - Subscription records are updated upon successful payment.
+  - Users can see their active plan in their profile.
+- **Email Confirmation**:
+  - Users receive a confirmation email after subscribing.
+
+### **Subscription Management**
+- **View Active Subscription**:
+  - Users can check their **current plan, renewal date, and subscription ID**.
+- **Cancel Subscription**:
+  - Users can cancel anytime via Stripe, preventing auto-renewal.
+- **Renew Subscription**:
+  - Expired users can **reactivate their plan** easily.
+
+### **Subscription Success & Cancellation Pages**
+- **Success Page**:
+  - Displays confirmation of payment.
+  - Redirects users to their profile.
+- **Cancellation Page**:
+  - Confirms that the user will not be charged further.
+
+---
+
+## **Borrowing Features**
+
+### **Browsing LEGO Sets**
+- Users can browse a **wide selection of LEGO sets**, with filtering and search options.
+- Each LEGO set **displays stock availability**.
+- Users can **add LEGO sets to their borrowing cart**.
+
+### **Borrowing Confirmation**
+- Borrowing is **finalized through the cart page**.
+- Once a set is borrowed, it is **marked as unavailable** in stock.
+
+### **Returning LEGO Sets**
+- Users can **return sets from their profile page**.
+- Upon return, the **stock is updated automatically**.
+
+### **Mystery Subscription Feature**
+- Tier 1 subscribers receive a **random LEGO set each month**.
+- Users can **request a replacement** if the set is damaged.
+
+---
+
+## **User Account Features**
+
+### **Profile Page**
+- **Subscription Overview**:
+  - Displays active plan and renewal date.
+- **Borrowed LEGO Sets**:
+  - Lists all current and past borrowed sets.
+- **Notifications**:
+  - Alerts users on upcoming renewals and stock changes.
+
+### **Authentication & Security**
+- **Secure Login/Signup** using Django Allauth.
+- **Email Verification Required** before borrowing LEGO sets.
+- **Password Reset** feature for account recovery.
+
+### **User Notifications**
+Users receive notifications for:
+- **Subscription renewals**
+- **Borrowing limits exceeded**
+- **Admin messages or announcements**
+
+---
+
+## **Admin Features**
+
+### **Manage Store (Admin Dashboard)**
+Admin users can:
+- **Add, edit, and delete LEGO sets**.
+- **View subscribers and their plans**.
+- **Track borrowed and returned sets**.
+- **Cancel user subscriptions directly via Stripe**.
+
+### **Admin Subscription Management**
+- Admins can **override user subscriptions** if needed.
+- Users who fail payments are **automatically removed** from active subscriptions.
+
+---
+
+## **Search & Filtering Features**
+- **Filter by Theme**: Browse LEGO sets by themes (e.g., Star Wars, City, Technic).
+- **Filter by Price & Rating**: Helps users find the best sets.
+- **Search Bar**: Quickly find specific LEGO sets.
+
+---
+
+## **SEO & Accessibility**
+- **SEO Optimized Meta Tags** for search visibility.
+- **Alt Tags for Images** to improve accessibility.
+- **ARIA Labels & Keyboard Navigation** ensure usability for all users.
+
+---
+
+## **Error Handling & 404 Page**
+- **Custom 404 Page**:
+  - Displays an error message when users visit a broken link.
+  - Offers navigation options to return to the main site.
+
+---
+
+## **Future Features**
+- **Gift Cards**: Users can purchase or redeem **gift cards for subscriptions**.
+- **Wishlist Feature**: Allows users to **save LEGO sets** for future borrowing.
+- **Referral Program**: Users can **earn discounts** by referring friends.
+- **Dynamic Stock Notifications**: Users get **alerts when out-of-stock sets return**.
+- **Additional Subscription Tiers** for more flexible borrowing options.
+
+---
+
+## **Conclusion**
+The **Brick Heroes** platform offers a **seamless subscription-based LEGO borrowing experience** with:
+- **Secure payments**
+- **Borrowing management**
+- **User-friendly admin tools**
+- **Robust testing, accessibility, and security**
+
+# **Admin Features**
+
+## **Manage Store (Admin Dashboard)**
+
+The **Manage Store** section is the primary administrative interface for managing LEGO sets, user subscriptions, and borrowing activity. It replaces Django's default admin panel with a custom layout that provides an intuitive, user-friendly experience for store administrators.
+
+---
+
+### **1. Add, Edit, and Delete LEGO Sets**
+
+Admins can **fully manage** the LEGO sets available for borrowing by adding new sets, updating existing set details, or removing sets from the catalog.
+
+#### **Adding a New LEGO Set**
+- Admins navigate to the **Manage Store** dashboard and click "Add LEGO Set."
+- The admin is presented with a form that includes:
+  - **Title**: The name of the LEGO set.
+  - **Description**: A detailed description of the set, including theme, unique features, and difficulty level.
+  - **Image Upload**: A Cloudinary-powered image field to ensure high-quality images are used.
+  - **Stock Quantity**: The number of sets available in inventory.
+  - **Theme Selection**: Admins can categorize sets into themes like "Star Wars," "City," or "Technic."
+
+- Once the form is submitted, the LEGO set is **immediately added to the database** and displayed in the store for users to browse.
+
+#### **Editing an Existing LEGO Set**
+- Admins can **update** any details of an existing LEGO set by selecting it from the list in the **Manage Store**.
+- The admin is taken to an **edit form** where they can:
+  - Modify the name, description, or theme of the LEGO set.
+  - Upload a new image if needed.
+  - Update stock levels (increase or decrease available sets).
+- After saving changes, the updated details are **immediately reflected** on the user-facing product pages.
+
+#### **Deleting a LEGO Set**
+- If a set is no longer part of the collection, the admin can **permanently remove it**.
+- Admins **click a delete button**, which prompts a confirmation modal to prevent accidental deletion.
+- If confirmed, the set is:
+  - **Removed from the database**.
+  - **No longer displayed on the frontend store pages**.
+
+**Error Handling and Validation**
+- Forms include validation
+- Image uploads are restricted to specific formats to ensure consistency.
+- Deleting a set that is currently borrowed is **prevented**, ensuring active transactions are not disrupted.
+
+---
+
+### **2. View Subscribers and Their Plans**
+Admins have full visibility into **user subscriptions**, allowing them to track payments, manage plan changes, and assist users if needed via the Django admin panel.
+
+#### **Subscription Management Dashboard**
+- The **Manage Store** dashboard includes a **Subscribers Section** that displays:
+  - **Username & Email**: Identifies each subscriber.
+  - **Current Subscription Plan**: Displays whether the user is on **Tier 1, 2, or 3**.
+
+#### **Managing Individual Subscriptions**
+- Admins can **click on a user’s profile** to view detailed subscription information.
+  - **Canceling a Subscription**:
+    - Admins can cancel a user’s subscription if requested.
+    - The system **sends a cancellation request to Stripe**, preventing future charges.
+    - The user is notified that their subscription **will remain active until the renewal date** but will not be billed further within the profile page.
+
+---
+
+### **3. Track Borrowed and Returned LEGO Sets**
+Admins can monitor the **borrowing activity** of all users, ensuring that sets are returned on time and that stock levels are properly updated via notifications within the Admin notification area. This includes messages for borrowing and sets that have been marked as returned, with admin able to delete when they have read the message.
+
+#### **Processing Returns**
+- When a user **marks a LEGO set as returned** via their profile, the admin dashboard is updated and the user is able to borrow up to their limits again.
+- If the return is **successful**, the set is marked as **Available** and becomes borrowable again.
+---
+
+## **Future Admin Features**
+To further streamline management, the following **future features** could be implemented:
+1. **Automated Subscription Renewal Reminders** – System sends automated email reminders before subscription renewal.
+2. **Borrowing History Reports** – Generate reports on borrowing trends to track popular LEGO sets.
+3. **Stock Alert System** – Notifies admins when stock falls below a set threshold.
+4. **User Penalty System** – Temporarily restricts borrowing privileges for repeated overdue returns.
+5. **Admin Analytics Dashboard** – A visual dashboard with borrowing statistics, top users, and revenue tracking.
+
+---
