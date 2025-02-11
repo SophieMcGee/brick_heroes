@@ -38,10 +38,6 @@ def subscription_confirmation(request, plan_id):
     # Retrieve Stripe Checkout URL
     stripe_checkout_url = request.session.get('stripe_checkout_url')
 
-    # Debugging: Check if session data is retrieved
-    print("DEBUG: Retrieved Stripe Checkout URL in Confirmation Page:", stripe_checkout_url)
-    print("DEBUG: Session Data in Confirmation Page:", dict(request.session))
-
     if not stripe_checkout_url:
         messages.error(request, "Error: Stripe checkout URL not found. Please try again.")
         return redirect('subscription_plans')
@@ -56,7 +52,6 @@ def subscription_confirmation(request, plan_id):
 
 @login_required
 def subscribe(request, plan_id):
-    print("DEBUG: subscribe() function is being executed")
     """Handles Stripe Checkout for subscription plans with a confirmation step."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
@@ -71,7 +66,7 @@ def subscribe(request, plan_id):
         return redirect('user_profile')
 
     try:
-       # Fetch or Create Stripe Customer for the User
+        # Fetch or Create Stripe Customer for the User
         user_profile = request.user.userprofile
 
         if not user_profile.stripe_customer_id:
@@ -85,14 +80,12 @@ def subscribe(request, plan_id):
 
                 # If customer was deleted, create a new one
                 if customer.get("deleted", False):
-                    print("DEBUG: Old Stripe customer was deleted. Creating a new one.")
                     customer = stripe.Customer.create(email=request.user.email)
                     user_profile.stripe_customer_id = customer['id']
                     user_profile.save()
 
             except stripe.error.InvalidRequestError:
                 # If Stripe says the customer doesn't exist, create a new one
-                print("DEBUG: Stripe customer not found. Creating a new one.")
                 customer = stripe.Customer.create(email=request.user.email)
                 user_profile.stripe_customer_id = customer['id']
                 user_profile.save()
@@ -117,18 +110,12 @@ def subscribe(request, plan_id):
         request.session['selected_plan_id'] = plan_id  # Save selected plan
         request.session.modified = True  # Ensure the session is explicitly saved
 
-        # Debugging prints
-        print("DEBUG: Stored Stripe Checkout URL:", request.session.get('stripe_checkout_url'))
-        print("DEBUG: Stored Stripe Session ID:", request.session.get('stripe_checkout_session_id'))
-        print("DEBUG: Stored session data before redirecting:", request.session.items())
-
         # Create a Subscription Notification for Admin**
         Notification.objects.create(
             user=request.user,
             message=f"{request.user.username} has subscribed to {plan.name}.",
             category="subscription"
         )
-        print("DEBUG: Subscription notification created.")  # Debugging log
 
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
@@ -150,8 +137,6 @@ def cancel_subscription(request):
         return redirect('user_profile')
 
     subscription = user_profile.subscription
-
-    print(f"DEBUG: Attempting to cancel subscription with Stripe ID: {subscription.stripe_subscription_id}")
 
     if not subscription.stripe_subscription_id:
         messages.error(request, "Error: No valid Stripe subscription ID found.")
@@ -324,7 +309,7 @@ def subscription_success(request):
     plan_id = request.session.get("selected_plan_id")  # Retrieve the selected plan
     if not plan_id:
         messages.error(request, "No subscription plan found. Please try again.")
-        return redirect("subscription_plans")
+        return redirect("user_profile")
 
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
@@ -343,7 +328,6 @@ def subscription_success(request):
         end_date=now() + timedelta(days=30),
         status=True,
     )
-    print(f"DEBUG: Retrieved Stripe Subscription ID: {session.get('subscription')}")
 
     # Link the subscription to the UserProfile
     user_profile = request.user.userprofile
@@ -427,7 +411,6 @@ def return_borrowed_sets(request):
                     message=f"{request.user.username} returned {borrow.lego_set.name}.",
                     category="borrowing"
                 )
-                print(f"DEBUG: Notification created for returning {borrow.lego_set.name}")
 
             messages.success(request, "Selected LEGO set(s) have been returned successfully!")
 

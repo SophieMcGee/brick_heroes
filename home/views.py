@@ -40,10 +40,12 @@ def manage_store(request):
                 new_product.image = request.FILES["image"]
             elif new_product.image:
                 pass  # Keep existing image if no new image is uploaded
-
+            messages.success(request, "New LEGO set added successfully!") 
             new_product.save()  # Save the new product
 
             return redirect("manage_store")
+        else:
+            messages.error(request, "Error adding LEGO set. Please check your form.")
 
     else:
         form = ProductForm()
@@ -155,10 +157,14 @@ def contact_view(request):
                 recipient_list=[contact_message.email],
                 fail_silently=False,
             )
-
             return redirect('contact_success')
+        else:
+            messages.error(request, "There was an error with your submission.")
     else:
         form = ContactForm()
+    
+    return render(request, "home/index.html", {"form": form})
+
 
 
 def contact_success(request):

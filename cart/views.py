@@ -76,12 +76,13 @@ def add_to_cart(request, product_id):
         return redirect("shopping_cart")
 
     # **Create a Borrowing record** (instead of just adding to cart)
-    borrowing = Borrowing.objects.create(
+    Borrowing.objects.create(
         user=request.user,
         lego_set=product,
         is_returned=False,
-        subscription=subscription  # Ensure subscription is set
+        subscription=subscription
     )
+
 
     # Reduce stock for the borrowed set
     if product.stock > 0:
