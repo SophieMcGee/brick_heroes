@@ -615,3 +615,230 @@ Each user story within the milestones is categorised and tracked through the Git
 
 
 There are several areas within the Brick Heroes GitHub Projects that remain open and are marked as 'To Do' or 'In Progress', reserved for future development to further enhance the platform's functionality and user experience. These features are part of the platform's long-term vision to remain innovative, user-centric, and scalable, although these future developments are not essential to the main core functionality now.
+
+# Future Development Areas
+
+## 1. Enhanced Borrowing Experience
+- **Feature Idea:** Introduce a recommendation engine that suggests Lego sets based on borrowing history or user preferences.
+- **Feature Idea:** Enable users to preview digital building instructions for sets to assess difficulty before borrowing.
+
+## 2. Administrator Tools
+- **Feature Idea:** Advanced review moderation tools to flag inappropriate or spam content automatically using machine learning algorithms.
+- **Feature Idea:** Real-time analytics dashboard for monitoring site activity, including borrowing trends, subscription growth, and most popular sets.
+
+## 3. Community and Engagement Features
+- **Feature Idea:** Gamify the borrowing experience with a rewards system that grants points for timely returns, submitting reviews, or referring friends. Points could be redeemed for discounts or exclusive perks.
+- **Feature Idea:** Add user profiles with public-facing elements, such as badges for frequent borrowers or top reviewers.
+- **Feature Idea:** Introduce user forums or discussion boards where Lego enthusiasts can exchange ideas, tips, or organise building challenges.
+
+## 4. Expanded E-Commerce Options
+- **Feature Idea:** Offer exclusive Lego sets or accessories for sale, such as gift cards, storage boxes and build tables.
+- **Feature Idea:** Develop a gift subscription option where users can purchase a subscription plan as a gift for someone else.
+- **Feature Idea:** Add bundles combining subscriptions with discounted merchandise or Lego-themed items.
+
+## 5. Improved Accessibility and Usability
+- **Feature Idea:** Implement multilingual support to attract users from diverse regions.
+- **Feature Idea:** Add voice search capabilities for browsing Lego sets, enhancing accessibility for users with visual impairments.
+- **Feature Idea:** Incorporate dark mode to improve usability for users browsing at night or with light sensitivity.
+
+## 6. Notifications and Feedback
+- **Feature Idea:** Enable push notifications for browser and mobile users to alert them of waitlist availability, new arrivals, or upcoming due dates.
+
+## 7. Sustainability and Eco-Focused Features
+- **Feature Idea:** Add a sustainability tracker showing the positive environmental impact of borrowing versus purchasing sets outright.
+- **Feature Idea:** Partner with other businesses to promote eco-friendly bricks or sets made from sustainable materials.
+- **Feature Idea:** Introduce a feature for users to donate unused sets back to the platform for others to borrow.
+
+
+## Commitment to Growth
+These open tasks and feature ideas reflect **Brick Heroes'** commitment to continuous improvement, innovation, and creating a robust platform. By focusing on these potential enhancements, the site will remain scalable, engaging, and aligned with user needs while contributing positively to the Lego community and environmental sustainability. These ideas form the foundation of the platform's long-term roadmap, ensuring it evolves to meet the expectations of its growing audience.
+
+[Back to top](<#contents>)
+
+## Market Research
+
+The development of Brick Heroes was informed by comprehensive market research to ensure the platform effectively meets user needs and stands out in the LEGO® rental and subscription service industry. This research encompassed understanding user expectations, analysing competitors, and identifying design trends to create a functional and user-friendly platform.
+
+### Competitor Analysis
+
+An in-depth analysis of existing LEGO® rental and subscription services was conducted to understand market trends, user preferences, and areas for improvement. This analysis provided valuable insights into service offerings, pricing models, and user engagement strategies.
+
+Key competitors:
+
+- **[Brick Borrow](https://www.brickborrow.com/)**: A UK-based service offering a sustainable monthly subscription to borrow LEGO® sets at affordable prices. Users can choose sets to borrow, build, and return, with delivery handled via Royal Mail's Tracked 48 service.
+- **[Stud Universe](https://studuniverse.com/)**: Offers a cost-effective LEGO® subscription service with a wide range of sets and a 30-day play guarantee. The service emphasizes affordability, variety, and customer satisfaction.
+- **[Brick Club UK](https://www.ticketmaster.com/)**: Specialises in Technic LEGO® subscriptions for Adult Fans of LEGO (AFOLs), providing various subscription tiers and access to exclusive sets. The service focuses on delivering high-quality Technic sets to enthusiasts.
+- **[Brick Loot](https://www.brickloot.com/)**: A subscription box service for LEGO® and brick fans, delivering monthly boxes filled with custom LEGO® kits, minifigures, light kits, and compatible products. The service caters to both children and adult collectors.
+
+#### Insights Gained:
+- **Service Offerings:** Competitors provide a range of services, from simple set rentals to curated subscription boxes with exclusive items. Understanding these offerings helped identify opportunities for differentiation, such as focusing on specific LEGO® themes.
+- **Pricing Models:** Subscription plans vary, with options for monthly or annual payments, different tiers based on the number of sets borrowed, and special plans for exclusive sets. Analysing these models informed the development of competitive and flexible pricing strategies for Brick Heroes.
+- **User Engagement:** Features such as user reviews, community galleries, and reward systems are employed to enhance engagement. Incorporating similar features can foster a vibrant community and encourage repeat usage.
+- **Logistics and Accessibility:** Efficient delivery and return processes, clear terms and conditions, and responsive customer service are critical for user satisfaction. Ensuring these elements are optimised can enhance the overall user experience.
+
+By leveraging these insights, Brick Heroes aims to offer a distinctive and superior service in the LEGO® rental and subscription market, focusing on user-centric features, flexible pricing, and exceptional customer engagement.
+
+#### Design Implications
+
+Based on the competitor analysis, there were several design ideas that shaped the structure and features of Brick Heroes. These insights ensured the platform offers a seamless, engaging, and user-friendly experience for its diverse audience.
+
+- **Clear Lego Set Listings**:
+  - •	Borrowing Focus: Each Lego set is displayed with clear, relevant details, including the set name, theme, difficulty level, and availability (e.g., Available, Reserved, Borrowed).
+  - Detailed View: Users can click on a Lego set to view more information, such as a description, high-quality images, and user reviews.
+  - Filtering Options: Filters for themes (e.g., Star Wars, Technic), difficulty levels, and user ratings were included to make browsing intuitive and efficient.
+  
+- **User Feedback and Community Interaction**:
+  - Set Reviews and Ratings: Borrowers can leave reviews and rate sets, helping others identify popular or highly-rated sets.
+  - Community: Facebook page allowing users to share photos of their builds with borrowed sets fosters community engagement and provides inspiration for other users, alongside a newsletter.
+  
+- **Simple and Intuitive Navigation**:
+  - Streamlined Navigation Menu: A clean, easy-to-use navigation bar allows users to quickly find essential pages, such as Browse Sets, My Account, and Subscription Plans.
+  - Quick Access Buttons: Prominent buttons direct users to key actions like "Borrow" "Return Set," or "Subscribe."
+  
+- **Engaging Calls-to-Action (CTAs)**:
+  - Subscription Incentives: Eye-catching CTAs on the homepage encourage users to "Join" or "Explore Subscription Plans," highlighting the value and affordability of the service.
+  - Borrowing and Returning: Buttons are prominently displayed on user profile and set pages for quick access to key actions.
+  
+- **Consistent Branding**:
+  - Comic-Inspired Design: A bold, colourful comic-book style with speech-bubble buttons and playful typography is used throughout the platform, reflecting the fun and creative nature of the service.
+  - Cohesive Colour Scheme: A bright, consistent palette ensures the platform feels cohesive and professional while remaining visually appealing to users of all ages.
+  - Thematic Icons: Custom icons representing Lego bricks are used to reinforce the theme.
+  
+- **Mobile Accessibility**:
+  - Fully Responsive Design: The platform is designed to adapt seamlessly to mobile, tablet, and desktop devices, ensuring a smooth experience across all screen sizes.
+  - Mobile-First Interactions: Key actions like subscribing, browsing sets, and accessing user profiles are optimised for mobile users with touch-friendly buttons and simplified layouts.
+
+  These design decisions ensure that Brick Heroes not only meets current user expectations but also stands out in the market with a fun, functional, and engaging platform. By focusing on clarity, user interaction, and mobile responsiveness, the platform provides a superior experience that appeals to Lego enthusiasts of all ages.
+
+  [Back to top](<#contents>)
+
+
+# Design
+
+## Design Planning and Development
+
+The planning and development of the Brick Heroes platform were driven by a user-focused approach to ensure a seamless, enjoyable, and accessible experience. By utilising the five planes of UX—Strategy, Scope, Structure, Skeleton, and Surface—the design process aimed to craft a visually dynamic and highly functional platform. Each phase prioritized the needs of Lego enthusiasts, creating an ecosystem where borrowing, purchasing, and interacting with Lego sets feels effortless and fun.
+
+### Strategy
+
+The strategic phase centred on identifying user needs and setting clear goals for the platform. The vision for Brick Heroes is to empower users to enjoy Lego sets through an affordable subscription service, while fostering creativity and sustainability. The strategy focused on:
+
+-	Making Lego Accessible: Providing a cost-effective solution for families, hobbyists, and enthusiasts by offering a variety of subscription tiers.
+-	Encouraging Community: Introducing features like reviews, ratings, and social media page promoting interaction among members.
+-	Simplifying Borrowing: Creating a streamlined process for discovering and returning Lego sets.
+
+The strategy was informed by competitor research, user surveys, and market analysis to ensure the platform aligns with user expectations and stands out in the market.
+
+
+### Scope
+
+Building on the strategy, the scope defined the essential features needed to deliver a robust user experience. Emphasis was placed on designing intuitive workflows for browsing sets, managing subscriptions, and encouraging creative participation.
+Key features included in the scope:
+
+
+The scope includes the following pages and functionalities:
+- **Homepage**: Highlights subscription benefits, featured Lego sets, and calls-to-action encouraging users to join or explore.
+- **Main Product Page**: Provides tools for filtering sets by theme, difficulty, and rating, ensuring a user-centric browsing experience.
+- **Product Detail Pages**: Displays comprehensive information about each Lego set, including photos, descriptions, and user feedback.
+- **User Profile**: Offers a centralised hub for users to track borrowed sets, return items, and manage their subscriptions.
+- **Admin Store Management**: Equips administrators with tools to add, edit and delete sets, moderate user content, and monitor platform activity.
+
+The scope ensured that all essential functionalities were addressed while leaving room for future enhancements, such as gamification and advanced analytics.
+
+### Structure
+
+The structure phase focused on organizing content and features into a logical, user-friendly flow. The goal was to guide users naturally through the platform, making it easy to find Lego sets, manage subscriptions, and interact with the community.
+Key structural elements included:
+
+- **Simplified Navigation:**: A fixed menu allows users to move seamlessly between key sections such as the homepage, Browse Sets, and My Account.
+- **Focused User Workflows**: Designed intuitive paths for tasks like borrowing sets, purchasing subscriptions, and leaving reviews.
+- **Filtering and Sorting Tools:**: Enabled users to refine search results by themes, ratings, or difficulty to quickly locate their desired sets.
+- **Call to action Placement**: Strategically positioned buttons like "Subscribe Now" and "Borrow" to maximise engagement and simplify decision-making.
+
+The platform’s structure ensures that all interactions, from browsing to community engagement, are straightforward and efficient.
+
+### Skeleton
+
+Wireframes played a crucial role in defining the visual layout and interaction design of the platform. The focus was on clarity and usability, ensuring the platform feels intuitive for users of all ages.
+Key considerations during this phase:
+
+- **Mobile-First Design**: Wireframes prioritized mobile accessibility to reflect the increasing number of users browsing on phones and tablets.
+- **Content Prioritisation**: Essential information, such as subscription details and set availability, was placed prominently to reduce scrolling.
+- **Interactve Features**: Included elements like filters, dynamic search, and review submission tools to encourage user engagement.
+- **Guided Actions**: Visual cues and layouts were designed to guide users naturally through tasks, such as selecting a subscription or reserving a set.
+
+Below are the wireframes created for the platform, these are also available to view in more detail within Figma
+
+Below are the wireframes created for the platform:
+![wireframe](docs/readme_images/wireframe.png)
+
+<b>This wireframe is available to view in Figma via <a href="https://www.figma.com/design/dP3mcDa6YHL56k4QnIUwAD/Brick-Heroes?node-id=0-1&t=IIcaTL4NLm8IE8l7-1" target="_blank" rel="noopener">THIS LINK.</a></b>
+
+### Surface
+
+The surface phase brought Brick Heroes to life with a playful, Lego-inspired aesthetic that balances fun and functionality. The comic-book theme, bold colour palette, and custom icons ensure a memorable experience that resonates with users.
+
+Key visual design elements include:
+- **Vibrant Branding:**: A bold mix of primary colours and speech-bubble-style buttons evoke the creative spirit of Lego.
+- **Typography**: Clean, accessible typography ensures readability across devices.
+- **Attention to Detail**: Small touches, such as hover effects and micro-interactions, enhance the overall experience without overwhelming the user.
+
+By following this comprehensive design process, Brick Heroes delivers a platform that is not only visually appealing but also highly functional and user-friendly. The thoughtful integration of strategy, structure, and creativity ensures that the platform meets user needs while fostering a strong sense of community and sustainability.
+
+[Back to top](<#contents>)
+
+## Colour Scheme and Typography
+
+### Typography
+
+The typography for Brick Heroes was chosen to complement its playful and comic-book-inspired theme while maintaining readability and accessibility. The two primary fonts selected are Luckiest Guy and Shantell Sans, both of which balance fun and functionality, creating a cohesive visual identity for the platform.
+
+- **Luckiest Guy** The typography for Brick Heroes was chosen to complement its playful and comic-book-inspired theme while maintaining readability and accessibility. The two primary fonts selected are Luckiest Guy and Shantell Sans, both of which balance fun and functionality, creating a cohesive visual identity for the platform.
+- **Shantell Sans** is utilised for body text, offering a clean and approachable aesthetic that ensures readability across various devices and screen sizes. Its friendly curves perfectly align with the platform's creative and engaging tone.
+
+To maintain consistency in the event the custom fonts fail to load, standard sans-serif fonts are used as a fallback.
+The combination of these fonts ensures the site reflects its creative and engaging purpose while remaining easy to navigate and read for users of all ages.
+
+
+### Colour Scheme
+
+The colour scheme for Brick Heroes is vibrant, bold, and reflective of its comic-book inspiration. The palette uses primary colours and strong contrasts to create a fun, energetic, and visually appealing platform. This ensures key elements like buttons, CTAs, and headings stand out while maintaining harmony across the design.
+
+![Website Colour Scheme](docs/readme_images/website-colour-scheme.png)
+
+1. **FE0000 (Red):**:
+   - Used for CTAs, buttons, and key accent areas to draw attention to important actions. o	This energetic red enhances the comic-book theme and guides user focus.
+  
+2. **#00A3EB (Blue):**:
+   - Featured in key areas to highlight icons and buttons, adds a sense of trust and creativity. This bright blue ensures a cohesive, engaging design while maintaining accessibility.
+
+3. **#FFD400 (Yellow):**:
+   - The primary colour used to highlight content blocks and visual cards, inspired by classic comic-book halftone patterns, adds warmth and excitement to the platform. It supports the playful, heroic tone of the brand.
+
+4. **#101010 (Black):**:
+   - Used for the background, text, outlines, and icons to provide contrast and enhance readability.
+
+5. **#FFFFFF (White):**:
+   - Used to balance the vibrant colours and provide a clean, readable colour for text.
+
+These colours work together to create a harmonious and engaging visual experience for users while maintaining a clean and professional look. White is strategically applied to ensure breathing room and avoid visual clutter.
+
+[Back to top](<#contents>)
+
+### Logo and Branding
+
+The Brick Heroes logo encapsulates the platform’s fun and creative nature while staying true to its comic-book theme. The design features a bright blue burst with bold, playful red typography that stands out against the yellow halftone background.
+•	Tagline Integration: The slogan “Borrow, Create, Return” is seamlessly included in the logo, reinforcing the platform’s mission and user workflow.
+•	Scalability: The logo is designed to remain clear and impactful at various sizes, ensuring it works well across platforms, from the website to promotional materials.
+•	Thematic Consistency: The comic-style typography and burst shape tie in perfectly with the site's visual design, creating a strong brand identity.
+
+
+![Brick Heroes Logo](docs/readme_images/brick-heroes-logo.jpg)
+
+[Back to top](<#contents>)
+
+# Data Model
+
+The data model for Brick Heroes has been designed with flexibility, scalability, and clarity in mind. It consists of multiple interconnected models that enable seamless functionality for user subscriptions, Lego set borrowing, community interactions, e-commerce features, and administrator tools. Below is a detailed breakdown of the database schema based on the discussed features and functionality:
+
+![Database Schema](docs/readme_images/database-schema.png)
