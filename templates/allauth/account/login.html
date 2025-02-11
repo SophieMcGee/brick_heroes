@@ -22,12 +22,15 @@
 
                     {% if not SOCIALACCOUNT_ONLY %}
                         <p class="text-center">
-                            {% blocktranslate %}If you have not created an account yet, then please 
-                                <a href="{{ signup_url }}" class="text-primary font-weight-bold"
-                                   aria-label="{% trans 'Go to sign up page' %}">
-                                    {% trans "sign up" %}
-                                </a> first.
-                            {% endblocktranslate %}
+                            <p class="text-center">
+                                {% blocktranslate with signup_url=signup_url %}
+                                    If you have not created an account yet, then please 
+                                    <a href="{{ signup_url }}" class="text-primary font-weight-bold"
+                                       aria-label="Go to sign up page">
+                                        sign up
+                                    </a> first.
+                                {% endblocktranslate %}
+                            </p>                            
                         </p>
 
                         {% url 'account_login' as login_url %}
