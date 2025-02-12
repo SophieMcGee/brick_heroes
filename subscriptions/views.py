@@ -313,7 +313,8 @@ def stripe_webhook(request):
             )
             user_profile.subscription = subscription
             user_profile.save()
-            logger.info(f"New subscription created for {user_profile.user.email}")
+            logger.info(
+                f"New subscription created for {user_profile.user.email}")
 
         return JsonResponse({"message": "Subscription processed successfully"}, status=200)
 
