@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'home',
     'django.contrib.sites',
     'allauth',
@@ -59,6 +61,7 @@ INSTALLED_APPS = [
     'subscriptions',
     'cart',
     'notifications',
+    
 ]
 
 MIDDLEWARE = [

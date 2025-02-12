@@ -371,9 +371,10 @@ def subscription_success(request):
     messages.success(request, f"Your subscription to {plan.name} is active! 🎉")
     return redirect("user_profile")
 
+
 @login_required
 def user_profile(request):
-    """User profile page displaying subscriptions, borrowed sets, and notifications."""
+    """User profile page displaying subscriptions"""
     user_profile = request.user.userprofile
     subscription = user_profile.subscription
 
@@ -383,7 +384,9 @@ def user_profile(request):
         stripe_subscription = None
         if subscription.stripe_subscription_id:
             try:
-                stripe_subscription = stripe.Subscription.retrieve(subscription.stripe_subscription_id)
+                stripe_subscription = stripe.Subscription.retrieve(
+                    subscription.stripe_subscription_id
+                )
             except stripe.error.StripeError as e:
                 logger.error(f"Error retrieving subscription from Stripe: {e}")
 
@@ -403,9 +406,13 @@ def user_profile(request):
     else:
         subscription_status = "No Subscription"
 
-    borrowed_sets = Borrowing.objects.filter(user=request.user, is_returned=False)
-    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')[:5]
-    emailaddresses = EmailAddress.objects.filter(user=request.user)
+        borrowed_sets = Borrowing.objects.filter(
+            user=request.user, is_returned=False
+        )
+
+        notifications = Notification.objects.filter(
+            user=request.user
+        ).order_by('-created_at')[:5]
 
     return render(request, 'home/user_profile.html', {
         'user_profile': user_profile,
@@ -416,6 +423,7 @@ def user_profile(request):
         'emailaddresses': emailaddresses,
     })
 
+
 @login_required
 def return_borrowed_sets(request):
     """Allows users to return borrowed LEGO sets and notifies admin."""
@@ -423,7 +431,9 @@ def return_borrowed_sets(request):
         returned_set_ids = request.POST.getlist('return_sets')
 
         if returned_set_ids:
-            returned_sets = Borrowing.objects.filter(id__in=returned_set_ids, user=request.user)
+            returned_sets = Borrowing.objects.filter(
+                id__in=returned_set_ids, user=request.user
+            )
 
             for borrow in returned_sets:
                 borrow.is_returned = True  # Mark as returned
@@ -441,9 +451,13 @@ def return_borrowed_sets(request):
                     category="borrowing"
                 )
 
-            messages.success(request, "Selected LEGO set(s) have been returned successfully!")
+            messages.success(
+                request, "Selected LEGO set(s) have been returned!"
+            )
 
         else:
-            messages.warning(request, "Please select at least one LEGO set to return.")
+            messages.warning(
+                request, "Please select at least one LEGO set to return."
+            )
 
     return redirect('user_profile')  # Redirect back to profile after return
