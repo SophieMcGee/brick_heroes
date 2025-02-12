@@ -265,10 +265,10 @@ class TestUserProfileModel(TestCase):
 
         # Create another borrowing record to reach the limit
         Borrowing.objects.create(
-            user=self.user, 
-            subscription=self.subscription, 
-            lego_set=None, 
-            borrowed_on=now(), 
+            user=self.user,
+            subscription=self.subscription,
+            lego_set=None,
+            borrowed_on=now(),
             is_returned=False
         )
 

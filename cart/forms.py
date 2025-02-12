@@ -13,12 +13,12 @@ class DeliveryInfoForm(forms.ModelForm):
             'full_name': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'Full Name'}
             ),
-            'address_line1': forms.TextInput(
-                attrs={'class': 'form-control', 'placeholder': 'Address Line 1'}
-            ),
-            'address_line2': forms.TextInput(
-                attrs={'class': 'form-control', 'placeholder': 'Address Line 2'}
-            ),
+            'address_line1': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Address Line 1'
+            }),
+            'address_line2': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Address Line 2'
+            }),
             'city': forms.TextInput(
                 attrs={'class': 'form-control', 'placeholder': 'City'}
             ),

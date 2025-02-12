@@ -2577,12 +2577,6 @@ Throughout the development of **Brick Heroes**, several resources were utilized 
 - [Python Anywhere](https://www.pythonanywhere.com/)
 
 
-### **Acknowledgments**
-Special thanks to:
-- **The Code Institute community** for troubleshooting discussions.
-- **Fellow developers on Slack** for insights into Django Allauth and Stripe integration.
-- **Django and Python documentation contributors** for comprehensive resources.
-
 # Acknowledgements
 
 I would like to express my sincere gratitude to my mentor Gareth for his **invaluable guidance, insightful feedback, and continuous support** throughout this project.

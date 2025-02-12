@@ -232,7 +232,9 @@ def delete_review(request, review_id):
 
     # Ensure only the review's owner can delete it
     if review.user != request.user:
-        messages.error(request, "You are not authorized to delete this review.")
+        messages.error(
+            request, "You are not authorized to delete this review."
+        )
         return redirect("product_detail", product_id=review.product.id)
 
     if request.method == "POST":  # Only allow DELETE via POST

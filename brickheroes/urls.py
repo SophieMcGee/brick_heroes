@@ -21,9 +21,12 @@ urlpatterns = [
     ),
     path('subscriptions/', include('subscriptions.urls')),
     path(
-        'sitemap.xml', serve, {'document_root': settings.BASE_DIR, 'path': 'sitemap.xml'},
+        'sitemap.xml', serve,
+        {'document_root': settings.BASE_DIR, 'path': 'sitemap.xml'},
         name='sitemap'
-    )
+    ),
+
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

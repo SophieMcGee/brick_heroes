@@ -214,7 +214,9 @@ def check_and_update_subscriptions():
                 if stripe_sub.status == "canceled":
                     sub.status = False  # Mark as expired
                     sub.save()
-                    logger.info(f" Subscription expired: {sub.user.email} (ID: {sub.id})")
+                    logger.info(
+                        f" Subscription expired: {sub.user.email} (ID: {sub.id})"
+                    )
 
             except stripe.error.StripeError as e:
                 logger.error(
