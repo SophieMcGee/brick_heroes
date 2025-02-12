@@ -2308,3 +2308,287 @@ The Brick Heroes platform is successfully deployed using Heroku with a PostgreSQ
 # Testing
 
 Extensive testing was completed both during the development and post development phase with detailed results available to view [here](/testing.md)
+
+# Bugs
+
+## Bugs Encountered and Resolved
+
+During the development of **Brick Heroes**, various bugs were identified and resolved. These ranged from **CSS styling issues** to **database migrations**, **form validation errors**, and **unexpected behavior in views and templates**. Below is a breakdown of key bugs encountered, the debugging process, and the implemented fixes.
+
+---
+
+## **Static Files Not Loading on Heroku**
+- **Issue:**  
+  - Static files (CSS, images) were not loading after deployment, causing layout and styling issues.
+  - Errors like `"MIME type not supported"` and missing images were observed.
+- **Resolution:**  
+  - Configured `STATIC_URL`, `STATICFILES_DIRS`, and `STATIC_ROOT` in `settings.py`.
+  - Installed and set up **Whitenoise** for serving static files in production.
+  - Ran `python manage.py collectstatic` to ensure all static files were properly collected and served.
+
+---
+
+## **400 Bad Request on Heroku Deployment**
+- **Issue:**  
+  - After deployment, the site returned a **"Bad Request (400)"** error due to misconfigured `ALLOWED_HOSTS`.
+- **Resolution:**  
+  - Added the Heroku app’s URL (`brick-heroes-52ffabb94b76.herokuapp.com`) to `ALLOWED_HOSTS` in `settings.py`.
+  - Verified that the **SECRET_KEY** was correctly set in Heroku environment variables.
+
+---
+
+## **Missing Products After Migrating to Postgres**
+- **Issue:**  
+  - After switching to **Postgres**, products seeded via **JSON fixtures** were missing.
+  - This was due to missing foreign key relationships for categories.
+- **Resolution:**  
+  - Created a separate fixture for categories and loaded it first using:
+    ```sh
+    python manage.py loaddata categories.json
+    python manage.py loaddata products.json
+    ```
+
+---
+
+## **Cart Icons Overlapping with Burger Menu**
+- **Issue:**  
+  - On smaller screens, **cart and account icons** remained visible alongside the burger menu.
+  - This cluttered the interface and caused layout issues.
+- **Resolution:**  
+  - Updated the template to use **Bootstrap's responsive utility classes**, adding:
+    ```html
+    <div class="d-none d-lg-flex">
+      <!-- Icons here -->
+    </div>
+    ```
+  - Ensured icons were correctly **hidden/shown** depending on screen size.
+
+---
+
+## **Circular Import Error in Models**
+- **Issue:**  
+  - Django threw an `ImportError` when running `makemigrations`, stating that `Product` could not be imported.
+  - This happened due to a **circular dependency** between `products.models` and `subscriptions.models`.
+- **Resolution:**  
+  - Replaced direct model imports with **`get_model()`** from `django.apps`:
+    ```python
+    from django.apps import apps
+    Product = apps.get_model('products', 'Product')
+    ```
+  - This allowed Django to **resolve dependencies dynamically** at runtime.
+
+---
+
+## **NoReverseMatch Error in Product Reviews**
+- **Issue:**  
+  - Submitting a product review caused a `NoReverseMatch` error.
+  - The template was calling `{% url 'add_review' product.id %}` instead of the correct **URL pattern**.
+- **Resolution:**  
+  - Updated `urls.py` to use `product_id` instead of `lego_set_id`:
+    ```python
+    path('review/<int:product_id>/', views.add_review, name='add_review'),
+    ```
+  - Updated the template link:
+    ```html
+    <a href="{% url 'add_review' product.id %}" class="btn btn-primary">Write a Review</a>
+    ```
+
+---
+
+## **Subscription Borrowing Limits Not Enforced**
+- **Issue:**  
+  - Users could borrow more LEGO sets than their **subscription plan allowed**.
+- **Resolution:**  
+  - Implemented **borrowing restrictions**:
+    - **Tier 1** → Borrow **1** set at a time.
+    - **Tier 2** → Borrow **2** sets at a time.
+    - **Tier 3** → Borrow **3** sets at a time.
+  - Borrowing **slots only reset** once a user **returns a set**.
+
+---
+
+## **Admin Panel Error When Adding a Review**
+- **Issue:**  
+  - Adding a review via the Django **Admin panel** caused:
+    ```
+    AttributeError: 'Product' object has no attribute 'update_average_rating'
+    ```
+- **Resolution:**  
+  - Used **`@property`** to dynamically calculate `average_rating` instead of a missing method:
+    ```python
+    @property
+    def average_rating(self):
+        avg_rating = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return round(avg_rating, 1) if avg_rating else 0
+    ```
+
+---
+
+## **Stripe Subscription Renewals Causing Duplicate Plans**
+- **Issue:**  
+  - Multiple Stripe subscription plans were being created instead of using **existing price IDs**.
+- **Resolution:**  
+  - Manually updated the database with the correct **EUR price IDs** from Stripe.
+  - Updated the code to correctly reference **existing price IDs** during subscription creation:
+    ```python
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        customer=customer.id,
+        mode='subscription',
+        line_items=[{
+            'price': plan.stripe_price_id,  # Correct EUR price ID
+            'quantity': 1,
+        }],
+        success_url=request.build_absolute_uri(f"/subscriptions/success/"),
+        cancel_url=request.build_absolute_uri('/subscriptions/cancel/'),
+    )
+    ```
+
+---
+
+## **Other Notable Fixes**
+### **Email Verification Not Redirecting**
+- **Issue:**  
+  - Users were not being redirected properly after email verification.
+- **Resolution:**  
+  - Overrode the **`confirm-email/`** view in `urls.py` to use a custom **verification_sent.html** template.
+
+### **SMTP Authentication Errors**
+- **Issue:**  
+  - Emails were **not sending** due to incorrect **Google App Passwords**.
+- **Resolution:**  
+  - Generated a **new app password** in Google Security settings and updated `EMAIL_HOST_PASSWORD` in `env.py`.
+
+### **Form Fields Overflowing on Mobile**
+- **Issue:**  
+  - The signup form fields were **overflowing** beyond the container.
+- **Resolution:**  
+  - Wrapped the form inside a Bootstrap `.container` and `.col-lg-6` for **responsive behavior**.
+
+### **Duplicate Subscription Entries**
+- **Issue:**  
+  - Users were getting **duplicate subscriptions** in the database.
+- **Resolution:**  
+  - **Checked if a subscription already existed** before creating a new one:
+    ```python
+    existing_subscription = Subscription.objects.filter(
+        user=user_profile.user, status=True
+    ).first()
+    if existing_subscription:
+        return JsonResponse({"message": "Subscription already exists"}, status=200)
+    ```
+
+### **Redirect Errors in Stripe Webhooks**
+- **Issue:**  
+  - When Stripe **sent a webhook event**, the app returned a **400 Bad Request**.
+- **Resolution:**  
+  - Updated webhook handling logic to correctly **process incoming events**.
+
+  # Credits
+
+Throughout the development of **Brick Heroes**, several resources were utilized to assist with coding, design, debugging, and functionality implementation. Below is a list of key references, tutorials, and documentation that contributed to the project.
+
+
+## **Development & Frameworks**
+### **Django Documentation**  
+- Provided guidance on models, views, URL routing, forms, authentication, and Stripe integration.
+- [Django Documentation](https://docs.djangoproject.com/en/stable/)
+
+### **Django Allauth Documentation**  
+- Helped with implementing user authentication, email verification, and password reset functionality.
+- [Django Allauth](https://django-allauth.readthedocs.io/en/stable/)
+
+### **Stripe API Documentation**  
+- Used to integrate Stripe for subscription payments, webhooks, and checkout handling.
+- [Stripe Docs](https://stripe.com/docs/api)
+
+### **Django Crispy Forms**  
+- Assisted with creating well-structured and styled forms using Bootstrap integration.
+- [Django Crispy Forms](https://django-crispy-forms.readthedocs.io/en/stable/)
+
+---
+
+## **Frontend & Design**
+### **Bootstrap Documentation**  
+- Used for responsive layout, navbar styling, forms, and buttons.
+- [Bootstrap Docs](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
+
+### **FontAwesome**  
+- Provided icons for navigation, buttons, and visual enhancements.
+- [FontAwesome](https://fontawesome.com/)
+
+### **W3Schools - HTML, CSS & JavaScript**  
+- Used as a reference for structuring HTML, designing CSS styles, and implementing JavaScript functionality.
+- [W3Schools HTML](https://www.w3schools.com/html/)  
+- [W3Schools CSS](https://www.w3schools.com/css/)  
+- [W3Schools JavaScript](https://www.w3schools.com/js/)
+
+### **CSS-Tricks**  
+- Helped with solving layout issues and improving the responsiveness of UI components.
+- [CSS-Tricks](https://css-tricks.com/)
+
+### **MDN Web Docs - JavaScript & Accessibility**  
+- Used for JavaScript best practices, accessibility improvements, and form validation techniques.
+- [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+
+---
+
+## **Deployment & Static Files**
+### ** Heroku Documentation**  
+- Used to deploy the Django application and configure environment variables.
+- [Heroku Docs](https://devcenter.heroku.com/articles/getting-started-with-python)
+
+### **Cloudinary Documentation**  
+- Helped with image and media file storage solutions.
+- [Cloudinary Docs](https://cloudinary.com/documentation/django_image_and_video_upload)
+
+### **Whitenoise Documentation**  
+- Configured static file serving for production.
+- [Whitenoise Docs](http://whitenoise.evans.io/en/stable/)
+
+---
+
+## **Debugging & Issue Resolution**
+### **Stack Overflow**  
+- Assisted with troubleshooting Django, Stripe, and JavaScript-related errors.
+- Various Stack Overflow posts provided solutions for debugging **NoReverseMatch**, **import errors**, and **static file issues**.
+
+### **Code Institute Walkthroughs & Slack Community**  
+- Provided foundational guidance for structuring the project and debugging errors.
+- Slack community discussions helped resolve **authentication errors**, **Heroku deployment issues**, and **Stripe payment logic**.
+
+### **Django Debug Toolbar**  
+- Used to identify performance bottlenecks and optimize queries.
+- [Django Debug Toolbar](https://django-debug-toolbar.readthedocs.io/en/latest/)
+
+### **Lighthouse Performance Testing**  
+- Used to test website performance, SEO, and accessibility compliance.
+- [Google Lighthouse](https://developers.google.com/web/tools/lighthouse/)
+
+---
+
+## **Additional References**
+### **Codemy Django Tutorials**  
+- Helped with understanding Django forms, class-based views, and authentication.
+- [Codemy.com YouTube](https://www.youtube.com/c/Codemycom)
+
+### **Python Anywhere**  
+- Used as an alternative environment for testing before final deployment.
+- [Python Anywhere](https://www.pythonanywhere.com/)
+
+
+### **Acknowledgments**
+Special thanks to:
+- **The Code Institute community** for troubleshooting discussions.
+- **Fellow developers on Slack** for insights into Django Allauth and Stripe integration.
+- **Django and Python documentation contributors** for comprehensive resources.
+
+# Acknowledgements
+
+I would like to express my sincere gratitude to my mentor Gareth for his **invaluable guidance, insightful feedback, and continuous support** throughout this project.
+
+I would also like to extend my thanks to my **peers in the Code Institute course** for their **collaborative spirit, constructive feedback, and assistance in testing** various features. Their input helped refine the user experience and ensure the platform functions as intended.
+
+Additionally, I appreciate the **Slack community** and **Code Institute support staff** for providing helpful discussions and troubleshooting guidance.
+
+

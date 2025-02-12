@@ -9,12 +9,13 @@ from django.utils.timezone import now
 from django.contrib.auth import get_user_model
 
 
-
 class TestProductModels(TestCase):
 
     def setUp(self):
         """Create a test product category"""
-        self.category = Category.objects.create(name="star_wars", friendly_name="Star Wars")
+        self.category = Category.objects.create(
+            name="star_wars", friendly_name="Star Wars"
+        )
 
         self.product = Product.objects.create(
             name="LEGO Millennium Falcon",
@@ -25,7 +26,7 @@ class TestProductModels(TestCase):
         )
 
     def test_update_product_rating(self):
-        """Ensure product rating updates correctly when a new rating is added."""
+        """Ensure product rating updates correctly when a new rating adds."""
         self.assertEqual(self.product.get_average_rating(), 0)
 
     def test_product_str(self):
@@ -45,20 +46,28 @@ class TestRatingModel(TestCase):
 
     def setUp(self):
         """Create a test product and rating"""
-        self.product = Product.objects.create(name="LEGO Star Destroyer", sku="67890", stock=5)
+        self.product = Product.objects.create(
+            name="LEGO Star Destroyer", sku="67890", stock=5
+        )
         self.rating = Rating.objects.create(product=self.product, rating=5)
 
     def test_rating_str(self):
         """Ensure Rating string representation is correct"""
-        self.assertEqual(str(self.rating), f"Rating for {self.product.name}: 5/5")
+        self.assertEqual(
+            str(self.rating), f"Rating for {self.product.name}: 5/5"
+        )
 
 
 class TestReviewModel(TestCase):
 
     def setUp(self):
         """Create a test user, product, and review"""
-        self.user = User.objects.create_user(username='testuser', password='password123')
-        self.product = Product.objects.create(name="LEGO Yoda", sku="54321", stock=3)
+        self.user = User.objects.create_user(
+            username='testuser', password='password123'
+        )
+        self.product = Product.objects.create(
+            name="LEGO Yoda", sku="54321", stock=3
+        )
         self.review = Review.objects.create(
             user=self.user,
             product=self.product,
@@ -69,7 +78,10 @@ class TestReviewModel(TestCase):
 
     def test_review_str(self):
         """Ensure Review string representation is correct"""
-        self.assertEqual(str(self.review), f"Review by {self.user.username} for {self.product.name}")
+        self.assertEqual(
+            str(self.review),
+            f"Review by {self.user.username} for {self.product.name}"
+        )
 
 
 class TestReviewForm(TestCase):
@@ -116,31 +128,49 @@ class TestProductViews(TestCase):
 
     def test_product_detail_view(self):
         """Ensure product detail page loads correctly"""
-        response = self.client.get(reverse("product_detail", kwargs={"product_id": self.product.id}))
+        response = self.client.get(
+            reverse("product_detail", kwargs={"product_id": self.product.id})
+        )
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "products/product_detail.html")
 
     def test_submit_rating_view(self):
         """Ensure users can submit ratings for a product"""
-        response = self.client.post(reverse("submit_rating", kwargs={"product_id": self.product.id}), {
-            "rating": 5
-        })
+        response = self.client.post(
+            reverse("submit_rating", kwargs={"product_id": self.product.id}),
+            {"rating": 5},
+        )
 
         self.assertEqual(response.status_code, 302)
 
-        review_exists = Review.objects.filter(product=self.product, rating=5).exists()
-        Review.objects.create(user=self.user, product=self.product, rating=5, content="Great set!")
-        self.assertTrue(Review.objects.filter(product=self.product, rating=5).exists(), "Review with rating 5 was not created in the database")
+        review_exists = Review.objects.filter(
+            product=self.product, rating=5
+        ).exists()
 
+        Review.objects.create(
+            user=self.user, product=self.product, rating=5, content="Great set!"
+        )
+
+        self.assertTrue(
+            Review.objects.filter(product=self.product, rating=5).exists(),
+            "Review with rating 5 was not created in the database",
+        )
 
         self.product.refresh_from_db()
         self.assertEqual(self.product.get_average_rating(), 5.0)
 
-
     def test_delete_review_view(self):
         """Ensure users can delete their own reviews"""
-        review = Review.objects.create(user=self.user, product=self.product, content="Good set!", is_approved=True)
-        response = self.client.post(reverse("delete_review", kwargs={"review_id": review.id}))
+        review = Review.objects.create(
+            user=self.user, product=self.product, content="Good set!",
+            is_approved=True
+        )
+
+        response = self.client.post(
+            reverse("delete_review", kwargs={"review_id": review.id})
+        )
+
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Review.objects.filter(id=review.id).exists())
 
@@ -149,9 +179,13 @@ class TestProductAdmin(TestCase):
 
     def setUp(self):
         """Set up superuser and test data for admin tests"""
-        self.admin_user = User.objects.create_superuser(username="admin", password="adminpass")
+        self.admin_user = User.objects.create_superuser(
+            username="admin", password="adminpass"
+        )
         self.client.login(username="admin", password="adminpass")
-        self.product = Product.objects.create(name="LEGO Hogwarts Castle", sku="99999", stock=2)
+        self.product = Product.objects.create(
+            name="LEGO Hogwarts Castle", sku="99999", stock=2
+        )
 
     def test_product_admin_registered(self):
         """Ensure Product model is registered in admin"""

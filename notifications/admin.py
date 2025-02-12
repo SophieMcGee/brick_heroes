@@ -8,4 +8,3 @@ class NotificationAdmin(admin.ModelAdmin):
     list_filter = ("category", "is_read", "created_at")
     search_fields = ("user__username", "message")
     ordering = ("-created_at",)
-

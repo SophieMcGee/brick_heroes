@@ -9,7 +9,9 @@ class Notification(models.Model):
         ('review', 'Review'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True
+    )
     message = models.TextField()
     category = models.CharField(
         max_length=20, choices=CATEGORY_CHOICES, default='subscription'

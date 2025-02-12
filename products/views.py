@@ -86,8 +86,12 @@ def product_detail(request, product_id):
     if request.user.is_authenticated:
         user_profile = UserProfile.objects.filter(user=request.user).first()
         if user_profile:
-            user_subscription = Subscription.objects.filter(user=request.user, status=True).first()
-            if user_subscription and user_subscription.end_date and user_subscription.end_date > now():
+            user_subscription = Subscription.objects.filter(
+                user=request.user, status=True
+            ).first()
+
+            if (user_subscription and user_subscription.end_date and
+                    user_subscription.end_date > now()):
                 subscription_valid = True
 
     approved_reviews = product.reviews.filter(is_approved=True)
@@ -105,7 +109,9 @@ def products_by_category(request, category_name):
     products = Product.objects.filter(category__name=category_name)
 
     if not products.exists():
-        messages.info(request, f"No LEGO sets found in {category_name} category.")
+        messages.info(
+            request, f"No LEGO sets found in {category_name} category."
+        )
 
     return render(
         request,
@@ -125,7 +131,7 @@ def submit_rating(request, product_id):
         rating_value = request.POST.get("rating")
 
         if not rating_value:
-            messages.warning(request, "⚠ Please select a rating before submitting.")
+            messages.warning(request, "⚠ Please select a rating first.")
             return redirect("product_detail", product_id=product.id)
 
         try:
@@ -149,14 +155,17 @@ def submit_rating(request, product_id):
 
 
 def submit_review(request, product_id):
-    """Allows only subscribers to submit reviews for a product, pending admin approval."""
+    """Allows only subscribers to submit reviews for a product."""
     product = get_object_or_404(Product, id=product_id)
 
     if request.method == "POST":
         review_text = request.POST.get("review_text", "").strip()
 
-        if not request.user.userprofile.subscription or not request.user.userprofile.subscription.status:
-            messages.error(request, "You must be an active subscriber to leave a review.")
+        if (not request.user.userprofile.subscription or
+                not request.user.userprofile.subscription.status):
+            messages.error(
+                request, "You must be an active subscriber to leave a review."
+            )
             return redirect("product_detail", product_id=product.id)
 
         # Check if a pending review exists to avoid duplication
@@ -165,23 +174,31 @@ def submit_review(request, product_id):
         ).first()
 
         if existing_review:
-            messages.warning(request, "You already have a pending review for this product.")
+            messages.warning(
+                request, "You already have a pending review for this product."
+            )
             return redirect("product_detail", product_id=product.id)
 
         # Create the review if no pending review exists
         Review.objects.create(
-            user=request.user, product=product, content=review_text, is_approved=False
+            user=request.user,
+            product=product,
+            content=review_text,
+            is_approved=False
         )
 
         # Avoid duplicate notifications by checking existing ones
-        if not Notification.objects.filter(user=request.user, content__icontains="review submitted").exists():
+        if not Notification.objects.filter(
+            user=request.user, message__icontains="review submitted"
+        ).exists():
+
             Notification.objects.create(
                 user=request.user,
-                content=f"Your review for {product.name} has been submitted for approval.",
-                link=f"/products/{product.id}/"
+                message=f"You submitted a review for {product.name}.",
+                category="review"
             )
 
-        messages.success(request, "Your review has been submitted for approval.")
+        messages.success(request, "Your review will be sent for approval.")
         return redirect("product_detail", product_id=product.id)
 
     return redirect("product_detail", product_id=product.id)
@@ -190,14 +207,16 @@ def submit_review(request, product_id):
 @login_required
 def edit_review(request, product_id, review_id):
     """Allows users to edit their own approved reviews."""
-    review = get_object_or_404(Review, id=review_id, product_id=product_id, user=request.user)
+    review = get_object_or_404(
+        Review, id=review_id, product_id=product_id, user=request.user
+    )
 
     if request.method == "POST":
         review_text = request.POST.get("review_text", "").strip()
         if review_text:
             review.content = review_text  # Update review text
             review.save()
-            messages.success(request, "Your review has been updated successfully!")
+            messages.success(request, "Your review has been updated!")
         else:
             messages.error(request, "Review content cannot be empty.")
 

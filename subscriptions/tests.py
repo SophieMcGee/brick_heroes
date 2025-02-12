@@ -1,19 +1,28 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from subscriptions.models import SubscriptionPlan, Subscription, Borrowing, UserProfile
-from datetime import date, timedelta
+from subscriptions.models import (
+    SubscriptionPlan, Subscription, Borrowing, UserProfile
+)
+from datetime import timedelta
 from django.utils.timezone import now
 from django.contrib import admin
-from subscriptions.admin import SubscriptionAdmin, SubscriptionPlanAdmin, BorrowingAdmin, UserProfileAdmin
+from subscriptions.admin import (
+    SubscriptionAdmin, SubscriptionPlanAdmin,
+    BorrowingAdmin, UserProfileAdmin
+)
 
 
 class TestSubscriptionModels(TestCase):
 
     def setUp(self):
         """Create test user, subscription plan, and subscription"""
-        self.user = User.objects.create_user(username="testuser", password="password123")
-        self.plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=1)
+        self.user = User.objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=1
+        )
 
         # Create a single subscription plan
         self.subscription_plan = SubscriptionPlan.objects.create(
@@ -34,7 +43,6 @@ class TestSubscriptionModels(TestCase):
         self.user.userprofile.subscription = self.subscription
         self.user.userprofile.save()
 
-
     def test_subscription_plan_str(self):
         """Ensure SubscriptionPlan string representation is correct"""
         self.assertEqual(str(self.plan), "Tier 1")
@@ -49,22 +57,30 @@ class TestSubscriptionModels(TestCase):
         self.subscription.save()
         Subscription.check_expired_subscriptions()
         self.subscription.refresh_from_db()
-        self.assertFalse(self.subscription.status, "Expired subscriptions should be inactive")
+        self.assertFalse(
+            self.subscription.status, "Expired subs should be inactive"
+        )
 
     def test_renew_subscription(self):
         """Ensure renewing a subscription updates the end date"""
         self.subscription.renew_subscription()
         self.subscription.refresh_from_db()
         self.assertTrue(self.subscription.status)
-        self.assertEqual(self.subscription.end_date.date(), (now() + timedelta(days=30)).date())
+        self.assertEqual(
+            self.subscription.end_date.date(), (now() + timedelta(days=30)).date()
+        )
 
 
 class TestBorrowingModel(TestCase):
 
     def setUp(self):
         """Create test user and product"""
-        self.user = User.objects.create_user(username='testuser', password='password123')
-        self.plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=1)
+        self.user = User.objects.create_user(
+            username='testuser', password='password123'
+        )
+        self.plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=1
+        )
         self.subscription = Subscription.objects.create(
             user=self.user,
             subscription_plan=self.plan,
@@ -92,8 +108,12 @@ class TestSubscriptionViews(TestCase):
 
     def setUp(self):
         """Set up user, subscription plan, and active subscription"""
-        self.user = User.objects.create_user(username='testuser', password='password123')
-        self.plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=1)
+        self.user = User.objects.create_user(
+            username='testuser', password='password123'
+        )
+        self.plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=1
+        )
         self.subscription = Subscription.objects.create(
             user=self.user,
             subscription_plan=self.plan,
@@ -107,24 +127,28 @@ class TestSubscriptionViews(TestCase):
         """Ensure subscription plans page loads correctly"""
         response = self.client.get(reverse('subscription_plans'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'subscriptions/subscription_plans.html')
+        self.assertTemplateUsed(
+            response, 'subscriptions/subscription_plans.html'
+        )
 
     def test_subscription_confirmation_view(self):
         """Ensure subscription confirmation page loads correctly"""
-        
         # Create a test subscription plan (needed for the URL)
-        plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=1)
+        plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=1
+        )
 
         # Simulate a session variable for Stripe checkout URL
         session = self.client.session
         session["stripe_checkout_url"] = "https://checkout.stripe.com/test_url"
         session.save()
 
-        response = self.client.get(reverse("subscription_confirmation", args=[plan.id]))
+        response = self.client.get(
+            reverse("subscription_confirmation", args=[plan.id])
+        )
 
         # Ensure the response is 200 OK
         self.assertEqual(response.status_code, 200)
-
 
     def test_subscription_success_view(self):
         """Ensure subscription success page loads and redirects"""
@@ -132,23 +156,28 @@ class TestSubscriptionViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("user_profile"))
 
-
     def test_cancel_subscription_view(self):
         """Ensure users can cancel subscriptions"""
         response = self.client.post(reverse('cancel_subscription'))
         self.assertIn(response.status_code, [200, 302])
         self.subscription.refresh_from_db()
-        self.assertTrue(self.subscription.status, "Subscription should remain active until expiration")
+        self.assertTrue(
+            self.subscription.status, "Sub should be active until expiry"
+        )
 
 
 class TestAdminPanel(TestCase):
 
     def setUp(self):
         """Set up test data for admin tests"""
-        self.user = User.objects.create_superuser(username='admin', password='adminpass')
+        self.user = User.objects.create_superuser(
+            username='admin', password='adminpass'
+        )
         self.client.login(username='admin', password='adminpass')
 
-        self.plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=1)
+        self.plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=1
+        )
         self.subscription = Subscription.objects.create(
             user=self.user,
             subscription_plan=self.plan,
@@ -186,8 +215,12 @@ class TestUserProfileModel(TestCase):
 
     def setUp(self):
         """Create a user, subscription, and borrowed LEGO sets"""
-        self.user = User.objects.create_user(username="testuser", password="password123")
-        self.plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=1)
+        self.user = User.objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=1
+            )
 
         # Create an active subscription
         self.subscription = Subscription.objects.create(
@@ -208,14 +241,15 @@ class TestUserProfileModel(TestCase):
             is_returned=False
         )
 
-
     def test_user_profile_str(self):
         """Ensure UserProfile string representation is correct"""
         self.assertEqual(str(self.user_profile), "testuser")
 
     def test_user_profile_can_borrow(self):
         """Ensure the borrowing limit is respected"""
-        self.plan = SubscriptionPlan.objects.create(name="Tier 1", price=9.99, max_active_borrows=2)
+        self.plan = SubscriptionPlan.objects.create(
+            name="Tier 1", price=9.99, max_active_borrows=2
+        )
         self.subscription = Subscription.objects.create(
             user=self.user,
             subscription_plan=self.plan,
@@ -231,11 +265,18 @@ class TestUserProfileModel(TestCase):
 
         # Create another borrowing record to reach the limit
         Borrowing.objects.create(
-            user=self.user, subscription=self.subscription, lego_set=None, borrowed_on=now(), is_returned=False
+            user=self.user, 
+            subscription=self.subscription, 
+            lego_set=None, 
+            borrowed_on=now(), 
+            is_returned=False
         )
-        self.assertFalse(self.user_profile.can_borrow(), "User should not be able to borrow more than allowed")
+
+        self.assertFalse(
+            self.user_profile.can_borrow(),
+            "User should not be able to borrow more than allowed"
+        )
 
 
 if __name__ == '__main__':
     TestCase.main()
-

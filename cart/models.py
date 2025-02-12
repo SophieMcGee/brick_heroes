@@ -19,7 +19,9 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     """Model for tracking borrowed LEGO sets"""
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    cart = models.ForeignKey(
+        Cart, on_delete=models.CASCADE, related_name="items"
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
     added_on = models.DateTimeField(default=now, editable=False)
 
@@ -29,7 +31,9 @@ class CartItem(models.Model):
 
 class BorrowOrder(models.Model):
     """Model to track each borrow order with delivery info."""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
     full_name = models.CharField(max_length=100)
     address_line1 = models.CharField(max_length=255)
     address_line2 = models.CharField(max_length=255, blank=True, null=True)
@@ -49,7 +53,9 @@ class BorrowOrder(models.Model):
 class BorrowOrderItem(models.Model):
     """Intermediate model to connect BorrowOrder and Product."""
     order = models.ForeignKey(BorrowOrder, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE
+    )
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):

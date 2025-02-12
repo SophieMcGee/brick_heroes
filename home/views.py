@@ -40,12 +40,12 @@ def manage_store(request):
                 new_product.image = request.FILES["image"]
             elif new_product.image:
                 pass  # Keep existing image if no new image is uploaded
-            messages.success(request, "New LEGO set added successfully!") 
+            messages.success(request, "New LEGO set added successfully!")
             new_product.save()  # Save the new product
 
             return redirect("manage_store")
         else:
-            messages.error(request, "Error adding LEGO set. Please check your form.")
+            messages.error(request, "Error adding LEGO set. Please check.")
 
     else:
         form = ProductForm()
@@ -75,7 +75,9 @@ def edit_product(request, product_id):
     else:
         form = ProductForm(instance=product)
 
-    return render(request, "home/edit_product.html", {"form": form, "product": product})
+    return render(
+        request, "home/edit_product.html", {"form": form, "product": product}
+    )
 
 
 @staff_member_required
@@ -88,9 +90,13 @@ def delete_product(request, product_id):
 
 
 def index(request):
-    random_products = list(Product.objects.filter(is_borrowed=False).exclude(image=""))
+    random_products = list(
+        Product.objects.filter(is_borrowed=False).exclude(image="")
+    )
     random.shuffle(random_products)
-    return render(request, 'home/index.html', {'random_products': random_products[:6]})
+    return render(
+        request, 'home/index.html', {'random_products': random_products[:6]}
+    )
 
 
 def custom_404(request, exception):
@@ -150,21 +156,24 @@ def contact_view(request):
             # Send an automatic reply to the user
             send_mail(
                 subject="Thank You for Contacting Us!",
-                message=f"Hello {contact_message.name},\n\n"
-                        "Thank you for reaching out! This website is part of a test project for a learning program, messages are not monitored and you will not receive a reply.\n\n"
-                        "Best Regards,\nBrick Heroes Team",
+                message=(
+                    f"Hello {contact_message.name},\n\n"
+                    "This website is part of a test project"
+                    "for a learning program. You will not "
+                    "receive a reply.\n\n"
+                    "Best Regards,\nBrick Heroes Team"
+                ),
                 from_email="brickheroes51@gmail",
                 recipient_list=[contact_message.email],
                 fail_silently=False,
             )
+
             return redirect('contact_success')
         else:
             messages.error(request, "There was an error with your submission.")
     else:
         form = ContactForm()
-    
     return render(request, "home/index.html", {"form": form})
-
 
 
 def contact_success(request):

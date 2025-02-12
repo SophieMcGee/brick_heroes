@@ -51,55 +51,41 @@ def process_checkout(request):
 
 @login_required
 def add_to_cart(request, product_id):
-    """Allow users to borrow LEGO sets based on their subscription plan."""
+    """Add a LEGO set to the cart for borrowing instead of confirm."""
     product = get_object_or_404(Product, id=product_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
-    # 1 Ensure user has an active subscription
+    # Ensure user has an active subscription
     subscription = request.user.userprofile.subscription
     if not subscription or not subscription.status:
-        messages.error(request, "You need an active subscription to borrow LEGO sets.")
+        messages.error(request, "You need an active subscription to borrow.")
         return redirect("subscription_plans")
 
-    #  Get subscription limits
+    # Get subscription borrowing limit
     max_active_borrows = subscription.subscription_plan.max_active_borrows
 
-    # Check how many sets are currently borrowed (not returned)
-    active_borrows = Borrowing.objects.filter(user=request.user, is_returned=False).count()
+    # Count active borrowed sets
+    active_borrows = Borrowing.objects.filter(
+        user=request.user, is_returned=False
+    ).count()
 
-    # Restrict borrowing if limit reached
+    # Check if borrowing limit is reached
     if active_borrows >= max_active_borrows:
         messages.error(
             request,
-            f"You have reached your borrowing limit of {max_active_borrows} sets. "
-            f"Return a set to borrow a new one."
+            f"You have reached your limit of {max_active_borrows} sets. "
+            "Return a set to borrow a new one."
         )
         return redirect("shopping_cart")
 
-    # **Create a Borrowing record** (instead of just adding to cart)
-    Borrowing.objects.create(
-        user=request.user,
-        lego_set=product,
-        is_returned=False,
-        subscription=subscription
+    # **Add item to cart instead of confirming the borrow immediately**
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart, product=product
     )
 
-
-    # Reduce stock for the borrowed set
-    if product.stock > 0:
-        product.stock -= 1
-        product.is_borrowed = True  # Mark it as borrowed
-        product.save()
-
-    # **Create a notification for borrowing**
-    Notification.objects.create(
-        user=request.user,
-        message=f"{request.user.username} borrowed {product.name}.",
-        category="borrowing"
-    )
-
-    # Show success message & redirect
-    messages.success(request, f"{product.name} has been added to your borrowed sets!")
-    return redirect("user_profile")  # Redirect to the profile where borrowed sets are shown
+    # Show success message & redirect to the cart page
+    messages.success(request, f"{product.name} has been added to your cart!")
+    return redirect("shopping_cart")  # Redirects to cart instead of confirming
 
 
 @login_required
@@ -110,7 +96,9 @@ def remove_from_cart(request, item_id):
 
     try:
         cart_item.delete()
-        messages.success(request, f"{cart_item.product.name} has been removed from your borrow cart.")
+        messages.success(
+            request, f"{cart_item.product.name} has been removed."
+        )
     except Exception as e:
         messages.error(request, f"Error removing item: {str(e)}")
 
@@ -130,11 +118,14 @@ def checkout(request):
     user_profile = request.user.userprofile
     subscription = user_profile.subscription
 
-    # Get borrowing limit from subscription
-    max_active_borrows = subscription.subscription_plan.max_active_borrows if subscription else 0
+    max_active_borrows = (
+        subscription.subscription_plan.max_active_borrows
+        if subscription else 0
+    )
 
-    # Count active borrowed sets
-    active_borrows = Borrowing.objects.filter(user=request.user, is_returned=False).count()
+    active_borrows = Borrowing.objects.filter(
+        user=request.user, is_returned=False
+    ).count()
 
     # Check if the total would exceed the subscription limit
     if active_borrows + cart_items.count() > max_active_borrows:
@@ -175,7 +166,6 @@ def checkout(request):
                             message=f"{request.user.username} borrowed {item.product.name}.",
                             category="borrowing"
                         )
-                        print(f"DEBUG: Notification created for borrowing {item.product.name}")
 
                     # Clear the cart after checkout
                     cart.items.all().delete()
@@ -185,11 +175,11 @@ def checkout(request):
                         "Your LEGO set(s) have been successfully borrowed! "
                         "You can swap them anytime by returning sets."
                     )
-                    return redirect("user_profile")  # Redirect to profile after success
+                    return redirect("user_profile")  # Redirect to profile
             except Exception as e:
                 messages.error(request, f"An error occurred: {str(e)}")
         else:
-            messages.error(request, "Please correct the errors in your delivery details.")
+            messages.error(request, "Please correct the errors")
 
     else:
         form = DeliveryInfoForm()

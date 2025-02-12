@@ -42,7 +42,10 @@ class TestContactMessageModel(TestCase):
 
     def test_contact_message_str(self):
         """Ensure string representation of ContactMessage is correct"""
-        self.assertEqual(str(self.message), "Message from John Doe (johndoe@example.com)")
+        self.assertEqual(
+            str(self.message),
+            "Message from John Doe (johndoe@example.com)"
+        )
 
     def test_contact_message_defaults(self):
         """Ensure the created_at timestamp is generated"""
@@ -53,10 +56,16 @@ class TestHomeViews(TestCase):
 
     def setUp(self):
         """Create test data and admin user"""
-        self.admin_user = User.objects.create_superuser(username="admin", password="adminpass")
-        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.admin_user = User.objects.create_superuser(
+            username="admin", password="adminpass"
+        )
+        self.user = User.objects.create_user(
+            username="testuser", password="password123"
+        )
 
-        self.category = Category.objects.create(name="City", friendly_name="LEGO City")
+        self.category = Category.objects.create(
+            name="City", friendly_name="LEGO City"
+        )
 
         self.product = Product.objects.create(
             name="LEGO Fire Truck",
@@ -95,9 +104,13 @@ class TestHomeViews(TestCase):
 
     def test_add_product_valid(self):
         """Ensure a product can be added via the store management page"""
-        image = SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
+        image = SimpleUploadedFile(
+            "test.jpg", b"file_content", content_type="image/jpeg"
+        )
 
-        category = Category.objects.create(name="city", friendly_name="LEGO City")
+        category = Category.objects.create(
+            name="city", friendly_name="LEGO City"
+        )
 
         response = self.client.post(reverse("manage_store"), {
             "name": "LEGO Police Car",
@@ -107,13 +120,27 @@ class TestHomeViews(TestCase):
             "image": image,
         })
 
-        self.assertIn(response.status_code, [200, 302], f"Unexpected status code: {response.status_code}")
-        Product.objects.create(name="LEGO Police Car", stock=5, sku="police-car-001")
-        self.assertTrue(Product.objects.filter(name="LEGO Police Car").exists())
+        self.assertIn(
+            response.status_code,
+            [200, 302],
+            f"Unexpected status code: {response.status_code}",
+        )
+
+        Product.objects.create(
+            name="LEGO Police Car",
+            stock=5,
+            sku="police-car-001",
+        )
+
+        self.assertTrue(
+            Product.objects.filter(name="LEGO Police Car").exists()
+        )
 
     def test_delete_product(self):
         """Ensure an admin can delete a product"""
-        response = self.client.post(reverse("delete_product", args=[self.product.id]))
+        response = self.client.post(
+            reverse("delete_product", args=[self.product.id])
+        )
         self.assertIn(response.status_code, [200, 302])
         self.assertFalse(Product.objects.filter(id=self.product.id).exists())
 
@@ -129,7 +156,9 @@ class TestContactFormView(TestCase):
         })
 
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(ContactMessage.objects.filter(email="alice@example.com").exists())
+        self.assertTrue(
+            ContactMessage.objects.filter(email="alice@example.com").exists()
+        )
 
     def test_contact_form_invalid_submission(self):
         """Ensure invalid contact form submissions return errors"""
@@ -138,7 +167,6 @@ class TestContactFormView(TestCase):
             "email": "not-an-email",
             "message": ""
         })
-        
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "home/index.html")
 

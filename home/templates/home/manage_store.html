@@ -23,42 +23,43 @@
         <div class="card bg-light p-4 shadow-sm text-dark">
             <form method="POST" enctype="multipart/form-data" class="w-100">
                 {% csrf_token %}
+            
                 <div class="mb-2">
-                    <label for="name" class="form-label">Name:</label>
-                    <input type="text" name="name" class="form-control" aria-label="Lego Set Name">
+                    <label for="setname" class="form-label">Name:</label>
+                    <input type="text" id="setname" name="setname" class="form-control" aria-label="Lego Set Name">
                 </div>
-
+            
                 <div class="mb-2">
                     <label for="description" class="form-label">Description:</label>
-                    <textarea name="description" class="form-control" aria-label="Lego Set Description"></textarea>
+                    <textarea id="description" name="description" class="form-control" aria-label="Lego Set Description"></textarea>
                 </div>
-
+            
                 <div class="mb-2">
                     <label for="theme" class="form-label">Theme:</label>
-                    <select name="theme" class="form-select" aria-label="Lego Theme Selection">
+                    <select id="theme" name="theme" class="form-select" aria-label="Lego Theme Selection">
                         {% for category in categories %}
                             <option value="{{ category.friendly_name }}">{{ category.friendly_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-
+            
                 <div class="mb-2">
                     <label for="rating" class="form-label">Rating:</label>
-                    <input type="number" name="rating" class="form-control" aria-label="Lego Set Rating">
+                    <input type="number" id="rating" name="rating" class="form-control" aria-label="Lego Set Rating">
                 </div>
-
+            
                 <div class="mb-2">
                     <label for="image" class="form-label">Image:</label>
-                    <input type="file" name="image" class="form-control" aria-label="Lego Set Image Upload">
+                    <input type="file" id="image" name="image" class="form-control" aria-label="Lego Set Image Upload">
                 </div>
-
+            
                 <div class="mb-2">
                     <label for="stock" class="form-label">Stock:</label>
-                    <input type="number" name="stock" class="form-control" aria-label="Lego Set Stock Quantity">
+                    <input type="number" id="stock" name="stock" class="form-control" aria-label="Lego Set Stock Quantity">
                 </div>
-
+            
                 <button type="submit" class="btn btn-success w-100">Add New LEGO Set</button>
-            </form>
+            </form>            
         </div>
 
         <h3 class="text-warning mt-4">Existing LEGO Sets</h3>

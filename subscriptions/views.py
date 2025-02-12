@@ -39,7 +39,9 @@ def subscription_confirmation(request, plan_id):
     stripe_checkout_url = request.session.get('stripe_checkout_url')
 
     if not stripe_checkout_url:
-        messages.error(request, "Error: Stripe checkout URL not found. Please try again.")
+        messages.error(
+            request, "Error: Stripe checkout URL not found. Please try again."
+        )
         return redirect('subscription_plans')
 
     return render(
@@ -49,18 +51,20 @@ def subscription_confirmation(request, plan_id):
     )
 
 
-
 @login_required
 def subscribe(request, plan_id):
-    """Handles Stripe Checkout for subscription plans with a confirmation step."""
+    """Handles Stripe Checkout for subscription plans with a confirmation."""
     plan = get_object_or_404(SubscriptionPlan, pk=plan_id)
 
     # Ensure the plan has a Stripe Price ID
     if not plan.stripe_price_id:
-        messages.error(request, "Subscription plan is missing a Stripe Price ID.")
+        messages.error(request, "Sub plan is missing a Stripe Price ID.")
         return redirect('subscription_plans')
 
-    existing_subscription = Subscription.objects.filter(user=request.user, status=True).first()
+    existing_subscription = Subscription.objects.filter(
+        user=request.user, status=True
+    ).first()
+
     if existing_subscription:
         messages.warning(request, "You already have an active subscription.")
         return redirect('user_profile')
@@ -76,7 +80,9 @@ def subscribe(request, plan_id):
             user_profile.save()
         else:
             try:
-                customer = stripe.Customer.retrieve(user_profile.stripe_customer_id)
+                customer = stripe.Customer.retrieve(
+                    user_profile.stripe_customer_id
+                )
 
                 # If customer was deleted, create a new one
                 if customer.get("deleted", False):
@@ -108,7 +114,7 @@ def subscribe(request, plan_id):
         request.session['stripe_checkout_url'] = session.url
         request.session['stripe_checkout_session_id'] = session.id
         request.session['selected_plan_id'] = plan_id  # Save selected plan
-        request.session.modified = True  # Ensure the session is explicitly saved
+        request.session.modified = True  # Ensure the session is saved
 
         # Create a Subscription Notification for Admin**
         Notification.objects.create(
@@ -120,7 +126,6 @@ def subscribe(request, plan_id):
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
 
-
     except stripe.error.StripeError as e:
         print(f"Stripe Error: {e}")
         messages.error(request, f"Stripe error: {str(e)}")
@@ -129,7 +134,7 @@ def subscribe(request, plan_id):
 
 @login_required
 def cancel_subscription(request):
-    """Cancels the user's Stripe subscription properly but keeps it active until expiration."""
+    """Cancels the Stripe subscription but keeps it active until expiry."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
 
     if not user_profile.subscription:
@@ -139,12 +144,14 @@ def cancel_subscription(request):
     subscription = user_profile.subscription
 
     if not subscription.stripe_subscription_id:
-        messages.error(request, "Error: No valid Stripe subscription ID found.")
+        messages.error(request, "Error: No valid Stripe subscription ID found")
         return redirect('user_profile')
 
     try:
         # Retrieve subscription from Stripe
-        stripe_sub = stripe.Subscription.retrieve(subscription.stripe_subscription_id)
+        stripe_sub = stripe.Subscription.retrieve(
+            subscription.stripe_subscription_id
+        )
 
         if stripe_sub.status != "canceled":
             stripe.Subscription.modify(
@@ -154,7 +161,9 @@ def cancel_subscription(request):
             subscription.status = True  # Keep marked as active
             subscription.save()
 
-            messages.success(request, "Your subscription will remain active until the cancellation date.")
+            messages.success(
+                request, "Your will remain active until the cancellation date."
+            )
 
         else:
             messages.info(request, "This subscription was already canceled.")
@@ -166,7 +175,9 @@ def cancel_subscription(request):
             subscription.save()
             user_profile.subscription = None  # Unlink from profile
             user_profile.save()
-            messages.error(request, "Your subscription was already canceled or removed from Stripe.")
+            messages.error(
+                request, "Your subscription was already canceled or removed."
+            )
 
     return redirect('user_profile')
 
@@ -197,14 +208,19 @@ def check_and_update_subscriptions():
     for sub in expired_subs:
         if sub.stripe_subscription_id:
             try:
-                stripe_sub = stripe.Subscription.retrieve(sub.stripe_subscription_id)
+                stripe_sub = stripe.Subscription.retrieve(
+                    sub.stripe_subscription_id
+                )
                 if stripe_sub.status == "canceled":
                     sub.status = False  # Mark as expired
                     sub.save()
                     logger.info(f" Subscription expired: {sub.user.email} (ID: {sub.id})")
 
             except stripe.error.StripeError as e:
-                logger.error(f"Error checking Stripe subscription {sub.stripe_subscription_id}: {str(e)}")
+                logger.error(
+                    f"Error checking Stripe subscription {sub.stripe_subscription_id}: "
+                    f"{str(e)}"
+                )
 
     # Send renewal reminder emails
     upcoming_renewals = Subscription.objects.filter(
@@ -215,13 +231,18 @@ def check_and_update_subscriptions():
     for sub in upcoming_renewals:
         send_mail(
             subject="Your Brick Heroes Subscription is Renewing Soon",
-            message=f"Hello {sub.user.username},\n\nYour subscription will renew on {sub.end_date}. If you wish to cancel, please do so before the renewal date.",
+            message=(
+                f"Hello {sub.user.username},\n\nYour subscription renews on "
+                f"{sub.end_date}. If you wish to cancel, please do so before "
+                f"renewal date."
+            ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[sub.user.email],
         )
 
 
 logger = logging.getLogger(__name__)
+
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -231,7 +252,9 @@ def stripe_webhook(request):
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
     except (ValueError, stripe.error.SignatureVerificationError) as e:
         return JsonResponse({"error": str(e)}, status=400)
 
