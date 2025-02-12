@@ -282,7 +282,7 @@ def stripe_webhook(request):
             logger.error("No matching subscription plan found.")
             return JsonResponse({"error": "No matching plan"}, status=400)
 
-        # Check if the user already has a subscription (including canceled ones)
+        # Check if the user already has a subscription
         existing_subscription = Subscription.objects.filter(user=user_profile.user).order_by('-end_date').first()
 
         if existing_subscription:
@@ -296,7 +296,9 @@ def stripe_webhook(request):
                 existing_subscription.save()
                 user_profile.subscription = existing_subscription
                 user_profile.save()
-                logger.info(f" Subscription reactivated for {user_profile.user.email} (ID: {existing_subscription.id})")
+                logger.info(
+                    f" Subscription reactivated for {user_profile.user.email} (ID: {existing_subscription.id})"
+                )
             else:
                 logger.info(f" Subscription already exists for {user_profile.user.email} (ID: {existing_subscription.id})")
         else:
