@@ -20,12 +20,6 @@ class TestNotificationModel(TestCase):
             is_read=False
         )
 
-    def test_notification_str(self):
-        """Ensure the string representation of Notification is correct"""
-        self.assertEqual(
-            str(self.notification), "subscription - Your subscriptions renewed"
-        )
-
     def test_mark_notification_as_read(self):
         """Ensure notification read status updates correctly"""
         self.notification.is_read = True

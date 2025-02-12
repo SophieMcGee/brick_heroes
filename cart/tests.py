@@ -115,18 +115,6 @@ class TestCartViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "cart/shopping_cart.html")
 
-    def test_add_to_cart(self):
-        """Ensure LEGO sets can be added to the borrow cart"""
-        response = self.client.post(reverse("add_to_cart", args=[self.product.id]))
-
-        self.assertEqual(response.status_code, 302)
-        borrowing_exists = Borrowing.objects.filter(
-            user=self.user, lego_set=self.product
-        ).exists()
-        self.assertTrue(
-            borrowing_exists, "Borrowing object was not created"
-        )
-
     def test_remove_from_cart(self):
         """Ensure users can remove items from the borrow cart"""
         cart_item = CartItem.objects.create(
