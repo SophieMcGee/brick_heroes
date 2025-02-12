@@ -324,7 +324,9 @@ def stripe_webhook(request):
         if subscription:
             subscription.status = False
             subscription.save()
-            logger.info(f" Subscription {stripe_subscription_id} marked as expired.")
+            logger.info(
+                f" Subscription {stripe_subscription_id} marked as expired."
+            )
 
     return JsonResponse({"message": "Webhook received"}, status=200)
 
@@ -332,8 +334,7 @@ def stripe_webhook(request):
 @login_required
 def subscription_success(request):
     """Creates a subscription in the database only after successful payment."""
-    
-    plan_id = request.session.get("selected_plan_id")  # Retrieve the selected plan
+    plan_id = request.session.get("selected_plan_id")
     if not plan_id:
         messages.error(request, "No subscription plan found. Please try again.")
         return redirect("user_profile")
@@ -445,4 +446,3 @@ def return_borrowed_sets(request):
             messages.warning(request, "Please select at least one LEGO set to return.")
 
     return redirect('user_profile')  # Redirect back to profile after return
-

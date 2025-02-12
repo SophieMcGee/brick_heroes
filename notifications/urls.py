@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     path(
         "admin/notifications/approve-review/<int:review_id>/",
-        approve_review, 
+        approve_review,
         name="approve_review"
     ),
 ]
