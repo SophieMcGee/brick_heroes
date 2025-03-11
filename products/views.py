@@ -148,6 +148,7 @@ def submit_rating(request, product_id):
 
         #  Update product rating immediately
         product.update_rating()
+        product.save(update_fields=["rating"])
 
         messages.success(request, "⭐ Rating submitted successfully!")
 

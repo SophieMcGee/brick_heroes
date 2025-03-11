@@ -24,9 +24,16 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         """Ensure image_url is set correctly on save."""
-        if self.image:  # If an image is uploaded to Cloudinary
-            self.image_url = self.image.url  # Get the full Cloudinary URL
+        if self.image:  # If an image is uploaded
+            if "cloudinary" in str(self.image):
+                self.image_url = str(self.image)  # Full Cloudinary URL
+            else:
+                self.image_url = f"/media/{self.image}"
+        elif not self.image_url:
+            self.image_url = self.image_url or None
+        
         super().save(*args, **kwargs)
+
 
     def get_average_rating(self):
         """Calculate the average rating from all reviews."""
@@ -38,7 +45,7 @@ class Product(models.Model):
         avg_rating = self.ratings.aggregate(Avg("rating"))["rating__avg"]
         self.average_rating = round(avg_rating, 1) if avg_rating else 0
         self.total_ratings = self.ratings.count()
-        self.save()
+        self.save(update_fields=["rating", "total_ratings"]) 
 
     def __str__(self):
         return self.name
