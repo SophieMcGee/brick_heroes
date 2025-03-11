@@ -14,7 +14,7 @@ from allauth.account.models import EmailAddress
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from datetime import tiledelta
+from datetime import timedelta
 import logging
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
