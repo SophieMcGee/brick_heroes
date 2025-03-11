@@ -81,30 +81,28 @@
             <h3 class="text-warning mt-4">Your Subscription</h3>
 
             {% if subscription %}
-                <div class="card bg-warning text-dark my-3 p-3">
+                <div class="card bg-white text-dark my-3 p-3 rounded border">
                     <h4 class="mb-3">Plan: {{ subscription.subscription_plan.name }}</h4>
 
                     <div class="d-flex flex-column gap-2">
-                        <div class="bg-light p-2 rounded">
+                        <div class="bg-light p-2 rounded border">
                             <strong>Start Date:</strong> {{ subscription.start_date }}
                         </div>
-                        <div class="bg-light p-2 rounded">
+                        <div class="bg-light p-2 rounded border">
                             <strong>Next Billing Date:</strong> {{ subscription.end_date }}
                         </div>
-                        <div class="bg-light p-2 rounded">
+                        <div class="bg-light p-2 rounded border">
                             <strong>Status:</strong>
                             {% if subscription_status == "Active" %}
-                                <span class="badge bg-success" aria-label="Subscription is active">Active</span>
+                                <span class="badge bg-success text-light">Active</span>
                             {% elif subscription_status == "Pending Cancellation" %}
-                                <span class="badge bg-warning text-dark">
-                                    Pending Cancellation
-                                </span>
-                                <div class="alert alert-warning p-2 mt-2">
+                                <span class="badge bg-warning text-dark">Pending Cancellation</span>
+                                <div class="bg-warning text-dark p-2 mt-2 rounded border">
                                     Your subscription will remain active until <strong>{{ subscription.end_date }}</strong>. 
-                                    After this date, it will be canceled.
+                                    After this date, it will be cancelled.
                                 </div>
                             {% else %}
-                                <span class="badge bg-danger" aria-label="Subscription has expired">Expired</span>
+                                <span class="badge bg-danger text-light">Expired</span>
                             {% endif %}
                         </div>
                     </div>
@@ -116,11 +114,10 @@
                         </div>
                     {% endif %}
                 </div>
-
             {% else %}
-                <div class="alert alert-danger p-3">
+                <div class="bg-white text-dark p-3 mt-2 rounded border">
                     <p class="mb-2">No active subscription.</p>
-                    <a href="{% url 'subscription_plans' %}" class="btn btn-warning w-100">Subscribe Now</a>
+                    <a href="{% url 'subscription_plans' %}" class="btn btn-warning text-dark w-100">Subscribe Now</a>
                 </div>
             {% endif %}
 

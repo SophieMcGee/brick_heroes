@@ -448,7 +448,7 @@ def subscription_success(request):
 def user_profile(request):
     """User profile page displaying subscriptions"""
     user_profile = request.user.userprofile
-    subscription = user_profile.subscription
+    subscription = user_profile.subscription if user_profile.subscription else None
     
     emailaddresses = EmailAddress.objects.filter(user=request.user)
 
