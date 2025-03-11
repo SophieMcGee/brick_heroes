@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from .forms import ContactForm
 from subscriptions.models import Borrowing, Subscription, UserProfile
 from notifications.models import Notification
@@ -153,22 +155,26 @@ def contact_view(request):
         if form.is_valid():
             contact_message = form.save()
 
-            # Send an automatic reply to the user
+            # Send Confirmation Email to User
+            subject = "Thank You for Contacting Us!"
+            context = {'user_name': contact_message.name}
+            email_html_message = render_to_string(
+                'allauth/account/contact_confirmation.html', context
+            )
+            email_plain_message = strip_tags(email_html_message)
+
             send_mail(
-                subject="Thank You for Contacting Us!",
-                message=(
-                    f"Hello {contact_message.name},\n\n"
-                    "This website is part of a test project"
-                    "for a learning program. You will not "
-                    "receive a reply.\n\n"
-                    "Best Regards,\nBrick Heroes Team"
-                ),
-                from_email="brickheroes51@gmail",
+                subject=subject,
+                message=email_plain_message,  # Plain text fallback
+                from_email="brickheroes51@gmail.com",
                 recipient_list=[contact_message.email],
+                html_message=email_html_message,  # HTML email version
                 fail_silently=False,
             )
 
+            messages.success(request, "Your message has been sent successfully!")
             return redirect('contact_success')
+
         else:
             messages.error(request, "There was an error with your submission.")
     else:
