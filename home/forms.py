@@ -5,6 +5,17 @@ from products.models import Product
 
 class ProductForm(forms.ModelForm):
     image = forms.ImageField(required=False)
+    rating = forms.IntegerField(
+        min_value=1,
+        max_value=5,
+        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+        help_text="Enter a rating between 1 and 5."
+    )
+    name = forms.CharField(
+        max_length=254,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter LEGO set name'}),
+        required=True
+    )
 
     class Meta:
         model = Product

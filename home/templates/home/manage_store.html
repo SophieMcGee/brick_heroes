@@ -26,7 +26,7 @@
             
                 <div class="mb-2">
                     <label for="setname" class="form-label">Name:</label>
-                    <input type="text" id="setname" name="setname" class="form-control" aria-label="Lego Set Name">
+                    <input type="text" id="setname" name="name" class="form-control" aria-label="Lego Set Name">
                 </div>
             
                 <div class="mb-2">
@@ -35,8 +35,8 @@
                 </div>
             
                 <div class="mb-2">
-                    <label for="theme" class="form-label">Theme:</label>
-                    <select id="theme" name="theme" class="form-select" aria-label="Lego Theme Selection">
+                    <label for="category" class="form-label">Category:</label>
+                    <select id="category" name="category" class="form-select" aria-label="Lego Theme Selection">
                         {% for category in categories %}
                             <option value="{{ category.friendly_name }}">{{ category.friendly_name }}</option>
                         {% endfor %}
