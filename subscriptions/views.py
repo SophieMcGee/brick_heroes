@@ -14,6 +14,7 @@ from allauth.account.models import EmailAddress
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from datetime import tiledelta
 import logging
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -350,8 +351,44 @@ def stripe_webhook(request):
             user_profile.save()
             logger.info(
                 f"New subscription created for {user_profile.user.email}")
+            
+        # Send Subscription Confirmation Email
+            subject = "Subscription Confirmation - Brick Heroes"
+            context = {"user": user_profile.user, "plan": plan}
+            email_html_message = render_to_string("allauth/account/subscription_confirmation.html", context)
+            email_plain_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject=subject,
+                message=email_plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user_profile.user.email],
+                html_message=email_html_message,
+                fail_silently=False,
+            )
 
         return JsonResponse({"message": "Subscription processed successfully"}, status=200)
+    
+    elif event["type"] == "invoice.payment_failed":
+        """Send a notification when a payment fails."""
+        invoice = event["data"]["object"]
+        user_profile = UserProfile.objects.filter(stripe_customer_id=invoice["customer"]).first()
+        
+        if user_profile:
+            # Send Payment Failure Notification Email
+            subject = "Payment Failed - Brick Heroes"
+            context = {"user": user_profile.user}
+            email_html_message = render_to_string("allauth/account/payment_failed.html", context)
+            email_plain_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject=subject,
+                message=email_plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user_profile.user.email],
+                html_message=email_html_message,
+                fail_silently=False,
+            )
 
     elif event["type"] == "customer.subscription.deleted":
         stripe_subscription_id = event["data"]["object"]["id"]
@@ -362,6 +399,21 @@ def stripe_webhook(request):
             subscription.save()
             logger.info(
                 f" Subscription {stripe_subscription_id} marked as expired."
+            )
+
+            # Send Subscription Cancellation Email
+            subject = "Subscription Canceled - Brick Heroes"
+            context = {"user": subscription.user}
+            email_html_message = render_to_string("allauth/account/subscription_cancellation.html", context)
+            email_plain_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject=subject,
+                message=email_plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[subscription.user.email],
+                html_message=email_html_message,
+                fail_silently=False,
             )
 
     return JsonResponse({"message": "Webhook received"}, status=200)

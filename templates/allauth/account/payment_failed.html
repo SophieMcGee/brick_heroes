@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Payment Failed" %}{% endblock head_title %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white text-center">
+                    <h2 class="logo-font">{% trans "Payment Failed" %}</h2>
+                </div>
+                <div class="card-body text-center">
+                    <p>{% trans "Hi" %} {{ user.username }},</p>
+                    <p>{% trans "We were unable to process your payment. Please update your payment details to avoid service interruption." %}</p>
+                    <a href="{% url 'user_profile' %}" class="btn btn-primary">{% trans "Update Payment Details" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

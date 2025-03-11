@@ -43,7 +43,6 @@ def manage_store(request):
                 new_product.image = request.FILES["image"]
             elif new_product.image:
                 pass  # Keep existing image if no new image is uploaded
-            
             new_product.save()  # Save the new product
             messages.success(request, "New LEGO set added successfully!")
 
