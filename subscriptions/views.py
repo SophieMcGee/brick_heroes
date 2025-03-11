@@ -12,6 +12,8 @@ from django.contrib import messages
 from notifications.models import Notification
 from allauth.account.models import EmailAddress
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 import logging
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -83,7 +85,6 @@ def subscribe(request, plan_id):
                 customer = stripe.Customer.retrieve(
                     user_profile.stripe_customer_id
                 )
-
                 # If customer was deleted, create a new one
                 if customer.get("deleted", False):
                     customer = stripe.Customer.create(email=request.user.email)
@@ -123,8 +124,20 @@ def subscribe(request, plan_id):
             category="subscription"
         )
 
+        # Send confirmation email to user
+        send_mail(
+            subject="Subscription Confirmation - Brick Heroes",
+            message=f"Dear {request.user.username},\n\n"
+                    f"Thank you for subscribing to {plan.name}. Your subscription is now active.\n\n"
+                    f"If you have any questions, feel free to contact us.\n\n"
+                    f"Best,\nBrick Heroes Team",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[request.user.email],
+            fail_silently=False,
+        )
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
+    
 
     except stripe.error.StripeError as e:
         print(f"Stripe Error: {e}")
@@ -163,6 +176,26 @@ def cancel_subscription(request):
 
             messages.success(
                 request, "Your will remain active until the cancellation date."
+            )
+
+            # Send Cancellation Confirmation Email
+            subject = "Subscription Cancellation Confirmation - Brick Heroes"
+            context = {
+                'user': request.user,
+                'subscription': subscription,
+            }
+            email_html_message = render_to_string(
+                'account/email/subscription_cancellation_email.html', context
+            )
+            email_plain_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject=subject,
+                message=email_plain_message,  # Plain text fallback
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[request.user.email],
+                html_message=email_html_message,  # HTML email version
+                fail_silently=False,
             )
 
         else:
