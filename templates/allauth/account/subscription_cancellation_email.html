@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Subscription Cancellation" %}{% endblock head_title %}
+
+{% block content %}
+<div class="container mt-5" role="main">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white text-center">
+                    <h2 class="logo-font">{% trans "Subscription Canceled" %}</h2>
+                </div>
+                <div class="card-body text-center">
+                    <p class="lead">{% trans "Hi" %} {{ user.username }},</p>
+                    <p>
+                        {% trans "Your subscription to" %} <strong>{{ subscription.plan.name }}</strong> 
+                        {% trans "has been successfully canceled. You will continue to have access until the end of your current billing period." %}
+                    </p>
+                    <p>{% trans "If you have any questions, feel free to contact us." %}</p>
+                    <a href="{% url 'user_profile' %}" class="btn btn-secondary">{% trans "Return to Profile" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

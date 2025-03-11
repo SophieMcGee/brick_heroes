@@ -124,20 +124,22 @@ def subscribe(request, plan_id):
             category="subscription"
         )
 
-        # Send confirmation email to user
+        # Subscription Confirmation Email
+        subject = "Subscription Confirmation - Brick Heroes"
+        context = {'user': request.user, 'plan': plan}
+        email_html_message = render_to_string('templates/allauth/account/subscription_confirmation.html', context)
+        email_plain_message = strip_tags(email_html_message)
+
         send_mail(
-            subject="Subscription Confirmation - Brick Heroes",
-            message=f"Dear {request.user.username},\n\n"
-                    f"Thank you for subscribing to {plan.name}. Your subscription is now active.\n\n"
-                    f"If you have any questions, feel free to contact us.\n\n"
-                    f"Best,\nBrick Heroes Team",
+            subject=subject,
+            message=email_plain_message,  # Plain text fallback
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[request.user.email],
+            html_message=email_html_message,  # HTML email version
             fail_silently=False,
         )
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
-    
 
     except stripe.error.StripeError as e:
         print(f"Stripe Error: {e}")
@@ -185,7 +187,7 @@ def cancel_subscription(request):
                 'subscription': subscription,
             }
             email_html_message = render_to_string(
-                'account/email/subscription_cancellation_email.html', context
+                'templates/allauth/account/subscription_cancellation_email.html', context
             )
             email_plain_message = strip_tags(email_html_message)
 
