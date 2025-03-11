@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.models import User
-from .forms import ContactForm
+from .forms import ContactForm, ProductForm
 from subscriptions.models import Borrowing, Subscription, UserProfile
 from notifications.models import Notification
 from products.models import Product, Review, Category
@@ -31,19 +31,14 @@ def manage_store(request):
         if form.is_valid():
             new_product = form.save(commit=False)
 
-            category_name = request.POST.get("theme")
+            category_name = request.POST.get("category")
             if category_name:
                 category, created = Category.objects.get_or_create(
                     friendly_name=category_name
                 )
                 new_product.category = category  # Assign category to product
 
-            # Handle image upload
-            if "image" in request.FILES:
-                new_product.image = request.FILES["image"]
-            elif new_product.image:
-                pass  # Keep existing image if no new image is uploaded
-            new_product.save()  # Save the new product
+            new_product.save()  # Save the new product with Cloudinary
             messages.success(request, "New LEGO set added successfully!")
 
             # Send Email Notification to Admins
