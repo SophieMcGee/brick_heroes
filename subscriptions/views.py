@@ -124,21 +124,6 @@ def subscribe(request, plan_id):
             message=f"{request.user.username} has subscribed to {plan.name}.",
             category="subscription"
         )
-
-        # Subscription Confirmation Email
-        subject = "Subscription Confirmation - Brick Heroes"
-        context = {'user': request.user, 'plan': plan}
-        email_html_message = render_to_string('allauth/account/subscription_confirmation.html', context)
-        email_plain_message = strip_tags(email_html_message)
-
-        send_mail(
-            subject=subject,
-            message=email_plain_message,  # Plain text fallback
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[request.user.email],
-            html_message=email_html_message,  # HTML email version
-            fail_silently=False,
-        )
         # Redirect user to the confirmation page
         return redirect('subscription_confirmation', plan_id=plan.id)
 
@@ -352,7 +337,7 @@ def stripe_webhook(request):
             logger.info(
                 f"New subscription created for {user_profile.user.email}")
             
-        # Send Subscription Confirmation Email
+            # Send Subscription Confirmation Email
             subject = "Subscription Confirmation - Brick Heroes"
             context = {"user": user_profile.user, "plan": plan}
             email_html_message = render_to_string("allauth/account/subscription_confirmation.html", context)
@@ -464,6 +449,7 @@ def user_profile(request):
     """User profile page displaying subscriptions"""
     user_profile = request.user.userprofile
     subscription = user_profile.subscription
+    
 
     # Determine subscription status
     if subscription:
