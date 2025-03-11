@@ -314,6 +314,11 @@ header .btn:hover {
     z-index: 1050;
 }
 
+.alert-danger {
+    display: block !important;
+    visibility: visible !important;
+}
+
 .hg-danger {
     margin-bottom: 0 !important;
 }

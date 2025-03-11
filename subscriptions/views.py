@@ -451,6 +451,10 @@ def user_profile(request):
     subscription = user_profile.subscription
     
     emailaddresses = EmailAddress.objects.filter(user=request.user)
+
+    # Default subscription status
+    subscription_status = "No Subscription"
+
     # Determine subscription status
     if subscription:
         # Fetch latest status from Stripe
@@ -476,14 +480,12 @@ def user_profile(request):
 
         # Save the updated status in case the subscription is newly marked
         subscription.save()
-    else:
-        subscription_status = "No Subscription"
-
-        borrowed_sets = Borrowing.objects.filter(
+    
+    borrowed_sets = Borrowing.objects.filter(
             user=request.user, is_returned=False
         )
 
-        notifications = Notification.objects.filter(
+    notifications = Notification.objects.filter(
             user=request.user
         ).order_by('-created_at')[:5]
 
