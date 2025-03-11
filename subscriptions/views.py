@@ -470,6 +470,8 @@ def return_borrowed_sets(request):
                 id__in=returned_set_ids, user=request.user
             )
 
+            returned_set_names = [] #Store returned set names for email
+
             for borrow in returned_sets:
                 borrow.is_returned = True  # Mark as returned
                 borrow.save()
@@ -488,6 +490,26 @@ def return_borrowed_sets(request):
 
             messages.success(
                 request, "Selected LEGO set(s) have been returned!"
+            )
+
+            #Send Return Confirmation Email
+            subject = "LEGO Set Return Confirmation - Brick Heroes"
+            context = {
+                'user': request.user,
+                'returned_sets': returned_set_names,
+            }
+            email_html_message = render_to_string(
+                'allauth/account/borrow_return_confirmation.html', context
+            )
+            email_plain_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject=subject,
+                message=email_plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[request.user.email],
+                html_message=email_html_message,
+                fail_silently=False,
             )
 
         else:

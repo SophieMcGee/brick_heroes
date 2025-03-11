@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Return Confirmation" %}{% endblock head_title %}
+
+{% block content %}
+<div class="container mt-5" role="main">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-white text-center">
+                    <h2 class="logo-font">{% trans "LEGO Set Returned" %}</h2>
+                </div>
+                <div class="card-body text-center">
+                    <p class="lead">{% trans "Hi" %} {{ user.username }},</p>
+                    <p>
+                        {% trans "You have successfully returned the following LEGO set(s):" %}
+                        <ul>
+                            {% for set_name in returned_sets %}
+                                <li><strong>{{ set_name }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                    <p>{% trans "Thank you for using Brick Heroes!" %}</p>
+                    <p>{% trans "You can now borrow a new set if your subscription allows it." %}</p>
+                    <p>{% trans "If you have any questions, feel free to contact us." %}</p>
+                    <a href="{% url 'user_profile' %}" class="btn btn-secondary">{% trans "Back to My Profile" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

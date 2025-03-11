@@ -151,7 +151,6 @@ def checkout(request):
 
                     borrowed_sets = []  # Store borrowed set names for email
 
-
                     # Create Borrowing records for each item
                     for item in cart_items:
                         borrowing = Borrowing.objects.create(

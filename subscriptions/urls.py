@@ -15,7 +15,6 @@ urlpatterns = [
         'checkout/<int:plan_id>/', views.subscribe,
         name='subscribe'
     ),
-    
     path(
         'success/', views.subscription_success,
         name='subscription_success'
