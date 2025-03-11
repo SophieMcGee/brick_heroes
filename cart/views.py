@@ -8,6 +8,10 @@ from notifications.models import Notification
 from .forms import DeliveryInfoForm
 from django.db import transaction
 from django.utils.timezone import now
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 
 
 @login_required
@@ -145,6 +149,9 @@ def checkout(request):
                     order.user = request.user
                     order.save()
 
+                    borrowed_sets = []  # Store borrowed set names for email
+
+
                     # Create Borrowing records for each item
                     for item in cart_items:
                         borrowing = Borrowing.objects.create(
@@ -165,6 +172,26 @@ def checkout(request):
                             user=request.user,
                             message=f"{request.user.username} borrowed {item.product.name}.",
                             category="borrowing"
+                        )
+
+                        # **Send Borrowing Confirmation Email**
+                        subject = "LEGO Set Borrowing Confirmation - Brick Heroes"
+                        context = {
+                            'user': request.user,
+                            'borrowed_sets': borrowed_sets,
+                        }
+                        email_html_message = render_to_string(
+                            'allauth/account/borrow_confirmation.html', context
+                        )
+                        email_plain_message = strip_tags(email_html_message)
+
+                        send_mail(
+                            subject=subject,
+                            message=email_plain_message,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[request.user.email],
+                            html_message=email_html_message,
+                            fail_silently=False,
                         )
 
                     # Clear the cart after checkout

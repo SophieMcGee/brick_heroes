@@ -127,7 +127,7 @@ def subscribe(request, plan_id):
         # Subscription Confirmation Email
         subject = "Subscription Confirmation - Brick Heroes"
         context = {'user': request.user, 'plan': plan}
-        email_html_message = render_to_string('templates/allauth/account/subscription_confirmation.html', context)
+        email_html_message = render_to_string('allauth/account/subscription_confirmation.html', context)
         email_plain_message = strip_tags(email_html_message)
 
         send_mail(
@@ -187,7 +187,7 @@ def cancel_subscription(request):
                 'subscription': subscription,
             }
             email_html_message = render_to_string(
-                'templates/allauth/account/subscription_cancellation_email.html', context
+                'allauth/account/subscription_cancellation_email.html', context
             )
             email_plain_message = strip_tags(email_html_message)
 
