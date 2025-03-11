@@ -5,6 +5,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.contrib.auth.models import User
 from .forms import ContactForm
 from subscriptions.models import Borrowing, Subscription, UserProfile
 from notifications.models import Notification
@@ -42,10 +43,32 @@ def manage_store(request):
                 new_product.image = request.FILES["image"]
             elif new_product.image:
                 pass  # Keep existing image if no new image is uploaded
-            messages.success(request, "New LEGO set added successfully!")
+            
             new_product.save()  # Save the new product
+            messages.success(request, "New LEGO set added successfully!")
+
+            # Send Email Notification to Admins
+            admin_users = User.objects.filter(is_staff=True)
+            admin_emails = [admin.email for admin in admin_users if admin.email]
+
+            subject = "New Product Added - Brick Heroes"
+            context = {'product': new_product}
+            email_html_message = render_to_string(
+                'allauth/account/product_added_confirmation.html', context
+            )
+            email_plain_message = strip_tags(email_html_message)
+
+            send_mail(
+                subject=subject,
+                message=email_plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=admin_emails,
+                html_message=email_html_message,
+                fail_silently=False,
+            )
 
             return redirect("manage_store")
+
         else:
             messages.error(request, "Error adding LEGO set. Please check.")
 
@@ -54,7 +77,7 @@ def manage_store(request):
 
     context = {
         "products": products,
-        "categories": categories,  # Send categories to template
+        "categories": categories,
         "form": form,
     }
     return render(request, "home/manage_store.html", context)
