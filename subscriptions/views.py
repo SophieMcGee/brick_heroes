@@ -450,7 +450,7 @@ def user_profile(request):
     user_profile = request.user.userprofile
     subscription = user_profile.subscription
     
-
+    emailaddresses = EmailAddress.objects.filter(user=request.user)
     # Determine subscription status
     if subscription:
         # Fetch latest status from Stripe
