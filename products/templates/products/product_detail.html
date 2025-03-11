@@ -7,12 +7,13 @@
         <!-- Product Image -->
         <div class="col-md-6 offset-md-1">
             {% if product.image_url %}
-                <img src="{{ product.image_url }}" class="img-fluid rounded shadow"
-                    alt="LEGO Set: {{ product.name }} - Product Image">
+                <img src="{{ product.image_url }}" class="img-fluid rounded shadow" alt="LEGO Set: {{ product.name }}">
+            {% elif product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid rounded shadow" alt="LEGO Set: {{ product.name }}">
             {% else %}
-                <img src="{% static 'media/default-image.jpg' %}" class="img-fluid rounded shadow" 
-                    alt="No image available">
+                <img src="{% static 'media/default-image.jpg' %}" class="img-fluid rounded shadow" alt="No image available">
             {% endif %}
+
         </div>
 
         <!-- Product Details -->
