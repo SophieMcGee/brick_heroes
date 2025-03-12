@@ -36,11 +36,7 @@
             
                 <div class="mb-2">
                     <label for="category" class="form-label">Category:</label>
-                    <select id="category" name="category" class="form-select" aria-label="Lego Theme Selection">
-                        {% for category in categories %}
-                            <option value="{{ category.friendly_name }}">{{ category.friendly_name }}</option>
-                        {% endfor %}
-                    </select>
+                    <input type="text" id="category" name="category" class="form-control" placeholder="Enter or select a category">
                 </div>
             
                 <div class="mb-2">

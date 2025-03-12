@@ -32,13 +32,12 @@ def manage_store(request):
             new_product = form.save(commit=False)
 
             category_name = request.POST.get("category")
-            if category_name:
-                category, created = Category.objects.get_or_create(
-                    friendly_name=category_name
-                )
-                new_product.category = category  # Assign category to product
 
-            new_product.save()  # Save the new product with Cloudinary
+            if category_name:
+                category, created = Category.objects.get_or_create(friendly_name=category_name)
+                new_product.category = category
+
+            new_product.save()
             messages.success(request, "New LEGO set added successfully!")
 
             # Send Email Notification to Admins

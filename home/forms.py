@@ -1,6 +1,6 @@
 from django import forms
 from .models import ContactMessage
-from products.models import Product
+from products.models import Product, Category
 
 
 class ProductForm(forms.ModelForm):
@@ -15,6 +15,11 @@ class ProductForm(forms.ModelForm):
         max_length=254,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter LEGO set name'}),
         required=True
+    )
+    category = forms.CharField(
+        max_length=254,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter or select a category'}),
+        required=False
     )
 
     class Meta:
