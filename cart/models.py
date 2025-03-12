@@ -5,7 +5,12 @@ from django.utils.timezone import now
 
 
 class Cart(models.Model):
-    """Model for user borrowing cart"""
+    """
+    Represents a user's borrowing cart.
+
+    Each user can have only one cart, which stores borrowed LEGO sets 
+    before confirming the borrow order.
+    """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
