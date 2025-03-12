@@ -85,6 +85,9 @@ def edit_product(request, product_id):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
+            # Ensure the image is retained if not changed
+            if not request.FILES.get('image'):
+                form.instance.image = product.image
             form.save()
             messages.success(request, "LEGO set updated successfully!")
             return redirect("manage_store")
