@@ -5,7 +5,7 @@ from products.models import Product
 
 class ProductForm(forms.ModelForm):
     image = forms.ImageField(required=False)
-    rating = forms.IntegerField(
+    rating = forms.FloatField(
         min_value=1,
         max_value=5,
         widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
