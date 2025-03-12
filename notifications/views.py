@@ -11,9 +11,17 @@ def admin_notifications(request):
     """Displays pending reviews, subscriptions, and borrowing notifications."""
 
     # Fetch all notifications, grouped by category
-    subscription_notifications = Notification.objects.filter(category="subscription").order_by('-created_at')
-    borrowing_notifications = Notification.objects.filter(category="borrowing").order_by('-created_at')
-    review_notifications = Notification.objects.filter(category="review").order_by('-created_at')
+    subscription_notifications = Notification.objects.filter(
+        category="subscription"
+    ).order_by('-created_at')
+
+    borrowing_notifications = Notification.objects.filter(
+        category="borrowing"
+    ).order_by('-created_at')
+
+    review_notifications = Notification.objects.filter(
+        category="review"
+    ).order_by('-created_at')
 
     # Fetch pending reviews that need admin approval
     pending_reviews = Review.objects.filter(is_approved=False)

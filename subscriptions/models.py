@@ -150,7 +150,10 @@ class UserProfile(models.Model):
                 is_returned=False
             ).count()
 
-            return active_borrows < self.subscription.subscription_plan.max_active_borrows
+            return (
+                active_borrows <
+                self.subscription.subscription_plan.max_active_borrows
+            )
 
         return False  # Expired subscription, cannot borrow
 

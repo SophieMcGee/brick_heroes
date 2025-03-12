@@ -14,7 +14,6 @@ from django.utils.html import strip_tags
 from django.conf import settings
 
 
-
 @login_required
 def view_cart(request):
     """View for displaying the cart."""
@@ -178,7 +177,7 @@ def checkout(request):
                         )
 
                         # **Send Borrowing Confirmation Email**
-                        subject = "LEGO Set Borrowing Confirmation - Brick Heroes"
+                        subject = "LEGO Set Borrowing Confirmation"
                         context = {
                             'user': request.user,
                             'borrowed_sets': borrowed_sets,

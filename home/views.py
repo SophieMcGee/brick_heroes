@@ -36,18 +36,21 @@ def manage_store(request):
             new_category_name = form.cleaned_data.get("new_category")
 
             if new_category_name:
-                category, created = Category.objects.get_or_create(friendly_name=new_category_name)
+                category, created = Category.objects.get_or_create(
+                    friendly_name=new_category_name
+                )
                 new_product.category = category
             elif existing_category:
                 new_product.category = existing_category
-
 
             new_product.save()
             messages.success(request, "New LEGO set added successfully!")
 
             # Send Email Notification to Admins
             admin_users = User.objects.filter(is_staff=True)
-            admin_emails = [admin.email for admin in admin_users if admin.email]
+            admin_emails = [
+                admin.email for admin in admin_users if admin.email
+            ]
 
             subject = "New Product Added - Brick Heroes"
             context = {'product': new_product}
@@ -89,7 +92,6 @@ def edit_product(request, product_id):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            # If a new image is uploaded, update it; otherwise, keep the existing image
             if "image" in request.FILES:
                 product.image = request.FILES["image"]
             else:
@@ -198,7 +200,7 @@ def contact_view(request):
                 fail_silently=False,
             )
 
-            messages.success(request, "Your message has been sent successfully!")
+            messages.success(request, "Your message has been sent")
             return redirect('contact_success')
 
         else:

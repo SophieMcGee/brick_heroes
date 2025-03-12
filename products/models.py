@@ -37,7 +37,7 @@ class Product(models.Model):
         avg_rating = self.ratings.aggregate(Avg("rating"))["rating__avg"]
         self.rating = round(avg_rating, 1) if avg_rating else 0
         self.total_ratings = self.ratings.count()
-        self.save(update_fields=["rating", "total_ratings"]) 
+        self.save(update_fields=["rating", "total_ratings"])
 
     def __str__(self):
         return self.name
