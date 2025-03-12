@@ -8,8 +8,8 @@ class ProductForm(forms.ModelForm):
     rating = forms.IntegerField(
         min_value=1,
         max_value=5,
-        widget=forms.NumberInput(attrs={'class': 'form-control'}),
-        help_text="Enter a rating between 1 and 5."
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+        help_text="Enter a rating between 1.0 and 5.0 (decimals allowed)."
     )
     name = forms.CharField(
         max_length=254,
