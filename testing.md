@@ -65,10 +65,9 @@ Tests were conducted across multiple browsers and devices to validate responsive
 - The **subscription page** lists available plans with pricing and benefits.
 - Clicking "Choose Plan" redirects the user to the **Stripe checkout** page.
 - Upon successful payment, the **user’s subscription is updated** in the database.
-- Users receive a **confirmation email** after subscribing.
+- Users receive a **confirmation email** after subscribing and a confirmation email when a subscription is cancelled.
 - The **profile page** displays active subscriptions, renewal dates, and cancellation options.
 - Canceling a subscription prevents further billing but allows users to borrow until the end of the current cycle.
-- Subscription renewal reminder emails are sent **7 days before renewal**.
 
 ---
 
@@ -82,6 +81,7 @@ Tests were conducted across multiple browsers and devices to validate responsive
 - Users can return sets via their **profile page**, updating their borrowing availability.
 - Upon return, the set is **marked as available** again in the inventory.
 - If a set is **out of stock**, users cannot borrow it but can be notified when it’s available again.
+- Users receive a **confirmation email** after borrowing and returning a lego set.
 
 ---
 
@@ -115,7 +115,7 @@ Tests were conducted across multiple browsers and devices to validate responsive
 ## **EPIC | Notifications and Feedback**
 *As a user, I can receive confirmation emails and messages to stay informed about my activity on the platform.*
 
-- Users receive an **email confirmation or toast messages** when subscribing, purchasing, borrowing, or returning a set.
+- Users receive an **email confirmation or toast messages** when subscribing, purchasing, borrowing, using the contact form or returning a set.
 - Admins receive notifications for **new reviews, stock updates, and user activity**.
 - Django messages framework ensures users receive **real-time feedback** after form submissions.
 
@@ -239,7 +239,7 @@ To test the responsiveness of the Brick Heroes website interface, follow these s
 
 Ensuring an inclusive and user-friendly experience was a core aspect of developing **Brick Heroes**. The website was designed and tested to be accessible for all users, including those who rely on assistive technologies. The following measures were implemented to meet **Web Content Accessibility Guidelines (WCAG)** and improve usability:
 
-### 1. **Color Contrast**
+### 1. **Colour Contrast**
 Text and background colors were carefully selected to meet WCAG 2.1 contrast standards, ensuring readability for users with low vision or color blindness. Tools such as **WebAIM Contrast Checker** and **Chrome DevTools** were used to verify compliance, ensuring a strong contrast ratio across the site.
 
 ### 2. **Logical Heading Structure**
@@ -543,7 +543,7 @@ The automated tests provided comprehensive coverage, ensuring that the **Brick H
 | Element                  | Expected Result                                                                         | Pass/Fail |
 |--------------------------|-----------------------------------------------------------------------------------------|-----------|
 | **Unread Notifications List** | Displays all unread notifications related to subscriptions and borrowing          | Pass      |
-| **Mark as Read Button** | Allows admin to mark a notification as read                                             | Pass      |
+| **Mark as Read Button** | Allows admin to mark a notification as read                                          | Pass      |
 | **Approve Review Button** | Allows admin to approve pending user reviews                                          | Pass      |
 
 

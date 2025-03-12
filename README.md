@@ -2446,6 +2446,39 @@ During the development of **Brick Heroes**, various bugs were identified and res
 
 ---
 
+## **Product Images Not Displaying on Homepage**
+- **Issue:**  
+  - Product images were not loading on the homepage after implementing Cloudinary for image storage.
+  - The `product.image_url` field was returning `None`, leading to broken image links.  
+- **Resolution:**  
+  - Updated the `Product` model to ensure the correct Cloudinary URL was stored and retrieved.
+  - Modified the homepage template to use `product.image.url` instead of `product.image_url`.  
+  - Verified image uploads and display functionality across multiple pages.
+
+---
+
+## **Admin Notifications Count Incorrect**
+- **Issue:**  
+  - The admin notifications dropdown showed a count of unread notifications, but when clicked, the notifications page was empty.  
+  - Temporary alert messages disappeared instead of staying visible.  
+- **Resolution:**  
+  - Adjusted the context processor to filter notifications correctly and only count unread ones.  
+  - Updated the template to persist informational alert messages rather than auto-dismissing them.  
+  - Ensured the correct notifications were being fetched in the `admin_notifications` view.
+
+---
+
+## **Borrowing Checkout Fails with 'Name Not Defined'**
+- **Issue:**  
+  - Users encountered an error during checkout stating `"name 'settings' is not defined"`.  
+  - The error occurred when sending the borrowing confirmation email, preventing order completion.  
+- **Resolution:**  
+  - Added `from django.conf import settings` to the `cart/views.py` file.  
+  - Confirmed that `settings.DEFAULT_FROM_EMAIL` was properly configured.  
+  - Successfully tested the borrowing process and email notifications.
+
+---
+
 ## **Other Notable Fixes**
 ### **Email Verification Not Redirecting**
 - **Issue:**  
