@@ -3,6 +3,7 @@ from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import User
 from django.apps import apps
 from django.db.models import Avg
+import cloudinary.uploader
 
 
 class Product(models.Model):
@@ -22,8 +23,11 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         """Ensure image_url is always using the correct Cloudinary URL."""
-        if self.image:
-            self.image_url = self.image.url
+        if self.image and isinstance(self.image, str):
+            self.image_url = self.image
+        elif self.image:
+            upload_result = cloudinary.uploader.upload(self.image)
+            self.image = upload_result['url']
 
         super().save(*args, **kwargs)
 
