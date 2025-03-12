@@ -31,11 +31,16 @@ def manage_store(request):
         if form.is_valid():
             new_product = form.save(commit=False)
 
-            category_name = request.POST.get("category")
+            # Fetch selected category OR create a new one
+            existing_category = form.cleaned_data.get("existing_category")
+            new_category_name = form.cleaned_data.get("new_category")
 
-            if category_name:
-                category, created = Category.objects.get_or_create(friendly_name=category_name)
+            if new_category_name:
+                category, created = Category.objects.get_or_create(friendly_name=new_category_name)
                 new_product.category = category
+            elif existing_category:
+                new_product.category = existing_category
+
 
             new_product.save()
             messages.success(request, "New LEGO set added successfully!")

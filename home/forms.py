@@ -16,17 +16,34 @@ class ProductForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter LEGO set name'}),
         required=True
     )
-    category = forms.CharField(
+    existing_category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        required=False,
+        empty_label="Select existing category",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    # Text field to add a new category
+    new_category = forms.CharField(
         max_length=254,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter or select a category'}),
-        required=False
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Or enter a new category'})
     )
 
     class Meta:
         model = Product
-        fields = [
-            "name", "description", "category", "stock", "rating", "image"
-        ]
+        fields = ["name", "description", "existing_category", "new_category", "stock", "rating", "image"]
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        existing_category = cleaned_data.get("existing_category")
+        new_category = cleaned_data.get("new_category")
+
+        if not existing_category and not new_category:
+            raise forms.ValidationError("Please select an existing category or enter a new one.")
+
+        return cleaned_data
+
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

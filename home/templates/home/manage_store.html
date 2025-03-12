@@ -35,8 +35,18 @@
                 </div>
             
                 <div class="mb-2">
-                    <label for="category" class="form-label">Category:</label>
-                    <input type="text" id="category" name="category" class="form-control" placeholder="Enter or select a category">
+                    <label for="existing_category" class="form-label">Select Category:</label>
+                    <select id="existing_category" name="existing_category" class="form-control">
+                        <option value="">-- Select an existing category --</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.friendly_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-2">
+                    <label for="new_category" class="form-label">Or Add New Category:</label>
+                    <input type="text" id="new_category" name="new_category" class="form-control" placeholder="Enter a new category">
                 </div>
             
                 <div class="mb-2">
