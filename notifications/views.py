@@ -10,31 +10,22 @@ from products.models import Review  # Import reviews from products
 def admin_notifications(request):
     """Displays pending reviews, subscriptions, and borrowing notifications."""
 
-    # Fetch pending reviews (not yet approved)
+    # Fetch all notifications, grouped by category
+    subscription_notifications = Notification.objects.filter(category="subscription").order_by('-created_at')
+    borrowing_notifications = Notification.objects.filter(category="borrowing").order_by('-created_at')
+    review_notifications = Notification.objects.filter(category="review").order_by('-created_at')
+
+    # Fetch pending reviews that need admin approval
     pending_reviews = Review.objects.filter(is_approved=False)
-
-    # Fetch subscription notifications
-    subscription_notifications = Notification.objects.filter(
-        category="subscription"
-    ).order_by('-created_at')
-
-    # Fix: Ensure borrowing/return notifications are included
-    borrowing_notifications = Notification.objects.filter(
-        category="borrowing"
-    ).order_by('-created_at')
-
-    review_notifications = Notification.objects.filter(
-        category="review"
-    ).order_by('-created_at')
 
     return render(
         request,
         "notifications/admin_notifications.html",
         {
-            "pending_reviews": pending_reviews,
             "subscription_notifications": subscription_notifications,
             "borrowing_notifications": borrowing_notifications,
             "review_notifications": review_notifications,
+            "pending_reviews": pending_reviews,
         },
     )
 
