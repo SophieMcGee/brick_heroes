@@ -22,12 +22,8 @@ class Product(models.Model):
     total_ratings = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        """Ensure image_url is always using the correct Cloudinary URL."""
-        if self.image and isinstance(self.image, str):
+        if isinstance(self.image, str):
             self.image_url = self.image
-        elif self.image:
-            upload_result = cloudinary.uploader.upload(self.image)
-            self.image = upload_result['url']
 
         super().save(*args, **kwargs)
 
@@ -39,7 +35,7 @@ class Product(models.Model):
     def update_rating(self):
         """Updates the average rating based on user ratings."""
         avg_rating = self.ratings.aggregate(Avg("rating"))["rating__avg"]
-        self.average_rating = round(avg_rating, 1) if avg_rating else 0
+        self.rating = round(avg_rating, 1) if avg_rating else 0
         self.total_ratings = self.ratings.count()
         self.save(update_fields=["rating", "total_ratings"]) 
 
