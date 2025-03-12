@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.conf import settings
 
 
 
@@ -159,6 +160,9 @@ def checkout(request):
                             is_returned=False,  # Marked as active borrowed set
                             subscription=request.user.userprofile.subscription
                         )
+
+                        # Store borrowed LEGO set names for email
+                        borrowed_sets.append(item.product.name)
 
                         # Decrease stock after borrowing
                         if item.product.stock > 0:

@@ -16,8 +16,8 @@
                     <p>
                         {% trans "You have successfully borrowed the following LEGO set(s):" %}
                         <ul>
-                            {% for set_name in borrowed_sets %}
-                                <li><strong>{{ set_name }}</strong></li>
+                            {% for set in borrowed_sets %}
+                                <li>{{ set }}</li>
                             {% endfor %}
                         </ul>
                     </p>
